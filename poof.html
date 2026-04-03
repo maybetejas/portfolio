@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LED Cards Test</title>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #000;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+  }
+
+  .container {
+    display: flex;
+    gap: 40px;
+    position: relative;
+  }
+
+  .card {
+    width: 220px;
+    height: 140px;
+    background: #5aa9d6;
+    border: 3px solid #d6f0ff;
+    border-radius: 12px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  /* LED WIRE */
+  .led-wire {
+    position: absolute;
+    top: -25px;
+    left: 0;
+    width: 100%;
+    height: 50px;
+    pointer-events: none;
+  }
+
+  /* CURVED WIRE */
+  .led-wire::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #333;
+
+    /* droop curve */
+    border-radius: 50%;
+    transform: scaleY(2);
+  }
+
+  /* BULBS */
+  .led-wire span {
+    position: absolute;
+    top: 26px;
+    width: 8px;
+    height: 8px;
+    background: #ffd966;
+    border-radius: 50%;
+
+    box-shadow:
+      0 0 6px #ffd966,
+      0 0 12px #ffd966,
+      0 0 18px rgba(255, 217, 102, 0.6);
+
+    animation: glow 2s infinite ease-in-out;
+  }
+
+  /* POSITION BULBS */
+  .led-wire span:nth-child(1) { left: 5%; }
+  .led-wire span:nth-child(2) { left: 20%; }
+  .led-wire span:nth-child(3) { left: 35%; }
+  .led-wire span:nth-child(4) { left: 50%; }
+  .led-wire span:nth-child(5) { left: 65%; }
+  .led-wire span:nth-child(6) { left: 80%; }
+  .led-wire span:nth-child(7) { left: 95%; }
+
+  /* STAGGER GLOW */
+  .led-wire span:nth-child(2) { animation-delay: 0.3s; }
+  .led-wire span:nth-child(3) { animation-delay: 0.6s; }
+  .led-wire span:nth-child(4) { animation-delay: 0.9s; }
+  .led-wire span:nth-child(5) { animation-delay: 1.2s; }
+  .led-wire span:nth-child(6) { animation-delay: 1.5s; }
+
+  @keyframes glow {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+    <div class="led-wire">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    PROJECTS
+  </div>
+
+  <div class="card">
+    <div class="led-wire">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    SKILLS
+  </div>
+
+</div>
+
+</body>
+</html>

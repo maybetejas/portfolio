@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teesha Portfolio</title>
+  <link rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+  <div class="scene" id="scene">
+    <div class="scene__layer sky-layer" id="skyLayer"></div>
+    <div class="scene__layer island-layer" id="islandLayer" aria-hidden="true"></div>
+    <div class="scene__layer sun-layer" id="sunLayer" aria-hidden="true"></div>
+    <div class="scene__layer cloud-layer" id="cloudLayer" aria-hidden="true"></div>
+    <div class="scene__layer star-layer" id="starLayer" aria-hidden="true"></div>
+    <div class="scene__layer shooting-star-layer" id="shootingStarLayer" aria-hidden="true"></div>
+    <div class="scene__layer bird-layer" id="birdLayer" aria-hidden="true"></div>
+    <div class="scene__layer bunny-layer" id="bunnyLayer" aria-hidden="true"></div>
+    <div class="scene__layer ground-layer" id="groundLayer" aria-hidden="true">
+      <img
+        class="ground-layer__image"
+        src="assets/decor/grass.webp"
+        alt=""
+      />
+    </div>
+  </div>
+
+  <main class="site-overlay" id="timeControls">
+    <section class="overlay-shell">
+      <div class="overlay-layout">
+        <aside class="profile-panel">
+          <article class="profile-card glass-card">
+            <div class="profile-card__portrait-wrap">
+              <img class="profile-card__portrait" src="assets/decor/pfp.png" alt="Profile portrait" />
+            </div>
+            <h1 class="profile-card__title">HI, I'M TEESHA</h1>
+            <p class="profile-card__role">WEB DEVELOPER & PIXEL ARTIST</p>
+          </article>
+
+          <article class="message-card glass-card">
+            <p>BUILDING WEBSITES</p>
+            <p>WITH LOVE & PIXELS</p>
+          </article>
+
+          <button class="contact-card glass-card" type="button">
+            <span>CONTACT ME</span>
+          </button>
+        </aside>
+
+        <section class="feature-grid" aria-label="Portfolio sections">
+          <article class="feature-card glass-card">
+            <div class="feature-card__string"></div>
+            <h2 class="feature-card__title">PROJECTS</h2>
+            <span class="feature-card__badge">FEATURED</span>
+            <img class="feature-card__icon feature-card__icon--projects" src="assets/decor/projects.png" alt="" />
+          </article>
+
+          <article class="feature-card glass-card">
+            <div class="feature-card__string"></div>
+            <h2 class="feature-card__title">SKILLS</h2>
+            <img class="feature-card__icon feature-card__icon--skills" src="assets/decor/skills.png" alt="" />
+          </article>
+
+          <article class="feature-card glass-card">
+            <h2 class="feature-card__title">CAREER</h2>
+            <img class="feature-card__icon feature-card__icon--career" src="assets/decor/career.png" alt="" />
+          </article>
+
+          <article class="feature-card glass-card">
+            <h2 class="feature-card__title">RESUME</h2>
+            <img class="feature-card__icon feature-card__icon--resume" src="assets/decor/resume.png" alt="" />
+            <p class="feature-card__meta">DOWNLOADABLE</p>
+          </article>
+
+          <article class="feature-card glass-card">
+            <h2 class="feature-card__title">BLOGS</h2>
+            <span class="feature-card__badge feature-card__badge--lavender">NEW</span>
+            <img class="feature-card__icon feature-card__icon--blogs" src="assets/decor/blogs.png" alt="" />
+          </article>
+
+          <article class="feature-card glass-card">
+            <h2 class="feature-card__title">SERVICES</h2>
+            <img class="feature-card__icon feature-card__icon--services" src="assets/decor/services.png" alt="" />
+          </article>
+        </section>
+      </div>
+    </section>
+
+    <footer class="time-dock glass-card">
+      <div class="time-dock__top">
+        <span class="time-dock__readout" id="timeReadout">--:--</span>
+        <button class="time-dock__now" id="timeNowButton" type="button">Now</button>
+      </div>
+      <div class="time-dock__presets" id="timePresets"></div>
+    </footer>
+  </main>
+
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>
