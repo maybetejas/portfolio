@@ -22,8 +22,8 @@ const DESKTOP_BACK_CLOUD_BOTTOM_HIDE = -10;
 const MOBILE_MAIN_CLOUD_BOTTOM_HIDE = -10;
 const MOBILE_BACK_CLOUD_BOTTOM_HIDE = -20;
 const MOBILE_SPEED_MULTIPLIER = 1.7;
-const MAIN_CLOUD_TRAVEL_SECONDS = 180;
-const BACK_CLOUD_TRAVEL_SECONDS = 200;
+const MAIN_CLOUD_TRAVEL_SECONDS = 200;
+const BACK_CLOUD_TRAVEL_SECONDS = 220;
 const MAIN_CLOUD_SWING = 1;
 const BACK_CLOUD_SWING = 1;
 
@@ -112,7 +112,7 @@ function createTrack(className, src) {
   return track;
 }
 
-export function createCloudSystem({ element, timeEngine }) {
+export function createCloudSystem({ element, timeEngine, weatherEngine }) {
   const backTrack = createTrack(
     "cloud-track cloud-track--back",
     "assets/decor/cloudBack.webp"
@@ -128,6 +128,7 @@ export function createCloudSystem({ element, timeEngine }) {
   let startTimestamp = 0;
   let phaseStyle = cloudPhaseStyles.midday;
   let responsiveMetrics = getResponsiveMetrics();
+  let weatherSpeedMultiplier = 1;
 
   function applyPhaseStyle() {
     element.style.setProperty("--cloud-main-opacity", phaseStyle.mainOpacity);
@@ -182,8 +183,10 @@ export function createCloudSystem({ element, timeEngine }) {
     const speedMultiplier = responsiveMetrics.isCompact
       ? MOBILE_SPEED_MULTIPLIER
       : 1;
-    const mainTravelSeconds = MAIN_CLOUD_TRAVEL_SECONDS * speedMultiplier;
-    const backTravelSeconds = BACK_CLOUD_TRAVEL_SECONDS * speedMultiplier;
+    const mainTravelSeconds =
+      MAIN_CLOUD_TRAVEL_SECONDS * speedMultiplier * weatherSpeedMultiplier;
+    const backTravelSeconds =
+      BACK_CLOUD_TRAVEL_SECONDS * speedMultiplier * weatherSpeedMultiplier;
     const mainWave = -Math.cos((elapsedSeconds / mainTravelSeconds) * Math.PI * 2);
     const backWave = -Math.cos((elapsedSeconds / backTravelSeconds) * Math.PI * 2);
 
@@ -210,6 +213,17 @@ export function createCloudSystem({ element, timeEngine }) {
       timeEngine.subscribe(snapshot => {
         phaseStyle = cloudPhaseStyles[snapshot.currentPhase] ?? cloudPhaseStyles.midday;
         applyPhaseStyle();
+      });
+
+      weatherEngine?.subscribe(snapshot => {
+        weatherSpeedMultiplier =
+          snapshot.currentMode === "thunderstorm"
+            ? 0.42
+            : snapshot.currentMode === "rainfall"
+              ? 0.76
+              : snapshot.currentMode === "drizzle"
+                ? 0.92
+                : 1;
       });
 
       window.addEventListener("resize", handleResize);

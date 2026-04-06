@@ -42,15 +42,16 @@ function createStreak() {
   return streak;
 }
 
-export function createShootingStarSystem({ element, timeEngine }) {
+export function createShootingStarSystem({ element, timeEngine, weatherEngine }) {
   let currentPhase = timeEngine.currentPhase;
+  let currentWeatherMode = "clear";
   let timeoutId = 0;
 
   function scheduleNext() {
     window.clearTimeout(timeoutId);
 
     timeoutId = window.setTimeout(() => {
-      if (activePhases.has(currentPhase)) {
+      if (activePhases.has(currentPhase) && currentWeatherMode === "clear") {
         const burstCount = Math.random() < 0.28 ? randomInt(2, 3) : 1;
         for (let index = 0; index < burstCount; index += 1) {
           const streak = createStreak();
@@ -67,6 +68,13 @@ export function createShootingStarSystem({ element, timeEngine }) {
     init() {
       timeEngine.subscribe(snapshot => {
         currentPhase = snapshot.currentPhase;
+      });
+
+      weatherEngine?.subscribe(snapshot => {
+        currentWeatherMode = snapshot.currentMode;
+        if (currentWeatherMode !== "clear") {
+          element.replaceChildren();
+        }
       });
 
       scheduleNext();

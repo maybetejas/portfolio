@@ -48,8 +48,9 @@ function createFlock() {
   return flock;
 }
 
-export function createBirdSystem({ element, timeEngine }) {
+export function createBirdSystem({ element, timeEngine, weatherEngine }) {
   let currentPhase = timeEngine.currentPhase;
+  let currentWeatherMode = "clear";
   let firstWaveTimeoutId = 0;
   let intervalId = 0;
 
@@ -58,7 +59,9 @@ export function createBirdSystem({ element, timeEngine }) {
   }
 
   function spawnWave() {
-    if (!activeBirdPhases.has(currentPhase)) return;
+    if (!activeBirdPhases.has(currentPhase) || currentWeatherMode !== "clear") {
+      return;
+    }
 
     const flockCount = randomInt(FLOCKS_PER_WAVE[0], FLOCKS_PER_WAVE[1]);
 
@@ -91,6 +94,13 @@ export function createBirdSystem({ element, timeEngine }) {
         currentPhase = snapshot.currentPhase;
 
         if (!activeBirdPhases.has(currentPhase)) {
+          clearBirds();
+        }
+      });
+
+      weatherEngine?.subscribe(snapshot => {
+        currentWeatherMode = snapshot.currentMode;
+        if (currentWeatherMode !== "clear") {
           clearBirds();
         }
       });

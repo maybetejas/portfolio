@@ -9,12 +9,17 @@
 <body>
   <div class="scene" id="scene">
     <div class="scene__layer sky-layer" id="skyLayer"></div>
+    <div class="scene__layer rainbow-layer" id="rainbowLayer" aria-hidden="true"></div>
     <div class="scene__layer island-layer" id="islandLayer" aria-hidden="true"></div>
     <div class="scene__layer sun-layer" id="sunLayer" aria-hidden="true"></div>
     <div class="scene__layer cloud-layer" id="cloudLayer" aria-hidden="true"></div>
     <div class="scene__layer star-layer" id="starLayer" aria-hidden="true"></div>
     <div class="scene__layer shooting-star-layer" id="shootingStarLayer" aria-hidden="true"></div>
     <div class="scene__layer bird-layer" id="birdLayer" aria-hidden="true"></div>
+    <div class="scene__layer weather-tone-layer" id="weatherToneLayer" aria-hidden="true"></div>
+    <div class="scene__layer rain-layer" id="rainLayer" aria-hidden="true"></div>
+    <div class="scene__layer screen-droplet-layer" id="screenDropletLayer" aria-hidden="true"></div>
+    <div class="scene__layer lightning-layer" id="lightningLayer" aria-hidden="true"></div>
     <div class="scene__layer bunny-layer" id="bunnyLayer" aria-hidden="true"></div>
     <div class="scene__layer ground-layer" id="groundLayer" aria-hidden="true">
       <img
@@ -33,18 +38,18 @@
             <div class="profile-card__portrait-wrap">
               <img class="profile-card__portrait" src="assets/decor/pfp.png" alt="Profile portrait" />
             </div>
-            <h1 class="profile-card__title">HI, I'M TEESHA</h1>
-            <p class="profile-card__role">WEB DEVELOPER & PIXEL ARTIST</p>
+            <div class="profile-card__body">
+              <h1 class="profile-card__title">HI, I'M TEESHA</h1>
+              <p class="profile-card__role">WEB DEVELOPER & PIXEL ARTIST</p>
+            </div>
+            <div class="profile-card__message">
+              <p>BUILDING WEBSITES</p>
+              <p>WITH LOVE & PIXELS</p>
+            </div>
+            <button class="contact-card" type="button">
+              <span>CONTACT ME</span>
+            </button>
           </article>
-
-          <article class="message-card glass-card">
-            <p>BUILDING WEBSITES</p>
-            <p>WITH LOVE & PIXELS</p>
-          </article>
-
-          <button class="contact-card glass-card" type="button">
-            <span>CONTACT ME</span>
-          </button>
         </aside>
 
         <section class="feature-grid" aria-label="Portfolio sections">
@@ -92,6 +97,13 @@
         <button class="time-dock__now" id="timeNowButton" type="button">Now</button>
       </div>
       <div class="time-dock__presets" id="timePresets"></div>
+      <div class="weather-dock">
+        <div class="weather-dock__top">
+          <span class="weather-dock__readout" id="weatherReadout">Weather | Live</span>
+          <button class="weather-dock__live" id="weatherLiveButton" type="button">Live Weather</button>
+        </div>
+        <div class="weather-dock__presets" id="weatherPresets"></div>
+      </div>
     </footer>
   </main>
 

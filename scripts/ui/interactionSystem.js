@@ -1,4 +1,4 @@
-export function createInteractionSystem({ cardSystem, timeEngine }) {
+export function createInteractionSystem({ cardSystem, timeEngine, weatherEngine }) {
   return {
     init() {
       cardSystem.getPresetButtons().forEach((button, phaseKey) => {
@@ -9,6 +9,16 @@ export function createInteractionSystem({ cardSystem, timeEngine }) {
 
       cardSystem.getNowButton().addEventListener("click", () => {
         timeEngine.useLiveTime();
+      });
+
+      cardSystem.getWeatherButtons().forEach((button, modeKey) => {
+        button.addEventListener("click", () => {
+          weatherEngine.setPreviewMode(modeKey);
+        });
+      });
+
+      cardSystem.getWeatherLiveButton().addEventListener("click", () => {
+        weatherEngine.useLiveWeather();
       });
     }
   };

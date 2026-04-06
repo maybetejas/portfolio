@@ -4,21 +4,13 @@
 // `SECONDARY_ISLAND_*`: secondary island placement and scale.
 const ISLAND_MIN_TOP = 26;
 const ISLAND_MAX_TOP = 48;
-const MAIN_ISLAND_MIN_LEFT = 14;
+const SUN_SAFE_LEFT_ZONE = 18;
+const MAIN_ISLAND_MIN_LEFT = 24;
 const MAIN_ISLAND_MAX_LEFT = 38;
 const MAIN_ISLAND_SCALE_RANGE = [0.5, 0.7];
 const SECONDARY_ISLAND_MIN_LEFT = 56;
 const SECONDARY_ISLAND_MAX_LEFT = 82;
 const SECONDARY_ISLAND_SCALE_RANGE = [0.4, 0.62];
-
-const islandPhaseOpacity = {
-  sunrise: 0.28,
-  morning: 0.24,
-  midday: 0.2,
-  sunset: 0.26,
-  twilight: 0.18,
-  night: 0.12
-};
 
 function randomBetween(min, max) {
   return min + Math.random() * (max - min);
@@ -46,7 +38,10 @@ export function createIslandSystem({ element, timeEngine }) {
   element.replaceChildren(mainIsland, secondaryIsland);
 
   const layout = {
-    mainLeft: randomBetween(MAIN_ISLAND_MIN_LEFT, MAIN_ISLAND_MAX_LEFT),
+    mainLeft: randomBetween(
+      Math.max(MAIN_ISLAND_MIN_LEFT, SUN_SAFE_LEFT_ZONE),
+      MAIN_ISLAND_MAX_LEFT
+    ),
     mainTop: randomBetween(ISLAND_MIN_TOP, ISLAND_MAX_TOP - 4),
     mainScale: randomBetween(
       MAIN_ISLAND_SCALE_RANGE[0],
@@ -77,11 +72,7 @@ export function createIslandSystem({ element, timeEngine }) {
   return {
     init() {
       applyLayout();
-
-      timeEngine.subscribe(snapshot => {
-        const opacity = islandPhaseOpacity[snapshot.currentPhase] ?? 0.2;
-        element.style.setProperty("--island-opacity", String(opacity));
-      });
+      timeEngine.subscribe(() => {});
     }
   };
 }

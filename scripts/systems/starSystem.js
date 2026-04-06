@@ -154,13 +154,14 @@ function finalizeStarMotion(star) {
   return star;
 }
 
-export function createStarSystem({ element, timeEngine }) {
+export function createStarSystem({ element, timeEngine, weatherEngine }) {
   const canvas = createCanvas(element);
   const context = canvas.getContext("2d");
   const stars = [];
   let width = 0;
   let height = 0;
   let currentSettings = phaseStarSettings.morning;
+  let weatherVisibility = 1;
   let animationFrameId = 0;
   let resizeTimer = 0;
 
@@ -203,14 +204,16 @@ export function createStarSystem({ element, timeEngine }) {
     const elapsed = timestamp * 0.001;
     context.clearRect(0, 0, width, height);
 
-    if (currentSettings.starOpacity > 0) {
+    const visibleOpacity = currentSettings.starOpacity * weatherVisibility;
+
+    if (visibleOpacity > 0) {
       const visibleCount = Math.min(
         stars.length,
         getTargetCount(currentSettings.starDensity)
       );
 
       for (let index = 0; index < visibleCount; index += 1) {
-        drawPlusStar(context, stars[index], elapsed, currentSettings.starOpacity);
+        drawPlusStar(context, stars[index], elapsed, visibleOpacity);
       }
     }
 
@@ -234,6 +237,10 @@ export function createStarSystem({ element, timeEngine }) {
         currentSettings =
           phaseStarSettings[snapshot.currentPhase] ?? phaseStarSettings.morning;
         element.style.setProperty("--star-opacity", String(currentSettings.starOpacity));
+      });
+
+      weatherEngine?.subscribe(snapshot => {
+        weatherVisibility = snapshot.currentMode === "clear" ? 1 : 0;
       });
 
       window.addEventListener("resize", handleResize);

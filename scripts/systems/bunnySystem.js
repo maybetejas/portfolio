@@ -67,7 +67,7 @@ function getResponsiveMetrics() {
       };
 }
 
-export function createBunnySystem({ element, timeEngine }) {
+export function createBunnySystem({ element, timeEngine, weatherEngine }) {
   const sleepImage = document.createElement("img");
   sleepImage.className = "bunny-layer__sleep";
   sleepImage.src = "assets/decor/bunnySleeping.gif";
@@ -97,6 +97,9 @@ export function createBunnySystem({ element, timeEngine }) {
         element.style.setProperty("--bunny-saturate", phaseStyle.saturate);
         element.style.setProperty("--bunny-contrast", phaseStyle.contrast);
         element.style.setProperty("--bunny-hue-rotate", phaseStyle.hueRotate);
+      });
+      weatherEngine?.subscribe(snapshot => {
+        element.style.opacity = snapshot.currentMode === "thunderstorm" ? "0" : "1";
       });
       window.addEventListener("resize", handleResize);
     },
