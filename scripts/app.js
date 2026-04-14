@@ -15,7 +15,7 @@ import { createWeatherSystem } from "./systems/weatherSystem.js";
 import { createCardSystem } from "./ui/cardSystem.js";
 import { createInteractionSystem } from "./ui/interactionSystem.js";
 import { createLayoutSystem } from "./ui/layoutSystem.js";
-import { createMenuSystem } from "./ui/menuSystem.js";
+import { createBoardSystem } from "./ui/boardSystem.js";
 
 export function bootstrapApp() {
   const timeEngine = createTimeEngine();
@@ -95,21 +95,36 @@ export function bootstrapApp() {
     weatherEngine
   });
 
+  // ✅ FIXED LAYOUT SYSTEM (NOW HAS ACCESS TO BOARD)
   const layoutSystem = createLayoutSystem({
-    root: document.body
+    root: document.body,
+    boardContent: document.getElementById("board-content"),
+    boardTitle: document.getElementById("boardTitle")
   });
 
-  const menuSystem = createMenuSystem({
-    menuElement: document.querySelector(".menu-screen"),
-    portfolioButton: document.querySelector(".fantasy-btn"),
-    portfolioScreen: document.getElementById("portfolioScreen")
-  });
+const boardSystem = createBoardSystem({
+  menuElement: document.querySelector(".menu-screen"),
+  openButton: document.querySelector("[data-action='open-portfolio']"),
+  boardElement: document.getElementById("portfolioScreen"),
+
+  onOpen: () => {
+    layoutSystem.navigate("home");
+  }
+});
 
   systems.forEach(system => system.init());
-  menuSystem.init();
+  boardSystem.init();
   cardSystem.init();
   interactionSystem.init();
   layoutSystem.init();
+
+  // 🔥 THIS WAS THE MISSING PIECE
+  document
+    .querySelector("[data-action='open-portfolio']")
+    .addEventListener("click", () => {
+      layoutSystem.navigate("home");
+    });
+
   timeEngine.start();
   weatherEngine.start();
 
@@ -118,7 +133,7 @@ export function bootstrapApp() {
     weatherEngine,
     systems,
     ui: {
-      menuSystem,
+      boardSystem,
       cardSystem,
       interactionSystem,
       layoutSystem

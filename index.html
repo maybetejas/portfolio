@@ -45,16 +45,16 @@
 
       <!-- Buttons -->
       <div class="menu-buttons">
-        
-        <button class="fantasy-btn">
+
+        <button class="fantasy-btn" data-action="open-portfolio" type="button">
           <span class="fantasy-btn__text">PORTFOLIO</span>
         </button>
 
-        <button class="fantasy-btn">
+        <button class="fantasy-btn" data-action="open-snapshot" type="button">
           <span class="fantasy-btn__text">SNAPSHOT</span>
         </button>
 
-        <button class="fantasy-btn">
+        <button class="fantasy-btn" data-action="open-change" type="button">
           <span class="fantasy-btn__text">CHANGE</span>
         </button>
       </div>
@@ -62,27 +62,26 @@
     </div>
 
     <section class="portfolio-screen" id="portfolioScreen" aria-hidden="true">
+
       <div class="portfolio-screen__frame">
-        <img class="portfolio-screen__image portfolio-screen__image--desktop" src="assets/decor/mainScreen.png" alt="Portfolio screen" />
-        <img class="portfolio-screen__image portfolio-screen__image--mobile" src="assets/decor/mainScreenMobile.png" alt="Portfolio screen" />
-      </div>
-    </section>
 
+        <img class="portfolio-screen__image portfolio-screen__image--desktop" src="assets/decor/mainScreen.png" />
 
-    <footer class="time-dock glass-card">
-      <div class="time-dock__top">
-        <span class="time-dock__readout" id="timeReadout">--:--</span>
-        <button class="time-dock__now" id="timeNowButton" type="button">Now</button>
-      </div>
-      <div class="time-dock__presets" id="timePresets"></div>
-      <div class="weather-dock">
-        <div class="weather-dock__top">
-          <span class="weather-dock__readout" id="weatherReadout">Weather | Live</span>
-          <button class="weather-dock__live" id="weatherLiveButton" type="button">Live Weather</button>
+        <!-- 🔥 TITLE (anchored to wood plate) -->
+        <div class="board-title" id="boardTitle">
+          PORTFOLIO
         </div>
-        <div class="weather-dock__presets" id="weatherPresets"></div>
+
+        <!-- 🔥 THIS IS YOUR SCREEN -->
+        <div id="board-content">
+
+
+
+        </div>
+
       </div>
-    </footer>
+
+    </section>
   </main>
 
   <script type="module" src="scripts/main.js"></script>
