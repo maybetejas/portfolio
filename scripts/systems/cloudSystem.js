@@ -17,10 +17,10 @@ const DESKTOP_MAIN_CLOUD_SCALE = 1.5;
 const DESKTOP_BACK_CLOUD_SCALE = 1;
 const MOBILE_MAIN_CLOUD_SCALE = 2.2;
 const MOBILE_BACK_CLOUD_SCALE = 3.1;
-const DESKTOP_MAIN_CLOUD_BOTTOM_HIDE = -13;
-const DESKTOP_BACK_CLOUD_BOTTOM_HIDE = -10;
-const MOBILE_MAIN_CLOUD_BOTTOM_HIDE = -10;
-const MOBILE_BACK_CLOUD_BOTTOM_HIDE = -20;
+const DESKTOP_MAIN_CLOUD_BOTTOM_HIDE = -50;
+const DESKTOP_BACK_CLOUD_BOTTOM_HIDE = -45;
+const MOBILE_MAIN_CLOUD_BOTTOM_HIDE = -24;
+const MOBILE_BACK_CLOUD_BOTTOM_HIDE = -18;
 const MOBILE_SPEED_MULTIPLIER = 1.7;
 const MAIN_CLOUD_TRAVEL_SECONDS = 200;
 const BACK_CLOUD_TRAVEL_SECONDS = 220;
@@ -63,7 +63,7 @@ const cloudPhaseStyles = {
   twilight: {
     mainOpacity: "0.82",
     backOpacity: "0.5",
-    brightness: "0.9",
+    brightness: "0.7",
     saturate: "0.78",
     contrast: "0.88",
     hueRotate: "10deg"
@@ -71,7 +71,7 @@ const cloudPhaseStyles = {
   night: {
     mainOpacity: "0.66",
     backOpacity: "0.18",
-    brightness: "0.72",
+    brightness: "0.4",
     saturate: "0.62",
     contrast: "0.82",
     hueRotate: "16deg"

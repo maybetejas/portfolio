@@ -1,95 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Teesha Portfolio</title>
   <link rel="stylesheet" href="styles/main.css" />
 </head>
+
 <body>
   <div class="scene" id="scene">
     <div class="scene__layer sky-layer" id="skyLayer"></div>
     <div class="scene__layer rainbow-layer" id="rainbowLayer" aria-hidden="true"></div>
     <div class="scene__layer island-layer" id="islandLayer" aria-hidden="true"></div>
+    <div class="scene__layer forest-layer forest-layer--back" id="forestBackLayer" aria-hidden="true">
+      <img class="forest-layer__image forest-layer__image--back" src="assets/decor/forestBack.webp" alt="" />
+    </div>
+    <div class="scene__layer forest-layer forest-layer--front" id="forestFrontLayer" aria-hidden="true">
+      <img class="forest-layer__image forest-layer__image--front" src="assets/decor/forestFront.webp" alt="" />
+    </div>
     <div class="scene__layer sun-layer" id="sunLayer" aria-hidden="true"></div>
     <div class="scene__layer cloud-layer" id="cloudLayer" aria-hidden="true"></div>
     <div class="scene__layer star-layer" id="starLayer" aria-hidden="true"></div>
+    <div class="scene__layer firefly-layer" id="fireflyLayer" aria-hidden="true"></div>
     <div class="scene__layer shooting-star-layer" id="shootingStarLayer" aria-hidden="true"></div>
     <div class="scene__layer bird-layer" id="birdLayer" aria-hidden="true"></div>
+    <div class="scene__layer sky-beast-layer" id="skyBeastLayer" aria-hidden="true"></div>
     <div class="scene__layer weather-tone-layer" id="weatherToneLayer" aria-hidden="true"></div>
     <div class="scene__layer rain-layer" id="rainLayer" aria-hidden="true"></div>
     <div class="scene__layer screen-droplet-layer" id="screenDropletLayer" aria-hidden="true"></div>
     <div class="scene__layer lightning-layer" id="lightningLayer" aria-hidden="true"></div>
     <div class="scene__layer bunny-layer" id="bunnyLayer" aria-hidden="true"></div>
     <div class="scene__layer ground-layer" id="groundLayer" aria-hidden="true">
-      <img
-        class="ground-layer__image"
-        src="assets/decor/grass.webp"
-        alt=""
-      />
+      <img class="ground-layer__image" src="assets/decor/grass.webp" alt="" />
     </div>
   </div>
 
   <main class="site-overlay" id="timeControls">
-    <!-- <section class="overlay-shell">
-      <div class="overlay-layout">
-        <aside class="profile-panel">
-          <article class="profile-card glass-card">
-            <div class="profile-card__portrait-wrap">
-              <img class="profile-card__portrait" src="assets/decor/pfp.png" alt="Profile portrait" />
-            </div>
-            <div class="profile-card__body">
-              <h1 class="profile-card__title">HI, I'M TEESHA</h1>
-              <p class="profile-card__role">WEB DEVELOPER & PIXEL ARTIST</p>
-            </div>
-            <div class="profile-card__message">
-              <p>BUILDING WEBSITES</p>
-              <p>WITH LOVE & PIXELS</p>
-            </div>
-            <button class="contact-card" type="button">
-              <span>CONTACT ME</span>
-            </button>
-          </article>
-        </aside>
 
-        <section class="feature-grid" aria-label="Portfolio sections">
-          <article class="feature-card glass-card">
-            <div class="feature-card__string"></div>
-            <h2 class="feature-card__title">PROJECTS</h2>
-            <span class="feature-card__badge">FEATURED</span>
-            <img class="feature-card__icon feature-card__icon--projects" src="assets/decor/projects.png" alt="" />
-          </article>
+    <div class="menu-screen">
 
-          <article class="feature-card glass-card">
-            <div class="feature-card__string"></div>
-            <h2 class="feature-card__title">SKILLS</h2>
-            <img class="feature-card__icon feature-card__icon--skills" src="assets/decor/skills.png" alt="" />
-          </article>
+      <!-- Title -->
+      <img src="assets/decor/title.webp" alt="Game Title" class="menu-title">
 
-          <article class="feature-card glass-card">
-            <h2 class="feature-card__title">CAREER</h2>
-            <img class="feature-card__icon feature-card__icon--career" src="assets/decor/career.png" alt="" />
-          </article>
+      <!-- Buttons -->
+      <div class="menu-buttons">
+        
+        <button class="fantasy-btn">
+          <span class="fantasy-btn__text">PORTFOLIO</span>
+        </button>
 
-          <article class="feature-card glass-card">
-            <h2 class="feature-card__title">RESUME</h2>
-            <img class="feature-card__icon feature-card__icon--resume" src="assets/decor/resume.png" alt="" />
-            <p class="feature-card__meta">DOWNLOADABLE</p>
-          </article>
+        <button class="fantasy-btn">
+          <span class="fantasy-btn__text">SNAPSHOT</span>
+        </button>
 
-          <article class="feature-card glass-card">
-            <h2 class="feature-card__title">BLOGS</h2>
-            <span class="feature-card__badge feature-card__badge--lavender">NEW</span>
-            <img class="feature-card__icon feature-card__icon--blogs" src="assets/decor/blogs.png" alt="" />
-          </article>
-
-          <article class="feature-card glass-card">
-            <h2 class="feature-card__title">SERVICES</h2>
-            <img class="feature-card__icon feature-card__icon--services" src="assets/decor/services.png" alt="" />
-          </article>
-        </section>
+        <button class="fantasy-btn">
+          <span class="fantasy-btn__text">CHANGE</span>
+        </button>
       </div>
-    </section> -->
+
+    </div>
+
+    <section class="portfolio-screen" id="portfolioScreen" aria-hidden="true">
+      <div class="portfolio-screen__frame">
+        <img class="portfolio-screen__image portfolio-screen__image--desktop" src="assets/decor/mainScreen.png" alt="Portfolio screen" />
+        <img class="portfolio-screen__image portfolio-screen__image--mobile" src="assets/decor/mainScreenMobile.png" alt="Portfolio screen" />
+      </div>
+    </section>
+
 
     <footer class="time-dock glass-card">
       <div class="time-dock__top">
@@ -109,4 +87,5 @@
 
   <script type="module" src="scripts/main.js"></script>
 </body>
+
 </html>

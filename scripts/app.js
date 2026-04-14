@@ -4,15 +4,18 @@ import { createCloudSystem } from "./systems/cloudSystem.js";
 import { createGroundSystem } from "./systems/groundSystem.js";
 import { createIslandSystem } from "./systems/islandSystem.js";
 import { createBirdSystem } from "./systems/birdSystem.js";
+import { createFireflySystem } from "./systems/fireflySystem.js";
 import { createBunnySystem } from "./systems/bunnySystem.js";
 import { createShootingStarSystem } from "./systems/shootingStarSystem.js";
 import { createSkySystem } from "./systems/skySystem.js";
+import { createSkyBeastSystem } from "./systems/skyBeastSystem.js";
 import { createStarSystem } from "./systems/starSystem.js";
 import { createSunSystem } from "./systems/sunSystem.js";
 import { createWeatherSystem } from "./systems/weatherSystem.js";
 import { createCardSystem } from "./ui/cardSystem.js";
 import { createInteractionSystem } from "./ui/interactionSystem.js";
 import { createLayoutSystem } from "./ui/layoutSystem.js";
+import { createMenuSystem } from "./ui/menuSystem.js";
 
 export function bootstrapApp() {
   const timeEngine = createTimeEngine();
@@ -51,6 +54,15 @@ export function bootstrapApp() {
       timeEngine,
       weatherEngine
     }),
+    createSkyBeastSystem({
+      element: document.getElementById("skyBeastLayer"),
+      timeEngine,
+      weatherEngine
+    }),
+    createFireflySystem({
+      element: document.getElementById("fireflyLayer"),
+      timeEngine
+    }),
     createWeatherSystem({
       rainbowElement: document.getElementById("rainbowLayer"),
       toneElement: document.getElementById("weatherToneLayer"),
@@ -87,7 +99,14 @@ export function bootstrapApp() {
     root: document.body
   });
 
+  const menuSystem = createMenuSystem({
+    menuElement: document.querySelector(".menu-screen"),
+    portfolioButton: document.querySelector(".fantasy-btn"),
+    portfolioScreen: document.getElementById("portfolioScreen")
+  });
+
   systems.forEach(system => system.init());
+  menuSystem.init();
   cardSystem.init();
   interactionSystem.init();
   layoutSystem.init();
@@ -99,6 +118,7 @@ export function bootstrapApp() {
     weatherEngine,
     systems,
     ui: {
+      menuSystem,
       cardSystem,
       interactionSystem,
       layoutSystem

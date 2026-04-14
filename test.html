@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .fantasy-btn {
+            position: relative;
+            width: 400px;
+            /* adjust based on your asset */
+            height: 80px;
+            /* adjust based on your asset */
+            border: none;
+            background: url('assets/decor/button.webp') no-repeat center;
+            background-size: 100% 100%;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        /* Center text perfectly */
+        .fantasy-btn__text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            color: #3b2a1a;
+            /* tweak depending on contrast */
+            font-size: 20px;
+            font-weight: bold;
+            pointer-events: none;
+            /* clicks go to button */
+        }
+
+        /* Optional hover effect */
+        .fantasy-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        /* Optional click effect */
+        .fantasy-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+
+<body>
+    <button class="fantasy-btn">
+        <span class="fantasy-btn__text">Click Me</span>
+    </button>
+</body>
+
+</html>

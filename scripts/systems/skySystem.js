@@ -14,9 +14,10 @@ function buildAtmosphericSky(colors) {
   const horizonRgb = hexToRgbString(horizon);
 
   return `
-    radial-gradient(circle at 50% 18%, rgba(${upperMidRgb}, 0.3) 0%, rgba(${upperMidRgb}, 0.14) 24%, transparent 58%),
-    radial-gradient(circle at 22% 24%, rgba(${horizonRgb}, 0.22) 0%, transparent 38%),
-    radial-gradient(circle at 78% 30%, rgba(${lowerMidRgb}, 0.18) 0%, transparent 42%),
+    radial-gradient(circle at 50% 18%, rgba(${upperMidRgb}, 0.38) 0%, rgba(${upperMidRgb}, 0.16) 24%, transparent 58%),
+    radial-gradient(circle at 22% 24%, rgba(${horizonRgb}, 0.28) 0%, transparent 38%),
+    radial-gradient(circle at 78% 30%, rgba(${lowerMidRgb}, 0.22) 0%, transparent 42%),
+    radial-gradient(circle at 50% 78%, rgba(${topRgb}, 0.16) 0%, transparent 48%),
     linear-gradient(
       to bottom,
       ${top} 0%,
