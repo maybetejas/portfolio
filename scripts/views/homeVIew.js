@@ -1,5 +1,6 @@
 export function renderHome() {
   return `
+
     <div class="home">
 
       <!-- LEFT PROFILE -->
@@ -14,9 +15,12 @@ export function renderHome() {
           BUILDING WEBSITES<br>WITH LOVE & PIXELS
         </p>
 
-        <button class="cta-btn">
+        <button class="cta-btn" data-page="contact">
           CONTACT ME
         </button>
+        <button class="board-back" data-action="go-menu">
+  ← MENU
+</button>
       </div>
 
       <!-- RIGHT GRID -->
@@ -38,7 +42,7 @@ export function renderHome() {
 function card(page, title, icon) {
   return `
     <div class="home-card" data-page="${page}">
-      <img src="assets/decor/card.webp" class="card-bg" />
+      <img src="assets/decor/card.png" class="card-bg" />
       <img src="assets/decor/${icon}" class="card-icon" />
       <span class="card-title">${title}</span>
     </div>

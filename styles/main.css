@@ -1371,6 +1371,7 @@ button:disabled {
   color: #5a3e2b;
 }
 
+
 .cta-btn {
   margin-top: 10px;
 
@@ -1397,14 +1398,17 @@ button:disabled {
   position: relative;
   width: 100%;
   height: 100%;
-
+z-index: 99999;
   cursor: pointer;
 }
 
 .card-bg {
-  width: 100%;
-  height: 100%;
+  width: 80%;
+  height: 80%;
   object-fit: contain;
+    position: relative;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .card-icon {
@@ -1412,20 +1416,33 @@ button:disabled {
   top: 25%;
   left: 50%;
   transform: translateX(-50%);
-
+z-index: 1;
   width: 30%;
+  pointer-events: none;
 }
-
 .card-title {
   position: absolute;
-  bottom: 15%;
+
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
 
-  font-size: clamp(12px, 1.5vw, 18px);
-  color: #3a2a1a;
-}
+  font-size: clamp(14px, 1.6vw, 20px);
 
+  color: #f5e6c8; /* 🔥 LIGHT TEXT */
+
+  z-index: 3;
+
+  text-align: center;
+  width: 100%;
+
+  pointer-events: none;
+
+  /* 🔥 THIS IS THE MAGIC */
+  text-shadow:
+    0 2px 0 #3a2a1a,
+    0 4px 6px rgba(0,0,0,0.6);
+}
 .board-view--home .board-view__content {
   display: none;
 }

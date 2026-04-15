@@ -12,8 +12,6 @@ import { createSkyBeastSystem } from "./systems/skyBeastSystem.js";
 import { createStarSystem } from "./systems/starSystem.js";
 import { createSunSystem } from "./systems/sunSystem.js";
 import { createWeatherSystem } from "./systems/weatherSystem.js";
-import { createCardSystem } from "./ui/cardSystem.js";
-import { createInteractionSystem } from "./ui/interactionSystem.js";
 import { createLayoutSystem } from "./ui/layoutSystem.js";
 import { createBoardSystem } from "./ui/boardSystem.js";
 
@@ -83,18 +81,6 @@ export function bootstrapApp() {
     })
   ];
 
-  const cardSystem = createCardSystem({
-    root: document.getElementById("timeControls"),
-    timeEngine,
-    weatherEngine
-  });
-
-  const interactionSystem = createInteractionSystem({
-    cardSystem,
-    timeEngine,
-    weatherEngine
-  });
-
   // ✅ FIXED LAYOUT SYSTEM (NOW HAS ACCESS TO BOARD)
   const layoutSystem = createLayoutSystem({
     root: document.body,
@@ -102,21 +88,54 @@ export function bootstrapApp() {
     boardTitle: document.getElementById("boardTitle")
   });
 
-const boardSystem = createBoardSystem({
-  menuElement: document.querySelector(".menu-screen"),
-  openButton: document.querySelector("[data-action='open-portfolio']"),
-  boardElement: document.getElementById("portfolioScreen"),
+  const boardSystem = createBoardSystem({
+    menuElement: document.querySelector(".menu-screen"),
+    openButton: document.querySelector("[data-action='open-portfolio']"),
+    boardElement: document.getElementById("portfolioScreen"),
 
-  onOpen: () => {
-    layoutSystem.navigate("home");
-  }
-});
+    onOpen: () => {
+      layoutSystem.navigate("home");
+    }
+  });
 
   systems.forEach(system => system.init());
   boardSystem.init();
-  cardSystem.init();
-  interactionSystem.init();
   layoutSystem.init();
+
+document.addEventListener("click", (e) => {
+  const card = e.target.closest("[data-page]");
+  if (!card) return;
+
+  const page = card.dataset.page;
+
+  console.log("CLICKED:", page); // 👈 debug
+
+  layoutSystem.navigate(page);
+});
+
+document.addEventListener("click", (e) => {
+
+  // 🔥 PRIORITY 1: MENU BACK
+  if (e.target.closest("[data-action='go-menu']")) {
+    document.querySelector(".menu-screen").classList.remove("is-hidden");
+    document.getElementById("portfolioScreen").classList.remove("is-visible", "is-open");
+    document.documentElement.classList.remove("is-portfolio-open");
+    return;
+  }
+
+  // 🔥 PRIORITY 2: BACK TO HOME
+  if (e.target.closest("[data-action='go-home']")) {
+    layoutSystem.navigate("home");
+    return;
+  }
+
+  // 🔥 PRIORITY 3: PAGE NAVIGATION
+  const pageEl = e.target.closest("[data-page]");
+  if (!pageEl) return;
+
+  const page = pageEl.dataset.page;
+  layoutSystem.navigate(page);
+});
 
   // 🔥 THIS WAS THE MISSING PIECE
   document
@@ -134,8 +153,6 @@ const boardSystem = createBoardSystem({
     systems,
     ui: {
       boardSystem,
-      cardSystem,
-      interactionSystem,
       layoutSystem
     }
   };
