@@ -1,0 +1,15 @@
+---
+const ticks = ['320', '330', '340', '350', '000', '010', '020', '030', '040'];
+const minorTicks = Array.from({ length: 33 });
+---
+
+<div class="coordinate-bar" aria-label="Navigation coordinate heading">
+  <div class="coordinate-rail" aria-hidden="true">
+    {
+      minorTicks.map((_, index) => (
+        <i style={`--i:${index}; --h:${index % 4 === 0 ? '10px' : '5px'}`}></i>
+      ))
+    }
+    {ticks.map((tick, index) => <span class={tick === '000' ? 'active' : ''} style={`--i:${index}`}>{tick}</span>)}
+  </div>
+</div>

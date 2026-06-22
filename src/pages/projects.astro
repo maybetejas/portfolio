@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const projects = [
+  {
+    title: 'Project One',
+    type: 'Case study',
+    summary: 'A compact summary of the problem, your role, and the measurable result.',
+    tags: ['Astro', 'UI', 'Performance']
+  },
+  {
+    title: 'Project Two',
+    type: 'Product build',
+    summary: 'Replace this with another strong project that shows range and craft.',
+    tags: ['React', 'API', 'Design']
+  },
+  {
+    title: 'Project Three',
+    type: 'Experiment',
+    summary: 'Use this slot for a technical exploration, open-source work, or prototype.',
+    tags: ['Tooling', 'Automation', 'DX']
+  }
+];
+---
+
+<BaseLayout title="Projects" description="Selected portfolio projects and case studies.">
+  <section class="page-section">
+    <p class="eyebrow">Projects</p>
+    <h1>Selected work worth opening.</h1>
+    <p class="lead">
+      Replace these placeholders with a small set of projects that demonstrate quality,
+      ownership, and outcome.
+    </p>
+  </section>
+
+  <section class="band">
+    <div class="page-section grid">
+      {
+        projects.map((project) => (
+          <article class="card">
+            <p class="meta">{project.type}</p>
+            <h3>{project.title}</h3>
+            <p>{project.summary}</p>
+            <ul class="tag-list" aria-label={`${project.title} technologies`}>
+              {project.tags.map((tag) => (
+                <li>{tag}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

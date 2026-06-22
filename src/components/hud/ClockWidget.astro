@@ -1,0 +1,26 @@
+<aside class="hud-widget hud-clock" aria-label="Stardate clock">
+  <div>
+    <time data-hud-clock>17:42:08</time>
+    <span>STARDATE 58293.21</span>
+  </div>
+  <i aria-hidden="true"></i>
+</aside>
+
+<script is:inline>
+  (() => {
+    const clocks = document.querySelectorAll('[data-hud-clock]');
+    if (!clocks.length) return;
+
+    const pad = (value) => String(value).padStart(2, '0');
+    const tick = () => {
+      const now = new Date();
+      const value = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      clocks.forEach((clock) => {
+        clock.textContent = value;
+      });
+    };
+
+    tick();
+    window.setInterval(tick, 1000);
+  })();
+</script>

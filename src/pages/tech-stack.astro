@@ -1,0 +1,45 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const groups = [
+  {
+    title: 'Frontend',
+    items: ['Astro', 'React', 'TypeScript', 'CSS']
+  },
+  {
+    title: 'Backend',
+    items: ['Node.js', 'APIs', 'Auth', 'Serverless']
+  },
+  {
+    title: 'Workflow',
+    items: ['Git', 'Testing', 'CI', 'Performance']
+  }
+];
+---
+
+<BaseLayout title="Tech Stack" description="Tools, technologies, and workflow strengths.">
+  <section class="page-section">
+    <p class="eyebrow">Tech stack</p>
+    <h1>The tools behind the work.</h1>
+    <p class="lead">
+      Use this page to show practical strengths without turning it into a wall of logos.
+    </p>
+  </section>
+
+  <section class="band">
+    <div class="page-section grid">
+      {
+        groups.map((group) => (
+          <article class="card">
+            <h3>{group.title}</h3>
+            <ul class="tag-list">
+              {group.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,291 @@
+---
+import HologramViewport from './HologramViewport.astro';
+import ScrollDepthMeter from './ScrollDepthMeter.astro';
+import SystemStats from './SystemStats.astro';
+import VisionModeSwitch from './VisionModeSwitch.astro';
+
+const navItems = [
+  {
+    href: '/',
+    section: 'home',
+    label: 'HOME',
+    radarX: 36,
+    radarY: 60,
+    icon: '<path d="M5.5 14.5 12 7.5l6.5 7" /><path d="M8.25 13.75V20h7.5v-6.25" />'
+  },
+  {
+    href: '/about/',
+    section: 'about',
+    label: 'ABOUT',
+    radarX: 45,
+    radarY: 38,
+    icon: '<path d="M12 4.5c2.4 2.5 4.2 5.2 4.2 8.1 0 2.7-1.6 4.8-4.2 6.9-2.6-2.1-4.2-4.2-4.2-6.9 0-2.9 1.8-5.6 4.2-8.1Z" /><path d="M12 13.5v6" />'
+  },
+  {
+    href: '/projects/',
+    section: 'projects',
+    label: 'PROJECTS',
+    radarX: 50,
+    radarY: 50,
+    icon: '<path d="M6 15.5C6 9 12 4.5 12 4.5S18 9 18 15.5" /><path d="M9 16c.75-2.7 3-4.5 3-4.5s2.25 1.8 3 4.5" /><path d="M12 16.5V21" />'
+  },
+  {
+    href: '/blog/',
+    section: 'lab',
+    label: 'LAB',
+    radarX: 62,
+    radarY: 40,
+    icon: '<path d="M12 4.5v15" /><path d="M8 8.5c2.2 1.2 3.2 3.1 4 5.6" /><path d="M16 8.5c-2.2 1.2-3.2 3.1-4 5.6" /><path d="M8.5 16.5h7" />'
+  },
+  {
+    href: '/contact/',
+    section: 'contact',
+    label: 'CONTACT',
+    radarX: 68,
+    radarY: 62,
+    icon: '<path d="M12 4.5v15" /><path d="M8 9.5c1.8 1 3.1 2.2 4 4.6" /><path d="M16 9.5c-1.8 1-3.1 2.2-4 4.6" /><path d="M6.5 17.5c2.8-.4 4.3-1.2 5.5-3.4" /><path d="M17.5 17.5c-2.8-.4-4.3-1.2-5.5-3.4" />'
+  }
+];
+
+const normalizePath = (path: string) => {
+  if (path === '/') return path;
+  return path.endsWith('/') ? path : `${path}/`;
+};
+
+const currentPath = normalizePath(Astro.url.pathname);
+const isActiveNavItem = (href: string) => href === '/' ? currentPath === href : currentPath.startsWith(href);
+const activeNavItem = navItems.find((item) => isActiveNavItem(item.href)) ?? navItems[2];
+const centerNavIndex = Math.floor(navItems.length / 2);
+const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === activeNavItem.section), 0);
+---
+
+<div class="cockpit-shell" data-cockpit-shell data-current-section={activeNavItem.section} data-vision-mode="visible">
+  <div class="space-background" aria-hidden="true"></div>
+  <div class="warp-intro" aria-hidden="true">
+    <span></span>
+    <span></span>
+  </div>
+  <div class="glass-overlay" aria-hidden="true"></div>
+
+  <div class="hud-stage" aria-hidden="true">
+    <div class="hud-projection" data-hud-projection>
+      <picture class="hud-frame" aria-hidden="true">
+        <source media="(max-width: 760px)" srcset="/assets/frameMobile.png" />
+        <img src="/assets/framePC.png" alt="" loading="eager" decoding="async" />
+      </picture>
+    </div>
+  </div>
+
+  <div class="nav-system" data-nav-system>
+    <SystemStats />
+    <VisionModeSwitch />
+    <ScrollDepthMeter />
+
+    <nav class="xeno-navbar" aria-label="Primary navigation" data-xeno-navbar>
+      {
+        navItems.map((item, index) => (
+          <a
+            href={item.href}
+            class={`xeno-nav-button${index === activeNavIndex ? ' is-active' : ''}`}
+            data-xeno-nav-button
+            data-section={item.section}
+            data-route={item.href}
+            data-depth={Math.min(Math.abs(index - centerNavIndex), 2)}
+            aria-current={isActiveNavItem(item.href) ? 'page' : undefined}
+            style={`--button-index: ${index}; --boot-distance: ${Math.abs(index - centerNavIndex)};`}
+          >
+            <svg class="xeno-veins" viewBox="0 0 100 56" preserveAspectRatio="none" aria-hidden="true">
+              <path class="vein vein-a" d="M50 30 C42 25 39 17 30 14 C21 11 18 8 12 4" />
+              <path class="vein vein-b" d="M50 29 C40 32 34 38 25 37 C18 36 14 42 7 47" />
+              <path class="vein vein-c" d="M50 29 C58 24 62 16 70 14 C79 12 84 7 91 5" />
+              <path class="vein vein-d" d="M50 31 C61 34 66 41 76 39 C84 38 88 43 95 49" />
+              <path class="vein vein-e" d="M50 29 C45 20 49 15 43 9 C39 5 35 4 31 2" />
+              <path class="vein vein-f" d="M51 29 C56 21 53 14 59 9 C63 5 68 5 73 2" />
+              <path class="vein vein-g" d="M49 31 C42 35 43 43 36 47 C31 50 27 50 21 54" />
+              <path class="vein vein-h" d="M51 31 C58 36 57 44 64 48 C70 51 75 50 82 54" />
+            </svg>
+
+            <span class="xeno-core">
+              <svg
+                class="xeno-icon"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <Fragment set:html={item.icon} />
+              </svg>
+              <span class="xeno-label">{item.label}</span>
+            </span>
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="portfolio-radar" aria-label={`Portfolio location radar. Current location: ${activeNavItem.label}.`} role="img">
+      <div class="radar-plane" aria-hidden="true">
+        <span class="radar-ring radar-ring--outer"></span>
+        <span class="radar-ring radar-ring--inner radar-ring--one"></span>
+        <span class="radar-ring radar-ring--inner radar-ring--two"></span>
+        <span class="radar-ring radar-ring--inner radar-ring--three"></span>
+        <span class="radar-axis radar-axis--vertical"></span>
+        <span class="radar-axis radar-axis--horizontal"></span>
+        <span class="radar-sweep"></span>
+        {
+          navItems.map((item) => (
+            <span
+              class="radar-dot"
+              data-radar-label={item.label}
+              data-radar-section={item.section}
+              data-active={isActiveNavItem(item.href) ? 'true' : undefined}
+              style={`--radar-x: ${item.radarX}%; --radar-y: ${item.radarY}%;`}
+            />
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <main class="content-viewport" data-content-viewport tabindex="-1">
+    <HologramViewport />
+    <div class="page-slot" hidden>
+      <slot />
+    </div>
+  </main>
+</div>
+
+<script>
+  const shell = document.querySelector<HTMLElement>('[data-cockpit-shell]');
+  const viewport = document.querySelector<HTMLElement>('[data-content-viewport]');
+  const xenoNavButtons = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-xeno-nav-button]'));
+  const sectionPanels = Array.from(document.querySelectorAll<HTMLElement>('[data-section-panel]'));
+  const radarDots = Array.from(document.querySelectorAll<HTMLElement>('[data-radar-section]'));
+  const visionOptions = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-vision-option]'));
+  const scrollDepth = document.querySelector<HTMLElement>('[data-scroll-depth]');
+  const scrollPercent = document.querySelector<HTMLOutputElement>('[data-scroll-percent]');
+
+  const normalizeRoute = (route: string) => {
+    if (route === '/') return route;
+    return route.endsWith('/') ? route : `${route}/`;
+  };
+
+  const setSection = (section: string, route?: string, pushState = true) => {
+    if (!shell || !viewport) return;
+
+    shell.dataset.currentSection = section;
+    viewport.classList.remove('is-switching');
+    window.requestAnimationFrame(() => viewport.classList.add('is-switching'));
+
+    sectionPanels.forEach((panel) => {
+      const isActive = panel.dataset.sectionPanel === section;
+      panel.classList.toggle('is-active', isActive);
+    });
+
+    xenoNavButtons.forEach((button) => {
+      const isActive = button.dataset.section === section;
+      button.classList.toggle('is-active', isActive);
+      if (isActive) {
+        button.setAttribute('aria-current', 'page');
+      } else {
+        button.removeAttribute('aria-current');
+      }
+    });
+
+    radarDots.forEach((dot) => {
+      if (dot.dataset.radarSection === section) {
+        dot.dataset.active = 'true';
+      } else {
+        dot.removeAttribute('data-active');
+      }
+    });
+
+    viewport.scrollTo({ top: 0, behavior: 'smooth' });
+    updateScrollDepth();
+
+    if (route && pushState && normalizeRoute(window.location.pathname) !== normalizeRoute(route)) {
+      window.history.pushState({ section }, '', route);
+    }
+  };
+
+  const setVisionMode = (mode: string) => {
+    if (!shell) return;
+    shell.dataset.visionMode = mode;
+    visionOptions.forEach((option) => {
+      const isActive = option.dataset.visionOption === mode;
+      option.classList.toggle('is-active', isActive);
+      option.setAttribute('aria-pressed', String(isActive));
+    });
+  };
+
+  const updateScrollDepth = () => {
+    if (!viewport || !scrollDepth || !scrollPercent) return;
+    const maxScroll = Math.max(viewport.scrollHeight - viewport.clientHeight, 1);
+    const progress = Math.min(100, Math.max(0, Math.round((viewport.scrollTop / maxScroll) * 100)));
+    scrollDepth.style.setProperty('--scroll-progress', String(progress));
+    scrollPercent.value = `${progress}%`;
+    scrollPercent.textContent = `${progress}%`;
+
+    const activeCount = Math.ceil((progress / 100) * 13);
+    scrollDepth.querySelectorAll<HTMLElement>('.depth-arc i').forEach((segment, index) => {
+      segment.dataset.active = index < activeCount ? 'true' : 'false';
+    });
+  };
+
+  const bootCockpit = () => {
+    if (!shell) return;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion) {
+      shell.classList.add('skip-boot');
+      shell.classList.add('is-booted');
+      shell.classList.add('has-arrived');
+      return;
+    }
+
+    shell.classList.add('is-booting');
+    window.setTimeout(() => {
+      shell.classList.add('has-arrived');
+    }, 900);
+    window.setTimeout(() => {
+      shell.classList.add('is-booted');
+      shell.classList.remove('is-booting');
+    }, 2450);
+  };
+
+  xenoNavButtons.forEach((button) => {
+    button.addEventListener('pointermove', (event) => {
+      const rect = button.getBoundingClientRect();
+      button.style.setProperty('--cursor-x', `${event.clientX - rect.left}px`);
+      button.style.setProperty('--cursor-y', `${event.clientY - rect.top}px`);
+    });
+
+    button.addEventListener('click', (event) => {
+      const section = button.dataset.section;
+      const route = button.dataset.route;
+      if (!section || !route || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      event.preventDefault();
+      setSection(section, route);
+    });
+  });
+
+  visionOptions.forEach((option) => {
+    option.addEventListener('click', () => {
+      setVisionMode(option.dataset.visionOption ?? 'visible');
+    });
+  });
+
+  viewport?.addEventListener('scroll', updateScrollDepth, { passive: true });
+  window.addEventListener('popstate', () => {
+    const matchingButton = xenoNavButtons.find((button) => normalizeRoute(button.dataset.route ?? '') === normalizeRoute(window.location.pathname));
+    setSection(matchingButton?.dataset.section ?? 'home', undefined, false);
+  });
+
+  setSection(shell?.dataset.currentSection ?? 'projects', undefined, false);
+  setVisionMode('visible');
+  updateScrollDepth();
+  bootCockpit();
+</script>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+
+const roles = [
+  {
+    period: '2025 - Present',
+    title: 'Current Role',
+    company: 'Company Name',
+    summary: 'Briefly describe scope, product area, and impact.'
+  },
+  {
+    period: '2023 - 2025',
+    title: 'Previous Role',
+    company: 'Company Name',
+    summary: 'Mention the strongest results, systems, or teams from this period.'
+  },
+  {
+    period: '2021 - 2023',
+    title: 'Earlier Role',
+    company: 'Company Name',
+    summary: 'Keep older experience compact unless it is especially relevant.'
+  }
+];
+---
+
+<BaseLayout title="Experience" description="Professional experience and career timeline.">
+  <section class="page-section">
+    <p class="eyebrow">Experience</p>
+    <h1>Roles, teams, and the work that moved things forward.</h1>
+    <p class="lead">
+      A clean timeline keeps the page easy to scan while leaving room for specific wins.
+    </p>
+  </section>
+
+  <section class="band">
+    <div class="page-section timeline">
+      {
+        roles.map((role) => (
+          <article class="timeline-item">
+            <time>{role.period}</time>
+            <div>
+              <h3>{role.title} · {role.company}</h3>
+              <p>{role.summary}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

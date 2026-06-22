@@ -1,0 +1,58 @@
+---
+const sections = [
+  {
+    id: 'home',
+    eyebrow: 'HOME SIGNAL',
+    title: 'Cockpit interface initialized.',
+    copy: 'A persistent alien computer surface for portfolio data, navigation, and contact telemetry.',
+    rows: ['CANOPY GLASS: STABLE', 'NAV CORE: LINKED', 'DISPLAY MODE: VISIBLE']
+  },
+  {
+    id: 'about',
+    eyebrow: 'BIO SCAN',
+    title: 'Operator profile suspended in glass.',
+    copy: 'Background, taste, working style, and the problems worth solving live here as compact signal packets.',
+    rows: ['IDENTITY TRACE: CLEAN', 'WORK STYLE: COLLABORATIVE', 'FOCUS: PRODUCT SYSTEMS']
+  },
+  {
+    id: 'projects',
+    eyebrow: 'PROJECT ARCHIVE',
+    title: 'Selected builds ready for inspection.',
+    copy: 'Case studies, experiments, and shipped interfaces appear as holographic records inside the cockpit display.',
+    rows: ['ARCHIVE COUNT: 03', 'CASE STUDIES: READY', 'PROTOTYPES: ACTIVE']
+  },
+  {
+    id: 'lab',
+    eyebrow: 'ALIEN LAB',
+    title: 'Experiments and research held in low orbit.',
+    copy: 'Notes, prototypes, UI studies, and weird technical fragments route through this lab channel.',
+    rows: ['FIELD NOTES: OPEN', 'SIGNAL TESTS: RUNNING', 'SPECIMENS: CONTAINED']
+  },
+  {
+    id: 'contact',
+    eyebrow: 'COMMS ARRAY',
+    title: 'Transmission channel available.',
+    copy: 'Use this section for contact details, collaboration prompts, and external network coordinates.',
+    rows: ['COMMS: AVAILABLE', 'RESPONSE WINDOW: OPEN', 'HANDSHAKE: PENDING']
+  }
+];
+---
+
+<section class="hologram-system hud-boot-item" data-hologram-system data-boot-order="6" aria-live="polite">
+  {
+    sections.map((section) => (
+      <article class={`hologram-section${section.id === 'projects' ? ' is-active' : ''}`} data-section-panel={section.id}>
+        <span class="holo-corner holo-corner--tl" aria-hidden="true"></span>
+        <span class="holo-corner holo-corner--br" aria-hidden="true"></span>
+        <p class="holo-eyebrow">{section.eyebrow}</p>
+        <h1>{section.title}</h1>
+        <p>{section.copy}</p>
+        <div class="holo-rows">
+          {section.rows.map((row) => (
+            <span>{row}</span>
+          ))}
+        </div>
+      </article>
+    ))
+  }
+</section>

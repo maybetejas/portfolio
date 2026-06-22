@@ -1,0 +1,51 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+---
+
+<BaseLayout title="Blog" description="Markdown blog posts and notes.">
+  <section class="page-section">
+    <p class="eyebrow">Blog</p>
+    <h1>Notes and essays.</h1>
+    <p class="lead">Future posts will live here as Markdown files.</p>
+  </section>
+
+  <section class="band">
+    <div class="page-section">
+      {
+        posts.length > 0 ? (
+          <div class="grid">
+            {posts.map((post) => (
+              <article class="card">
+                <p class="meta">
+                  {post.data.publishDate.toLocaleDateString('en', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                  })}
+                </p>
+                <h3>
+                  <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+                </h3>
+                <p>{post.data.description}</p>
+                {post.data.tags.length > 0 && (
+                  <ul class="tag-list">
+                    {post.data.tags.map((tag) => (
+                      <li>{tag}</li>
+                    ))}
+                  </ul>
+                )}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <p class="empty-state">No published posts yet. Add Markdown files in src/content/blog.</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
