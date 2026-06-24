@@ -1,18 +1,9 @@
 ---
-import HologramViewport from './HologramViewport.astro';
 import ScrollDepthMeter from './ScrollDepthMeter.astro';
 import SystemStats from './SystemStats.astro';
 import VisionModeSwitch from './VisionModeSwitch.astro';
 
 const navItems = [
-  {
-    href: '/',
-    section: 'home',
-    label: 'HOME',
-    radarX: 36,
-    radarY: 60,
-    icon: '<path d="M5.5 14.5 12 7.5l6.5 7" /><path d="M8.25 13.75V20h7.5v-6.25" />'
-  },
   {
     href: '/about/',
     section: 'about',
@@ -28,6 +19,14 @@ const navItems = [
     radarX: 50,
     radarY: 50,
     icon: '<path d="M6 15.5C6 9 12 4.5 12 4.5S18 9 18 15.5" /><path d="M9 16c.75-2.7 3-4.5 3-4.5s2.25 1.8 3 4.5" /><path d="M12 16.5V21" />'
+  },
+  {
+    href: '/',
+    section: 'home',
+    label: 'HOME',
+    radarX: 36,
+    radarY: 60,
+    icon: '<path d="M5.5 14.5 12 7.5l6.5 7" /><path d="M8.25 13.75V20h7.5v-6.25" />'
   },
   {
     href: '/blog/',
@@ -59,8 +58,17 @@ const centerNavIndex = Math.floor(navItems.length / 2);
 const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === activeNavItem.section), 0);
 ---
 
-<div class="cockpit-shell" data-cockpit-shell data-current-section={activeNavItem.section} data-vision-mode="visible" data-phase="jump">
-  <div class="space-background" aria-hidden="true"></div>
+<div class="cockpit-shell" data-cockpit-shell data-current-section={activeNavItem.section} data-vision-mode="visible" data-hud-visibility="visible" data-phase="jump" data-reveal-phase="dark">
+  <div class="space-background" aria-hidden="true">
+    <span class="space-layer starfield starfield--distant"></span>
+    <span class="space-layer starfield starfield--mid"></span>
+    <span class="space-layer starfield starfield--near"></span>
+    <span class="space-layer dust-field"></span>
+    <span class="space-layer nebula-field"></span>
+    <span class="space-layer sensor-field sensor-field--uv"></span>
+    <span class="space-layer sensor-field sensor-field--ir"></span>
+    <span class="space-layer sensor-sweep"></span>
+  </div>
   <div class="warp-intro" aria-hidden="true">
     <canvas class="hyperspace-canvas" data-hyperspace-canvas></canvas>
   </div>
@@ -124,7 +132,20 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       }
     </nav>
 
-    <div class="portfolio-radar hud-boot-item" data-boot-order="3" aria-label={`Portfolio location radar. Current location: ${activeNavItem.label}.`} role="img">
+    <aside class="travel-widget hud-boot-item" data-travel-widget data-expanded="false" data-boot-order="3" aria-label="Travel destinations">
+      <span class="stats-corner stats-corner--tl" aria-hidden="true"><i></i></span>
+      <span class="stats-corner stats-corner--tr" aria-hidden="true"><i></i></span>
+      <span class="stats-corner stats-corner--bl" aria-hidden="true"><i></i></span>
+      <span class="stats-corner stats-corner--br" aria-hidden="true"><i></i></span>
+      <span class="stats-opener" aria-hidden="true"></span>
+      <button class="travel-toggle" type="button" data-travel-toggle aria-expanded="false">TRAVEL</button>
+      <div class="travel-panel" aria-hidden="true">
+        <span>NEW LOCATIONS</span>
+        <strong>COMING SOON</strong>
+      </div>
+    </aside>
+
+    <div class="portfolio-radar hud-boot-item" data-boot-order="4" aria-label="Active scanner tracking nearby space signals." role="img">
       <div class="radar-plane" aria-hidden="true">
         <span class="radar-ring radar-ring--outer"></span>
         <span class="radar-ring radar-ring--inner radar-ring--one"></span>
@@ -133,23 +154,17 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         <span class="radar-axis radar-axis--vertical"></span>
         <span class="radar-axis radar-axis--horizontal"></span>
         <span class="radar-sweep"></span>
-        {
-          navItems.map((item) => (
-            <span
-              class="radar-dot"
-              data-radar-label={item.label}
-              data-radar-section={item.section}
-              data-active={isActiveNavItem(item.href) ? 'true' : undefined}
-              style={`--radar-x: ${item.radarX}%; --radar-y: ${item.radarY}%;`}
-            />
-          ))
-        }
+        <span class="radar-dot radar-dot--ship" data-active="true" style="--radar-x: 50%; --radar-y: 50%; --blink-delay: 0ms;"></span>
+        <span class="radar-dot radar-dot--signal" style="--radar-x: 31%; --radar-y: 38%; --blink-delay: 140ms;"></span>
+        <span class="radar-dot radar-dot--signal" style="--radar-x: 68%; --radar-y: 32%; --blink-delay: 620ms;"></span>
+        <span class="radar-dot radar-dot--signal" style="--radar-x: 73%; --radar-y: 56%; --blink-delay: 1080ms;"></span>
+        <span class="radar-dot radar-dot--signal" style="--radar-x: 41%; --radar-y: 73%; --blink-delay: 1560ms;"></span>
+        <span class="radar-dot radar-dot--signal" style="--radar-x: 24%; --radar-y: 62%; --blink-delay: 2040ms;"></span>
       </div>
     </div>
   </div>
 
   <main class="content-viewport" data-content-viewport tabindex="-1">
-    <HologramViewport />
     <div class="page-slot" hidden>
       <slot />
     </div>
@@ -161,13 +176,26 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const viewport = document.querySelector<HTMLElement>('[data-content-viewport]');
   const xenoNavButtons = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-xeno-nav-button]'));
   const sectionPanels = Array.from(document.querySelectorAll<HTMLElement>('[data-section-panel]'));
-  const radarDots = Array.from(document.querySelectorAll<HTMLElement>('[data-radar-section]'));
   const visionOptions = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-vision-option]'));
+  const visionSwitch = document.querySelector<HTMLElement>('.vision-switch');
+  const spectrumToggle = document.querySelector<HTMLButtonElement>('[data-spectrum-toggle]');
+  const spectrumLabel = document.querySelector<HTMLElement>('[data-spectrum-label]');
+  const hudToggle = document.querySelector<HTMLButtonElement>('[data-hud-toggle]');
+  const hudToggleLabel = document.querySelector<HTMLElement>('[data-hud-toggle-label]');
+  const travelWidget = document.querySelector<HTMLElement>('[data-travel-widget]');
+  const travelToggle = document.querySelector<HTMLButtonElement>('[data-travel-toggle]');
   const scrollDepth = document.querySelector<HTMLElement>('[data-scroll-depth]');
   const scrollPercent = document.querySelector<HTMLOutputElement>('[data-scroll-percent]');
   const warpIntro = document.querySelector<HTMLElement>('.warp-intro');
   const hyperspaceCanvas = document.querySelector<HTMLCanvasElement>('[data-hyperspace-canvas]');
-  let currentPhase: 'jump' | 'arrived' | 'boot' | 'ready' = 'jump';
+  type CockpitPhase = 'jump' | 'arrived' | 'boot' | 'ready';
+  type RevealPhase = 'dark' | 'wake' | 'awake' | 'charge' | 'settled';
+  type VisionMode = 'visible' | 'uv' | 'ir';
+  let currentPhase: CockpitPhase = 'jump';
+  let currentVisionMode: VisionMode = 'visible';
+  let visionModeTimers: number[] = [];
+  let spectrumCollapseTimer = 0;
+  let travelCollapseTimer = 0;
 
   const createXenoAudio = () => {
     let context: AudioContext | null = null;
@@ -177,6 +205,11 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     let warpPlaying = false;
     let noiseBuffer: AudioBuffer | null = null;
     let idlePulseTimer: number | null = null;
+    const touchAudioTarget = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+    const masterVolume = touchAudioTarget ? 0.82 : 0.68;
+    const effectBoost = touchAudioTarget ? 2.25 : 1.8;
+    const idleBoost = touchAudioTarget ? 1.7 : 1.4;
+    const boostGain = (gainValue: number, multiplier = effectBoost) => Math.min(gainValue * multiplier, 0.28);
 
     const getContext = () => {
       if (context) return context;
@@ -186,8 +219,15 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
       context = new AudioContextConstructor();
       master = context.createGain();
-      master.gain.value = 0.32;
-      master.connect(context.destination);
+      const limiter = context.createDynamicsCompressor();
+      master.gain.value = masterVolume;
+      limiter.threshold.value = -12;
+      limiter.knee.value = 16;
+      limiter.ratio.value = 5;
+      limiter.attack.value = 0.004;
+      limiter.release.value = 0.18;
+      master.connect(limiter);
+      limiter.connect(context.destination);
       return context;
     };
 
@@ -212,95 +252,118 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       return Boolean(audioContext && master && audioContext.state === 'running');
     };
 
+    const playWhenReady = (callback: () => void) => {
+      const audioContext = getContext();
+      if (!audioContext || !master) return;
+
+      if (audioContext.state === 'running') {
+        callback();
+        return;
+      }
+
+      void audioContext.resume().then(() => {
+        if (audioContext.state === 'running') callback();
+      }).catch(() => {});
+    };
+
     const playTone = (frequency: number, duration: number, gainValue: number, type: OscillatorType = 'sine', detune = 0) => {
-      if (!isReady() || !context || !master) return;
+      playWhenReady(() => {
+        if (!context || !master) return;
 
-      const now = context.currentTime;
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      const filter = context.createBiquadFilter();
+        const now = context.currentTime;
+        const outputGain = boostGain(gainValue);
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        const filter = context.createBiquadFilter();
 
-      oscillator.type = type;
-      oscillator.frequency.setValueAtTime(frequency, now);
-      oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, frequency * 0.62), now + duration);
-      oscillator.detune.value = detune;
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(frequency * 2.4, now);
-      filter.frequency.exponentialRampToValueAtTime(Math.max(80, frequency * 0.7), now + duration);
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.018);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, now);
+        oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, frequency * 0.62), now + duration);
+        oscillator.detune.value = detune;
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(frequency * 2.4, now);
+        filter.frequency.exponentialRampToValueAtTime(Math.max(80, frequency * 0.7), now + duration);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(outputGain, now + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-      oscillator.connect(filter);
-      filter.connect(gain);
-      gain.connect(master);
-      oscillator.start(now);
-      oscillator.stop(now + duration + 0.04);
+        oscillator.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+        oscillator.start(now);
+        oscillator.stop(now + duration + 0.04);
+      });
     };
 
     const playNoise = (duration: number, gainValue: number, frequency: number) => {
-      if (!isReady() || !context || !master) return;
+      playWhenReady(() => {
+        if (!context || !master) return;
 
-      const now = context.currentTime;
-      const source = context.createBufferSource();
-      const gain = context.createGain();
-      const filter = context.createBiquadFilter();
+        const now = context.currentTime;
+        const outputGain = boostGain(gainValue);
+        const source = context.createBufferSource();
+        const gain = context.createGain();
+        const filter = context.createBiquadFilter();
 
-      source.buffer = getNoise(context);
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(frequency, now);
-      filter.Q.value = 0.72;
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.024);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        source.buffer = getNoise(context);
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(touchAudioTarget ? Math.max(frequency, 520) : frequency, now);
+        filter.Q.value = 0.72;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(outputGain, now + 0.024);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-      source.connect(filter);
-      filter.connect(gain);
-      gain.connect(master);
-      source.start(now);
-      source.stop(now + duration + 0.05);
+        source.connect(filter);
+        filter.connect(gain);
+        gain.connect(master);
+        source.start(now);
+        source.stop(now + duration + 0.05);
+      });
     };
 
     const playRasp = (duration: number, gainValue: number, frequency: number) => {
-      if (!isReady() || !context || !master) return;
+      playWhenReady(() => {
+        if (!context || !master) return;
 
-      const now = context.currentTime;
-      const throat = context.createOscillator();
-      const saliva = context.createBufferSource();
-      const lfo = context.createOscillator();
-      const lfoGain = context.createGain();
-      const filter = context.createBiquadFilter();
-      const gain = context.createGain();
+        const now = context.currentTime;
+        const outputGain = boostGain(gainValue);
+        const throat = context.createOscillator();
+        const saliva = context.createBufferSource();
+        const lfo = context.createOscillator();
+        const lfoGain = context.createGain();
+        const filter = context.createBiquadFilter();
+        const gain = context.createGain();
 
-      throat.type = 'sawtooth';
-      throat.frequency.setValueAtTime(frequency * 0.74, now);
-      throat.frequency.exponentialRampToValueAtTime(Math.max(24, frequency * 1.16), now + duration * 0.42);
-      throat.frequency.exponentialRampToValueAtTime(Math.max(18, frequency * 0.48), now + duration);
-      saliva.buffer = getNoise(context);
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(frequency * 5.8, now);
-      filter.frequency.exponentialRampToValueAtTime(Math.max(120, frequency * 2.1), now + duration);
-      filter.Q.value = 2.2;
-      lfo.type = 'triangle';
-      lfo.frequency.value = 18 + Math.random() * 17;
-      lfoGain.gain.value = frequency * 1.15;
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(gainValue, now + 0.025);
-      gain.gain.setValueAtTime(gainValue * 0.78, now + duration * 0.55);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+        throat.type = 'sawtooth';
+        throat.frequency.setValueAtTime(frequency * 0.74, now);
+        throat.frequency.exponentialRampToValueAtTime(Math.max(24, frequency * 1.16), now + duration * 0.42);
+        throat.frequency.exponentialRampToValueAtTime(Math.max(18, frequency * 0.48), now + duration);
+        saliva.buffer = getNoise(context);
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(touchAudioTarget ? Math.max(frequency * 5.8, 620) : frequency * 5.8, now);
+        filter.frequency.exponentialRampToValueAtTime(Math.max(touchAudioTarget ? 280 : 120, frequency * 2.1), now + duration);
+        filter.Q.value = 2.2;
+        lfo.type = 'triangle';
+        lfo.frequency.value = 18 + Math.random() * 17;
+        lfoGain.gain.value = frequency * 1.15;
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(outputGain, now + 0.025);
+        gain.gain.setValueAtTime(outputGain * 0.78, now + duration * 0.55);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
-      throat.connect(filter);
-      saliva.connect(filter);
-      lfo.connect(lfoGain);
-      lfoGain.connect(filter.frequency);
-      filter.connect(gain);
-      gain.connect(master);
-      throat.start(now);
-      saliva.start(now);
-      lfo.start(now);
-      throat.stop(now + duration + 0.06);
-      saliva.stop(now + duration + 0.06);
-      lfo.stop(now + duration + 0.06);
+        throat.connect(filter);
+        saliva.connect(filter);
+        lfo.connect(lfoGain);
+        lfoGain.connect(filter.frequency);
+        filter.connect(gain);
+        gain.connect(master);
+        throat.start(now);
+        saliva.start(now);
+        lfo.start(now);
+        throat.stop(now + duration + 0.06);
+        saliva.stop(now + duration + 0.06);
+        lfo.stop(now + duration + 0.06);
+      });
     };
 
     const playChitter = (baseFrequency: number, gainValue: number) => {
@@ -318,7 +381,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
       idleStarted = true;
       idleGain = context.createGain();
-      idleGain.gain.value = 0.042;
+      idleGain.gain.value = 0.042 * idleBoost;
       idleGain.connect(master);
 
       [26, 39, 53].forEach((frequency, index) => {
@@ -331,7 +394,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         oscillator.detune.value = index * 13 - 16;
         filter.type = 'lowpass';
         filter.frequency.value = 145 + index * 72;
-        gain.gain.value = 0.26 - index * 0.045;
+        gain.gain.value = (0.26 - index * 0.045) * idleBoost;
 
         oscillator.connect(filter);
         filter.connect(gain);
@@ -348,7 +411,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       breathFilter.type = 'bandpass';
       breathFilter.frequency.value = 310;
       breathFilter.Q.value = 1.15;
-      breathGain.gain.value = 0.072;
+      breathGain.gain.value = 0.072 * idleBoost;
       breathSource.connect(breathFilter);
       breathFilter.connect(breathGain);
       breathGain.connect(idleGain);
@@ -376,6 +439,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     };
 
     return {
+      isRunning: () => isReady(),
       unlock: async (forceFresh = false) => {
         if (forceFresh && context && context.state !== 'running') {
           const staleContext = context;
@@ -490,7 +554,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const audioUnlockOptions = { capture: true, passive: true };
 
   const unlockXenoAudio = (event?: Event) => {
-    if (xenoAudioUnlocked) return;
+    if (xenoAudioUnlocked && xenoAudio.isRunning()) return;
 
     const fromGesture = Boolean(event?.isTrusted);
     const now = performance.now();
@@ -503,9 +567,6 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       if (!unlocked) return;
 
       xenoAudioUnlocked = true;
-      audioUnlockEvents.forEach((eventName) => {
-        window.removeEventListener(eventName, unlockXenoAudio, { capture: true });
-      });
 
       if (unlocked && currentPhase === 'jump') {
         xenoAudio.warp();
@@ -552,34 +613,83 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       }
     });
 
-    radarDots.forEach((dot) => {
-      if (dot.dataset.radarSection === section) {
-        dot.dataset.active = 'true';
-      } else {
-        dot.removeAttribute('data-active');
-      }
-    });
-
     if (route && pushState && normalizeRoute(window.location.pathname) !== normalizeRoute(route)) {
       window.history.pushState({ section }, '', route);
     }
   };
 
-  const setVisionMode = (mode: string) => {
-    if (!shell) return;
-    shell.dataset.visionMode = mode;
+  const setActiveVisionOption = (mode: VisionMode) => {
     visionOptions.forEach((option) => {
       const isActive = option.dataset.visionOption === mode;
       option.classList.toggle('is-active', isActive);
       option.setAttribute('aria-pressed', String(isActive));
+      option.removeAttribute('data-sensor-pending');
     });
+
+    if (spectrumLabel) spectrumLabel.textContent = mode.toUpperCase();
+  };
+
+  const applyVisionMode = (mode: VisionMode) => {
+    if (!shell) return;
+    currentVisionMode = mode;
+    shell.dataset.visionMode = mode;
+    setActiveVisionOption(mode);
+  };
+
+  const setVisionMode = (mode: string, immediate = false) => {
+    if (!shell) return;
+    const nextMode = (['visible', 'uv', 'ir'].includes(mode) ? mode : 'visible') as VisionMode;
+
+    visionModeTimers.forEach((timer) => window.clearTimeout(timer));
+    visionModeTimers = [];
+
+    if (immediate) {
+      shell.dataset.sensorPhase = 'online';
+      applyVisionMode(nextMode);
+      return;
+    }
+
+    if (nextMode === currentVisionMode) return;
+
+    visionOptions.forEach((option) => {
+      const isPending = option.dataset.visionOption === nextMode;
+      option.toggleAttribute('data-sensor-pending', isPending);
+    });
+
+    shell.dataset.sensorPhase = 'down';
+    visionModeTimers.push(window.setTimeout(() => {
+      shell.dataset.sensorPhase = 'scan';
+    }, 90));
+    visionModeTimers.push(window.setTimeout(() => {
+      applyVisionMode(nextMode);
+      shell.dataset.sensorPhase = 'activate';
+    }, 240));
+    visionModeTimers.push(window.setTimeout(() => {
+      shell.dataset.sensorPhase = 'online';
+    }, 460));
+  };
+
+  const setHudHidden = (hidden: boolean) => {
+    if (!shell || !hudToggle) return;
+
+    shell.dataset.hudVisibility = hidden ? 'hidden' : 'visible';
+    hudToggle.setAttribute('aria-pressed', String(hidden));
+    hudToggle.setAttribute('aria-label', hidden ? 'Show HUD' : 'Hide HUD');
+    if (hudToggleLabel) hudToggleLabel.textContent = hidden ? 'SHOW HUD' : 'HIDE HUD';
   };
 
   const updateScrollDepth = () => {
     if (!viewport || !scrollDepth || !scrollPercent) return;
     const maxScroll = Math.max(viewport.scrollHeight - viewport.clientHeight, 1);
     const progress = Math.min(100, Math.max(0, Math.round((viewport.scrollTop / maxScroll) * 100)));
+    const scrollDepthHeight = scrollDepth.getBoundingClientRect().height;
+    const trackTop = window.matchMedia('(max-width: 760px)').matches ? 0 : 40;
+    const trackBottom = window.matchMedia('(max-width: 760px)').matches ? 0 : 24;
+    const trackHeight = Math.max(scrollDepthHeight - trackTop - trackBottom, 1);
+    const pointerTop = trackTop + trackHeight * (1 - progress / 100);
     scrollDepth.style.setProperty('--scroll-progress', String(progress));
+    scrollDepth.style.setProperty('--scroll-progress-percent', `${progress}%`);
+    scrollDepth.style.setProperty('--scroll-pointer-top', `${pointerTop}px`);
     scrollPercent.value = `${progress}%`;
     scrollPercent.textContent = `${progress}%`;
 
@@ -587,9 +697,14 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     scrollDepth.querySelectorAll<HTMLElement>('.depth-arc i').forEach((segment, index) => {
       segment.dataset.active = index < activeCount ? 'true' : 'false';
     });
+
+    scrollDepth.querySelectorAll<HTMLElement>('[data-depth-mark]').forEach((mark) => {
+      const threshold = Number(mark.dataset.depthMark ?? 0);
+      mark.dataset.active = progress >= threshold ? 'true' : 'false';
+    });
   };
 
-  const setPhase = (phase: 'jump' | 'arrived' | 'boot' | 'ready') => {
+  const setPhase = (phase: CockpitPhase) => {
     if (!shell) return;
     const phaseChanged = currentPhase !== phase;
     currentPhase = phase;
@@ -608,6 +723,11 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     } else if (phase === 'ready') {
       xenoAudio.ready();
     }
+  };
+
+  const setRevealPhase = (phase: RevealPhase) => {
+    if (!shell) return;
+    shell.dataset.revealPhase = phase;
   };
 
   const runHyperspaceJump = () => {
@@ -700,15 +820,40 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
     const resetCalmStar = (star: (typeof calmStars)[number]) => {
       const angle = Math.random() * Math.PI * 2;
-      const radius = Math.random() * Math.min(width, height) * 0.22;
-      star.x = centerX + Math.cos(angle) * radius;
-      star.y = centerY + Math.sin(angle) * radius;
+      const horizontalEdge = Math.random() > 0.5;
+      const edgeOffset = 8 + Math.random() * 18;
+      star.x = horizontalEdge ? Math.random() * width : (Math.cos(angle) > 0 ? -edgeOffset : width + edgeOffset);
+      star.y = horizontalEdge ? (Math.sin(angle) > 0 ? -edgeOffset : height + edgeOffset) : Math.random() * height;
       star.alpha = 0.18 + Math.random() * 0.48;
       star.size = Math.random() < 0.84 ? 1 : 1.35;
       star.speed = 3 + Math.random() * 10;
       star.driftX = (Math.random() - 0.5) * 1.4;
       star.driftY = (Math.random() - 0.5) * 1.4;
       star.twinkle = Math.random() * Math.PI * 2;
+    };
+
+    const syncCalmStarsFromJump = () => {
+      const projectedStars = stars
+        .map((star) => project(star))
+        .filter((star) => star.x >= 0 && star.x <= width && star.y >= 0 && star.y <= height);
+
+      calmStars.forEach((star, index) => {
+        const source = projectedStars[index % Math.max(projectedStars.length, 1)];
+
+        if (source) {
+          star.x = source.x;
+          star.y = source.y;
+        } else {
+          resetCalmStar(star);
+        }
+
+        star.alpha = 0.22 + Math.random() * 0.44;
+        star.size = Math.random() < 0.86 ? 1 : 1.32;
+        star.speed = 1.5 + Math.random() * 4.2;
+        star.driftX = (Math.random() - 0.5) * 0.7;
+        star.driftY = (Math.random() - 0.5) * 0.7;
+        star.twinkle = Math.random() * Math.PI * 2;
+      });
     };
 
     const renderCalmSpace = (time = performance.now(), shouldMove = false) => {
@@ -746,6 +891,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     const startCalmSpace = () => {
       if (calmStarted) return;
       calmStarted = true;
+      syncCalmStarsFromJump();
       lastCalmTime = performance.now();
 
       const drift = (time: number) => {
@@ -826,17 +972,32 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       return;
     }
 
+    const jumpDuration = 3200;
+    const arrivedHold = 500;
+    const bootDuration = 900;
+
     setPhase('jump');
+    setRevealPhase('dark');
     runHyperspaceJump();
     window.setTimeout(() => {
+      setRevealPhase('wake');
+    }, 30);
+    window.setTimeout(() => {
+      setRevealPhase('awake');
+    }, 120);
+    window.setTimeout(() => {
+      setRevealPhase('charge');
+    }, 260);
+    window.setTimeout(() => {
+      setRevealPhase('settled');
       setPhase('arrived');
-    }, 3200);
+    }, jumpDuration);
     window.setTimeout(() => {
       setPhase('boot');
-    }, 3700);
+    }, jumpDuration + arrivedHold);
     window.setTimeout(() => {
       setPhase('ready');
-    }, 4600);
+    }, jumpDuration + arrivedHold + bootDuration);
   };
 
   xenoNavButtons.forEach((button) => {
@@ -869,7 +1030,54 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     option.addEventListener('click', () => {
       xenoAudio.vision();
       setVisionMode(option.dataset.visionOption ?? 'visible');
+      window.clearTimeout(spectrumCollapseTimer);
+      visionSwitch?.removeAttribute('data-expanded');
+      spectrumToggle?.setAttribute('aria-expanded', 'false');
     });
+  });
+
+  spectrumToggle?.addEventListener('click', () => {
+    const isExpanded = visionSwitch?.dataset.expanded === 'true';
+    window.clearTimeout(spectrumCollapseTimer);
+    visionSwitch?.toggleAttribute('data-expanded', !isExpanded);
+    if (visionSwitch) visionSwitch.dataset.expanded = String(!isExpanded);
+    spectrumToggle.setAttribute('aria-expanded', String(!isExpanded));
+    xenoAudio.uiSelect();
+
+    if (!isExpanded) {
+      spectrumCollapseTimer = window.setTimeout(() => {
+        visionSwitch?.removeAttribute('data-expanded');
+        spectrumToggle.setAttribute('aria-expanded', 'false');
+      }, 2000);
+    }
+  });
+
+  hudToggle?.addEventListener('pointerenter', () => {
+    xenoAudio.uiHover();
+  });
+
+  hudToggle?.addEventListener('click', () => {
+    const isHidden = shell?.dataset.hudVisibility === 'hidden';
+    xenoAudio.uiSelect();
+    setHudHidden(!isHidden);
+  });
+
+  travelToggle?.addEventListener('pointerenter', () => {
+    xenoAudio.uiHover();
+  });
+
+  travelToggle?.addEventListener('click', () => {
+    if (!travelWidget || !travelToggle) return;
+
+    window.clearTimeout(travelCollapseTimer);
+    travelWidget.dataset.expanded = 'true';
+    travelToggle.setAttribute('aria-expanded', 'true');
+    xenoAudio.uiSelect();
+
+    travelCollapseTimer = window.setTimeout(() => {
+      travelWidget.dataset.expanded = 'false';
+      travelToggle.setAttribute('aria-expanded', 'false');
+    }, 2000);
   });
 
   viewport?.addEventListener('scroll', updateScrollDepth, { passive: true });
@@ -879,7 +1087,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   });
 
   setSection(shell?.dataset.currentSection ?? 'projects', undefined, false);
-  setVisionMode('visible');
+  setVisionMode('visible', true);
+  setHudHidden(false);
   updateScrollDepth();
   bootCockpit();
 </script>

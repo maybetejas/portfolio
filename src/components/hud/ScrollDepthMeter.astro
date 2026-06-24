@@ -4,14 +4,16 @@
     <span>DEPTH</span>
   </div>
   <div class="depth-arc" aria-hidden="true">
-    {Array.from({ length: 13 }).map((_, index) => <i style={`--seg: ${index};`} />)}
+    {Array.from({ length: 13 }).map((_, index) => <i style={`--seg: ${index}; --seg-pos: ${(index / 12) * 100}%;`} />)}
     <span class="depth-pointer"></span>
   </div>
   <output class="depth-percent" data-scroll-percent>0%</output>
   <div class="depth-marks" aria-hidden="true">
-    <span>100%</span>
-    <span>50%</span>
-    <span>0%</span>
+    <span data-depth-mark="100">100%</span>
+    <span data-depth-mark="75">75%</span>
+    <span data-depth-mark="50">50%</span>
+    <span data-depth-mark="25">25%</span>
+    <span data-depth-mark="0">0%</span>
   </div>
   <p>STATUS<br />IN PROGRESS</p>
 </aside>
