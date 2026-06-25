@@ -42,6 +42,24 @@ select {
 }
 
 .cockpit-shell {
+  --space-background: #010205;
+  --space-background-deep: #000103;
+  --star-color: 216, 226, 236;
+  --star-warm-color: 232, 225, 211;
+  --star-cool-color: 178, 202, 226;
+  --star-hot-color: 255, 244, 219;
+  --star-amber-color: 255, 185, 91;
+  --star-red-color: 255, 112, 76;
+  --star-blue-color: 132, 180, 255;
+  --star-white-color: 246, 250, 255;
+  --uv-core-color: 117, 232, 255;
+  --uv-secondary-color: 164, 101, 255;
+  --uv-jet-color: 86, 231, 255;
+  --uv-knot-color: 158, 92, 255;
+  --uv-star-density-opacity: 0;
+  --glass-shadow: rgb(0 0 0 / 0.88);
+  --hull-shadow: rgb(0 0 0 / 0.96);
+
   position: fixed;
   inset: 0;
   overflow: hidden;
@@ -51,6 +69,40 @@ select {
     var(--black);
   perspective: 1450px;
   transform-style: preserve-3d;
+}
+
+.cockpit-shell[data-vision-mode="uv"] {
+  --space-background: #010107;
+  --space-background-deep: #000005;
+  --star-color: 143, 176, 255;
+  --star-warm-color: 174, 104, 255;
+  --star-cool-color: 60, 125, 255;
+  --star-hot-color: 226, 245, 255;
+  --star-amber-color: 91, 255, 208;
+  --star-red-color: 214, 72, 255;
+  --star-blue-color: 45, 107, 255;
+  --star-white-color: 235, 248, 255;
+  --uv-core-color: 74, 218, 255;
+  --uv-secondary-color: 170, 70, 255;
+  --uv-jet-color: 76, 247, 255;
+  --uv-knot-color: 186, 90, 255;
+  --uv-star-density-opacity: 0.92;
+}
+
+.cockpit-shell[data-vision-mode="ir"] {
+  --space-background: #050100;
+  --space-background-deep: #020000;
+  --star-color: 255, 206, 166;
+  --star-warm-color: 255, 232, 196;
+  --star-cool-color: 221, 127, 103;
+  --star-hot-color: 255, 180, 86;
+  --star-amber-color: 255, 151, 54;
+  --star-red-color: 255, 72, 46;
+  --star-blue-color: 225, 88, 68;
+  --star-white-color: 255, 214, 172;
+  --uv-jet-color: 255, 98, 48;
+  --uv-knot-color: 255, 50, 34;
+  --uv-star-density-opacity: 0;
 }
 
 .space-background,
@@ -67,10 +119,14 @@ select {
   z-index: 2;
   opacity: 1;
   overflow: hidden;
-  background: transparent;
+  background: linear-gradient(135deg, var(--space-background) 0%, var(--space-background-deep) 52%, #000000 100%);
   filter: none;
   transform: translateY(-8vh) scale(1.08);
   transform-origin: center top;
+  transition:
+    opacity 920ms ease,
+    filter 920ms ease,
+    background 920ms ease;
 }
 
 .space-background::before,
@@ -83,6 +139,7 @@ select {
 }
 
 .space-background::before {
+  display: none;
   opacity: 0.14;
   background:
     radial-gradient(ellipse at 66% 26%, rgb(38 150 190 / 0.06), transparent 26%),
@@ -196,6 +253,226 @@ select {
   opacity: 0;
   background: linear-gradient(90deg, transparent, rgb(160 245 255 / 0.18), transparent);
   transform: translateX(-120%);
+}
+
+.spectrum-space-layer {
+  position: absolute;
+  inset: -3vmax;
+  pointer-events: none;
+  transform: translate3d(calc(var(--px, 0) * 1px), calc(var(--py, 0) * 1px), 0);
+  will-change: transform;
+  contain: layout paint style;
+}
+
+.spectrum-stars--tiny {
+  z-index: 2;
+}
+
+.spectrum-stars--large {
+  z-index: 3;
+}
+
+.spectrum-stars--uv {
+  z-index: 3;
+  visibility: hidden;
+  opacity: var(--uv-star-density-opacity);
+}
+
+.cockpit-shell[data-vision-mode="uv"] .spectrum-stars--uv {
+  visibility: visible;
+}
+
+.spectrum-star-field {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+}
+
+.spectrum-stars--tiny .spectrum-star-field {
+  animation: spectrumTinyFieldDrift 78s ease-in-out infinite alternate;
+}
+
+.spectrum-stars--large .spectrum-star-field {
+  animation: spectrumLargeFieldDrift 92s ease-in-out infinite alternate;
+}
+
+.spectrum-stars--uv .spectrum-star-field {
+  animation: spectrumUvFieldDrift 105s ease-in-out infinite alternate;
+}
+
+.spectrum-star {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: calc(var(--size) * 1px);
+  height: calc(var(--size) * 1px);
+  border-radius: 50%;
+  background: rgb(var(--tone));
+  opacity: var(--alpha);
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.spectrum-star.is-bright::before,
+.spectrum-star.is-bright::after {
+  content: "";
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--flare) * 1px);
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(var(--tone), 0.52), transparent);
+  opacity: 0.62;
+  transform: translate3d(-50%, -50%, 0) rotate(var(--flare-angle));
+}
+
+.spectrum-star.is-bright::after {
+  opacity: 0.34;
+  transform: translate3d(-50%, -50%, 0) rotate(calc(var(--flare-angle) + 90deg));
+}
+
+.spectrum-star.is-landmark {
+  box-shadow:
+    0 0 calc(var(--glow) * 0.75px) rgba(var(--tone), 0.42),
+    0 0 calc(var(--glow) * 1.7px) rgba(var(--tone), 0.14);
+}
+
+.spectrum-star.is-landmark::before,
+.spectrum-star.is-landmark::after {
+  display: block;
+}
+
+.spectrum-star.is-landmark::before {
+  width: calc(var(--flare) * 0.66px);
+  opacity: 0.36;
+}
+
+.spectrum-star.is-landmark::after {
+  width: calc(var(--flare) * 0.42px);
+  opacity: 0.18;
+}
+
+.spectrum-far-star {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: calc(var(--size) * 1px);
+  height: calc(var(--size) * 1px);
+  border-radius: 50%;
+  opacity: var(--alpha);
+  background: radial-gradient(circle, rgba(var(--tone), 0.96) 0 8%, rgba(var(--tone), 0.38) 16%, transparent 68%);
+  box-shadow:
+    0 0 calc(var(--glow) * 1px) rgba(var(--tone), 0.30),
+    0 0 calc(var(--glow) * 2.4px) rgba(var(--tone), 0.10);
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.cockpit-shell[data-vision-mode="uv"] .spectrum-far-star {
+  background: radial-gradient(circle, rgba(var(--uv-core-color), 0.94) 0 9%, rgba(var(--uv-secondary-color), 0.36) 18%, transparent 70%);
+  box-shadow:
+    0 0 calc(var(--glow) * 1px) rgba(var(--uv-core-color), 0.40),
+    0 0 calc(var(--glow) * 2.4px) rgba(var(--uv-secondary-color), 0.16);
+}
+
+.spectrum-spike-star {
+  position: absolute;
+  left: calc(var(--x) * 1%);
+  top: calc(var(--y) * 1%);
+  width: calc(var(--s) * 1px);
+  height: calc(var(--s) * 1px);
+  opacity: var(--o);
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.spectrum-spike-star::before,
+.spectrum-spike-star::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--s) * 3px);
+  height: 1px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(var(--tone), 0.78), transparent);
+  transform: translate3d(-50%, -50%, 0) rotate(var(--r));
+}
+
+.spectrum-spike-star::after {
+  width: calc(var(--s) * 2.1px);
+  opacity: 0.64;
+  transform: translate3d(-50%, -50%, 0) rotate(calc(var(--r) + 90deg));
+}
+
+.spectrum-spike-star .core {
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  background: rgba(var(--tone), 0.98);
+  box-shadow:
+    0 0 calc(var(--s) * 0.8px) rgba(var(--tone), 0.56),
+    0 0 calc(var(--s) * 1.9px) rgba(var(--tone), 0.18);
+}
+
+.spectrum-stars--large .spectrum-star {
+  box-shadow:
+    0 0 calc(var(--glow) * 1px) rgba(var(--tone), 0.34),
+    0 0 calc(var(--glow) * 2px) rgba(var(--tone), 0.14),
+    0 0 calc(var(--glow) * 4px) rgba(var(--tone), 0.05);
+}
+
+.cockpit-shell[data-vision-mode="uv"] .spectrum-stars--large .spectrum-star {
+  box-shadow:
+    0 0 calc(var(--glow) * 1px) rgba(var(--tone), 0.42),
+    0 0 calc(var(--glow) * 2px) rgba(var(--tone), 0.16);
+}
+
+.spectrum-stars--uv .spectrum-star {
+  background: rgb(var(--uv-core-color));
+}
+
+.spectrum-stars--uv .is-uv-hot {
+  box-shadow:
+    0 0 calc(var(--glow) * 1px) rgba(var(--uv-core-color), 0.58),
+    0 0 calc(var(--glow) * 1.8px) rgba(var(--uv-secondary-color), 0.18);
+}
+
+.spectrum-stars--uv .is-uv-giant {
+  box-shadow:
+    0 0 calc(var(--glow) * 0.8px) rgba(var(--uv-core-color), 0.78),
+    0 0 calc(var(--glow) * 1.8px) rgba(var(--uv-secondary-color), 0.34),
+    0 0 calc(var(--glow) * 3px) rgba(var(--uv-core-color), 0.12);
+}
+
+.cockpit-shell[data-vision-mode="uv"] .spectrum-star.is-bright::before {
+  opacity: 0.90;
+  background: linear-gradient(90deg, transparent, rgba(var(--uv-core-color), 0.78), transparent);
+}
+
+.cockpit-shell[data-vision-mode="uv"] .spectrum-star.is-bright::after {
+  opacity: 0.58;
+  background: linear-gradient(90deg, transparent, rgba(var(--uv-secondary-color), 0.72), transparent);
+}
+
+.spectrum-viewport-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 44%, transparent 0%, transparent 74%, rgb(0 0 0 / 0.34) 90%, var(--glass-shadow) 100%),
+    linear-gradient(to bottom, transparent 0%, transparent 78%, var(--hull-shadow) 100%),
+    linear-gradient(102deg, rgb(0 0 0 / 0.58) 0%, transparent 8%, transparent 92%, rgb(0 0 0 / 0.62) 100%);
+}
+
+.spectrum-viewport-mask::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(172deg, transparent 0%, transparent 78%, rgb(10 13 17 / 0.22) 78.4%, transparent 80%),
+    linear-gradient(8deg, transparent 0%, transparent 82%, rgb(8 11 14 / 0.18) 82.4%, transparent 84%);
+  opacity: 0.54;
 }
 
 .warp-intro {
@@ -2430,6 +2707,779 @@ select {
   background: linear-gradient(90deg, rgb(0 225 235 / 0.48), transparent);
 }
 
+.page-slot {
+  min-height: 100%;
+}
+
+.cockpit-shell[data-current-section="home"] .content-viewport {
+  inset: clamp(82px, 11vh, 112px) clamp(46px, 9vw, 132px) clamp(96px, 15vh, 132px);
+}
+
+.cockpit-shell[data-current-section="home"] .page-slot {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+}
+
+.bio-scan {
+  --bio-cyan: rgb(0 225 235 / 0.76);
+  --bio-cyan-strong: rgb(0 237 248 / 0.92);
+  --bio-muted: rgb(214 236 238 / 0.74);
+
+  position: relative;
+  width: min(720px, 100%);
+  height: 464px;
+  min-height: 464px;
+  margin: 0 auto;
+  color: var(--bio-cyan);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  transform: translateZ(12px) scale(1.12);
+  transform-origin: center center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bio-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  left: 50%;
+  top: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  margin: 0;
+  white-space: nowrap;
+  color: rgb(210 252 255 / 0.76);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-shadow: 0 0 8px rgb(0 225 235 / 0.22);
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.bio-connectors {
+  position: absolute;
+  inset: 10px 0 0;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.bio-connector {
+  fill: none;
+  stroke: rgb(0 225 235 / 0.6);
+  stroke-width: 1;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  filter: drop-shadow(0 0 3px rgb(0 225 235 / 0.18));
+  opacity: 0;
+}
+
+.bio-portrait-module,
+.bio-card {
+  position: absolute;
+  z-index: 3;
+  color: var(--bio-cyan);
+}
+
+.bio-portrait-module {
+  left: 52px;
+  top: 54px;
+  width: 268px;
+  height: 302px;
+  opacity: 0;
+}
+
+.bio-portrait-frame {
+  position: absolute;
+  inset: 22px 13px 61px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgb(0 225 235 / 0.05), transparent 20% 80%, rgb(0 225 235 / 0.045)),
+    rgb(0 13 16 / 0.62);
+  clip-path: inset(50% 0 50% 0);
+  box-shadow:
+    inset 0 0 22px rgb(0 0 0 / 0.7),
+    inset 0 0 28px rgb(0 225 235 / 0.08),
+    0 0 15px rgb(0 225 235 / 0.1);
+}
+
+.bio-portrait-frame::before,
+.bio-portrait-frame::after,
+.bio-portrait-noise,
+.bio-portrait-scan {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.bio-portrait-frame::before {
+  z-index: 3;
+  background:
+    linear-gradient(0deg, rgb(0 225 235 / 0.18), rgb(0 225 235 / 0.18)),
+    repeating-linear-gradient(0deg, rgb(0 0 0 / 0.22) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.018) 0 2px, transparent 2px 8px);
+  mix-blend-mode: screen;
+  opacity: 0.64;
+}
+
+.bio-portrait-frame::after {
+  z-index: 4;
+  background: linear-gradient(180deg, transparent, rgb(180 255 255 / 0.16), transparent);
+  transform: translateY(-110%);
+  opacity: 0;
+}
+
+.bio-portrait {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter:
+    grayscale(1)
+    sepia(0.85)
+    hue-rotate(128deg)
+    saturate(2.4)
+    contrast(1.14)
+    brightness(0.78);
+  transform: scale(1.025);
+}
+
+.bio-portrait-noise {
+  background:
+    radial-gradient(circle at 12% 18%, rgb(255 255 255 / 0.14) 0 0.7px, transparent 1.1px),
+    radial-gradient(circle at 70% 42%, rgb(0 225 235 / 0.16) 0 0.6px, transparent 1px),
+    repeating-linear-gradient(0deg, transparent 0 11px, rgb(0 225 235 / 0.035) 12px, transparent 13px 24px);
+  background-size: 19px 17px, 23px 21px, auto;
+  opacity: 0;
+}
+
+.bio-portrait-scan {
+  z-index: 5;
+  background: linear-gradient(90deg, transparent, rgb(175 255 255 / 0.16), transparent);
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.bio-portrait-module::before {
+  content: "";
+  position: absolute;
+  inset: 5px 0 0;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, currentColor 0 64px, transparent 64px calc(100% - 48px), currentColor calc(100% - 48px) 100%) top left / 100% 1px no-repeat,
+    linear-gradient(90deg, currentColor 0 42px, transparent 42px calc(100% - 38px), currentColor calc(100% - 38px) 100%) bottom left / 100% 1px no-repeat,
+    linear-gradient(180deg, currentColor 0 74px, transparent 74px calc(100% - 56px), currentColor calc(100% - 56px) 100%) top left / 1px 100% no-repeat,
+    linear-gradient(180deg, currentColor 0 46px, transparent 46px calc(100% - 38px), currentColor calc(100% - 38px) 100%) top right / 1px 100% no-repeat,
+    linear-gradient(100deg, transparent 0 16%, rgb(0 225 235 / 0.09) 18%, transparent 24% 100%);
+  box-shadow:
+    inset 0 -36px 32px rgb(0 225 235 / 0.08),
+    inset 0 0 28px rgb(0 0 0 / 0.38);
+}
+
+.bio-portrait-module::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 18px;
+  height: 44px;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent, rgb(0 225 235 / 0.42), transparent) 0 32px / 100% 1px no-repeat,
+    repeating-linear-gradient(0deg, rgb(0 225 235 / 0.12) 0 1px, transparent 1px 5px),
+    radial-gradient(ellipse at 44% 82%, rgb(0 225 235 / 0.18), transparent 58%);
+}
+
+.bio-card {
+  overflow: hidden;
+  opacity: 0;
+  background:
+    linear-gradient(120deg, rgb(0 225 235 / 0.04), transparent 34%),
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.012) 0 1px, transparent 1px 8px),
+    rgb(0 6 9 / 0.16);
+  clip-path: polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 12px 100%, 0 calc(100% - 12px));
+  text-decoration: none;
+}
+
+.bio-card--identity {
+  left: 410px;
+  top: 58px;
+  width: 204px;
+  height: 168px;
+}
+
+.bio-card--focus {
+  left: 410px;
+  top: 242px;
+  width: 182px;
+  height: 122px;
+}
+
+.bio-card--location {
+  left: 126px;
+  top: 388px;
+  width: 148px;
+  height: 76px;
+}
+
+.bio-card--contact {
+  left: 294px;
+  top: 388px;
+  width: 156px;
+  height: 76px;
+  pointer-events: auto;
+}
+
+.bio-card::before,
+.bio-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bio-card::before {
+  background:
+    linear-gradient(90deg, currentColor 0 26px, transparent 26px calc(100% - 18px), currentColor calc(100% - 18px) 100%) top left / 100% 1px no-repeat,
+    linear-gradient(90deg, currentColor 0 18px, transparent 18px calc(100% - 28px), currentColor calc(100% - 28px) 100%) bottom left / 100% 1px no-repeat,
+    linear-gradient(180deg, currentColor 0 28px, transparent 28px calc(100% - 18px), currentColor calc(100% - 18px) 100%) top left / 1px 100% no-repeat,
+    linear-gradient(180deg, currentColor 0 18px, transparent 18px calc(100% - 28px), currentColor calc(100% - 28px) 100%) top right / 1px 100% no-repeat;
+  opacity: 0.42;
+}
+
+.bio-card::after {
+  background: linear-gradient(100deg, transparent 0 24%, rgb(170 255 255 / 0.1) 28%, transparent 33% 100%);
+  transform: translateX(-105%);
+  opacity: 0;
+}
+
+.bio-card .bio-opener,
+.bio-portrait-module .bio-opener {
+  width: 100%;
+}
+
+.bio-card .bio-corner,
+.bio-portrait-module .bio-corner {
+  color: rgb(0 225 235 / 0.7);
+}
+
+.bio-card-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 12px;
+  padding: 22px 18px;
+  opacity: 0;
+}
+
+.bio-card h2,
+.bio-card p,
+.bio-card ul {
+  margin: 0;
+}
+
+.bio-card h2 {
+  color: rgb(223 230 231 / 0.9);
+  font-family: var(--font-ui);
+  font-size: 1.12rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.22;
+}
+
+.bio-card h2 span {
+  display: block;
+}
+
+.bio-card ul {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+  color: rgb(0 235 244 / 0.74);
+  font-size: 0.58rem;
+  line-height: 1.15;
+}
+
+.bio-card-divider {
+  position: absolute;
+  left: 18px;
+  top: 82px;
+  z-index: 2;
+  width: 28px;
+  height: 1px;
+  overflow: hidden;
+  background: rgb(0 225 235 / 0.62);
+  opacity: 0;
+}
+
+.bio-card-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.72), transparent);
+  transform: translateX(-100%);
+}
+
+.bio-card-divider--short {
+  left: 22px;
+  top: 31px;
+  width: 24px;
+  opacity: 0.38;
+}
+
+.bio-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgb(0 235 244 / 0.76) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.58rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.bio-list-muted {
+  padding-left: 24px !important;
+  color: rgb(221 231 232 / 0.74) !important;
+}
+
+.bio-card--location .bio-card-content,
+.bio-card--contact .bio-card-content {
+  gap: 9px;
+  padding: 13px 20px;
+}
+
+.bio-card--location p {
+  padding-left: 20px;
+  color: rgb(226 234 235 / 0.82);
+  font-size: 0.6rem;
+}
+
+.bio-contact-content {
+  grid-template-columns: 1fr auto;
+  align-items: start;
+}
+
+.bio-contact-content .bio-dots {
+  grid-column: 1 / 2;
+}
+
+.bio-arrow {
+  color: rgb(0 225 235 / 0.74);
+  font-size: 0.82rem;
+}
+
+.bio-dots {
+  color: rgb(0 225 235 / 0.64);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+}
+
+.bio-label-mark,
+.bio-pin,
+.bio-send {
+  position: relative;
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+}
+
+.bio-label-mark {
+  background:
+    linear-gradient(currentColor 0 0) 50% 0 / 1px 100% no-repeat,
+    linear-gradient(90deg, currentColor 0 0) 0 50% / 100% 1px no-repeat;
+}
+
+.bio-label-mark::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.bio-pin::before {
+  content: "";
+  position: absolute;
+  inset: 1px 3px 3px;
+  border: 2px solid currentColor;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+}
+
+.bio-pin::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 4px;
+  width: 2px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 50%;
+}
+
+.bio-send {
+  background: currentColor;
+  clip-path: polygon(0 12%, 100% 50%, 0 88%, 18% 56%, 48% 50%, 18% 44%);
+}
+
+.cockpit-shell[data-phase="ready"] .bio-scan {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-title {
+  animation: none;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-connector {
+  animation:
+    bioConnectorDraw 1850ms cubic-bezier(0.19, 0.78, 0.2, 1) forwards,
+    bioConnectorIdle 5.8s ease-in-out 2450ms infinite;
+  animation-delay:
+    180ms,
+    2450ms;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-module {
+  animation:
+    systemStatsPanelIn 80ms steps(1, end) 260ms forwards,
+    statsValueFlicker 280ms steps(2, end) 780ms forwards;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-module::before {
+  animation:
+    bioFrameIn 300ms steps(5, end) 280ms forwards,
+    bioFrameIdle 4.8s ease-in-out 2380ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-module::after {
+  animation:
+    statsElementIn 120ms steps(2, end) 520ms forwards,
+    statsDividerIdleScan 6.4s ease-in-out 2520ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-module .bio-opener {
+  animation: statsOpenerExpand 260ms ease-out 260ms forwards;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-module .bio-corner {
+  animation:
+    statsCornerDraw 210ms ease-out 500ms forwards,
+    statsCornerIdle 4.4s ease-in-out 2420ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-frame {
+  animation: bioPortraitFrameOpen 320ms cubic-bezier(0.18, 0.78, 0.24, 1) 390ms forwards;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait {
+  animation:
+    bioPortraitIn 430ms steps(6, end) 560ms forwards,
+    bioPortraitGlitch 7.2s steps(1, end) 2700ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-frame::after {
+  animation:
+    bioPortraitSweep 470ms ease-out 540ms forwards,
+    bioPortraitIdleSweep 6.8s ease-in-out 2780ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-noise {
+  animation:
+    statsElementIn 120ms steps(2, end) 620ms forwards,
+    bioNoiseShift 9s steps(2, end) 2760ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-portrait-scan {
+  animation:
+    bioScanAcross 520ms ease-out 660ms forwards,
+    bioScanAcross 7.4s ease-in-out 2920ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-card {
+  animation:
+    bioCardOpen 300ms cubic-bezier(0.18, 0.78, 0.24, 1) var(--bio-card-delay) forwards,
+    statsValueFlicker 260ms steps(2, end) calc(var(--bio-card-delay) + 360ms) forwards;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-card .bio-opener {
+  animation: statsOpenerExpand 220ms ease-out var(--bio-card-delay) forwards;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-card .bio-corner {
+  animation:
+    statsCornerDraw 190ms ease-out calc(var(--bio-card-delay) + 170ms) forwards,
+    statsCornerIdle 4.6s ease-in-out calc(var(--bio-card-delay) + 760ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-card-content {
+  animation: statsElementIn 130ms steps(2, end) calc(var(--bio-card-delay) + 340ms) forwards;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-card-divider {
+  animation: statsDividerIn 100ms ease-out calc(var(--bio-card-delay) + 260ms) forwards;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-card-divider::after {
+  animation:
+    statsDividerScan 300ms ease-out calc(var(--bio-card-delay) + 300ms) forwards,
+    bioDividerIdle 5.9s ease-in-out calc(var(--bio-card-delay) + 1500ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .bio-card::after {
+  animation: bioCardShimmer 300ms ease-out calc(var(--bio-card-delay) + 300ms) forwards;
+}
+
+@keyframes bioTitleIn {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  100% {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+@keyframes bioConnectorDraw {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+
+  10% {
+    opacity: 0.66;
+  }
+
+  100% {
+    opacity: 0.54;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes bioConnectorIdle {
+  0%,
+  86%,
+  100% {
+    opacity: 0.42;
+  }
+
+  92% {
+    opacity: 0.64;
+  }
+}
+
+@keyframes bioFrameIn {
+  0% {
+    opacity: 0;
+    clip-path: inset(50% 0 50% 0);
+  }
+
+  100% {
+    opacity: 0.74;
+    clip-path: inset(0);
+  }
+}
+
+@keyframes bioFrameIdle {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+
+  50% {
+    opacity: 0.78;
+  }
+}
+
+@keyframes bioPortraitFrameOpen {
+  0% {
+    clip-path: inset(49% 0 49% 0);
+  }
+
+  100% {
+    clip-path: inset(0);
+  }
+}
+
+@keyframes bioPortraitIn {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+    transform: translateX(2px) scale(1.035);
+  }
+
+  42% {
+    opacity: 0.74;
+    clip-path: inset(0 0 42% 0);
+    transform: translateX(-1px) scale(1.03);
+  }
+
+  100% {
+    opacity: 0.98;
+    clip-path: inset(0);
+    transform: translateX(0) scale(1.025);
+  }
+}
+
+@keyframes bioPortraitSweep {
+  0% {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+
+  16%,
+  70% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(110%);
+  }
+}
+
+@keyframes bioPortraitIdleSweep {
+  0%,
+  82%,
+  100% {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+
+  88% {
+    opacity: 0.2;
+  }
+
+  94% {
+    opacity: 0.1;
+    transform: translateY(110%);
+  }
+}
+
+@keyframes bioScanAcross {
+  0%,
+  78%,
+  100% {
+    opacity: 0;
+    transform: translateX(-120%);
+  }
+
+  88% {
+    opacity: 0.42;
+  }
+
+  96% {
+    opacity: 0.16;
+    transform: translateX(120%);
+  }
+}
+
+@keyframes bioNoiseShift {
+  0%,
+  100% {
+    opacity: 0.24;
+    transform: translate(0, 0);
+  }
+
+  49% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    opacity: 0.34;
+    transform: translate(1px, -1px);
+  }
+
+  51% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes bioPortraitGlitch {
+  0%,
+  90%,
+  92%,
+  100% {
+    opacity: 0.98;
+    transform: translateX(0) scale(1.025);
+  }
+
+  91% {
+    opacity: 0.9;
+    transform: translateX(1px) scale(1.025);
+  }
+}
+
+@keyframes bioCardOpen {
+  0% {
+    opacity: 0;
+    clip-path: polygon(0 49%, 100% 49%, 100% 51%, 0 51%);
+    transform: scaleX(0.82);
+  }
+
+  48% {
+    opacity: 1;
+    clip-path: polygon(0 44%, 100% 44%, 100% 56%, 0 56%);
+  }
+
+  100% {
+    opacity: 1;
+    clip-path: polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 12px 100%, 0 calc(100% - 12px));
+    transform: scaleX(1);
+  }
+}
+
+@keyframes bioCardShimmer {
+  0% {
+    opacity: 0;
+    transform: translateX(-105%);
+  }
+
+  35% {
+    opacity: 0.55;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(105%);
+  }
+}
+
+@keyframes bioDividerIdle {
+  0%,
+  82%,
+  100% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+
+  90% {
+    opacity: 0.58;
+  }
+
+  98% {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
 .cockpit-shell[data-sensor-phase="down"] .starfield,
 .cockpit-shell[data-sensor-phase="down"] .dust-field,
 .cockpit-shell[data-sensor-phase="down"] .nebula-field {
@@ -2609,6 +3659,25 @@ select {
 
 .cockpit-shell[data-reveal-phase="settled"] .space-background {
   opacity: 0.82;
+}
+
+.cockpit-shell[data-reveal-phase="settled"][data-sensor-phase="down"] .space-background,
+.cockpit-shell[data-reveal-phase="settled"][data-sensor-phase="scan"] .space-background {
+  opacity: 0.16;
+  filter: brightness(0.34) blur(1.2px) saturate(0.72);
+}
+
+.cockpit-shell[data-reveal-phase="settled"][data-sensor-phase="activate"] .space-background {
+  opacity: 0.56;
+  filter: brightness(0.72) blur(0.5px) saturate(1.12);
+}
+
+.cockpit-shell[data-reveal-phase="settled"][data-sensor-phase="online"] .space-background {
+  filter: none;
+}
+
+.cockpit-shell[data-reveal-phase="settled"][data-sensor-phase="scan"] .sensor-sweep {
+  animation: sensorViewportSweep 720ms ease-out both;
 }
 
 .cockpit-shell[data-reveal-phase="dark"] .hud-frame {
@@ -3104,6 +4173,36 @@ select {
   100% {
     opacity: 0;
     transform: translateX(120%);
+  }
+}
+
+@keyframes spectrumTinyFieldDrift {
+  from {
+    transform: translate3d(-0.5px, 0.2px, 0);
+  }
+
+  to {
+    transform: translate3d(0.6px, -0.4px, 0);
+  }
+}
+
+@keyframes spectrumLargeFieldDrift {
+  from {
+    transform: translate3d(0.4px, -0.6px, 0);
+  }
+
+  to {
+    transform: translate3d(-0.8px, 0.7px, 0);
+  }
+}
+
+@keyframes spectrumUvFieldDrift {
+  from {
+    transform: translate3d(0.3px, 0.4px, 0);
+  }
+
+  to {
+    transform: translate3d(-0.7px, -0.5px, 0);
   }
 }
 
@@ -3821,15 +4920,7 @@ select {
   }
 
   .travel-widget {
-    left: 26px;
-    bottom: 196px;
-    width: 78px;
-    min-height: 34px;
-    font-size: 0.52rem;
-    transform:
-      rotateY(4deg)
-      rotateX(1.2deg)
-      translateZ(6px);
+    display: none;
   }
 
   .travel-toggle {
@@ -3913,6 +5004,124 @@ select {
     inset: 98px 42px 156px;
   }
 
+  .cockpit-shell[data-current-section="home"] .content-viewport {
+    inset: 88px 20px 168px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding: 38px 0 190px;
+    -webkit-mask-image:
+      linear-gradient(
+        180deg,
+        transparent 0,
+        rgb(0 0 0 / 0.12) 18px,
+        #000 74px,
+        #000 calc(100% - 92px),
+        rgb(0 0 0 / 0.14) calc(100% - 28px),
+        transparent 100%
+      );
+    mask-image:
+      linear-gradient(
+        180deg,
+        transparent 0,
+        rgb(0 0 0 / 0.12) 18px,
+        #000 74px,
+        #000 calc(100% - 92px),
+        rgb(0 0 0 / 0.14) calc(100% - 28px),
+        transparent 100%
+      );
+  }
+
+  .cockpit-shell[data-current-section="home"] .travel-widget {
+    display: none;
+  }
+
+  .cockpit-shell[data-current-section="home"] .portfolio-radar {
+    display: block;
+    left: 21px;
+    bottom: 96px;
+    width: clamp(66px, 18vw, 76px);
+    opacity: 0.66;
+    pointer-events: none;
+  }
+
+  .cockpit-shell[data-current-section="home"] .scroll-depth {
+    display: block;
+    right: 24px;
+    bottom: 108px;
+    width: 72px;
+    height: 24px;
+    opacity: 0.72;
+    pointer-events: none;
+  }
+
+  .cockpit-shell[data-current-section="home"] .page-slot {
+    display: block;
+    overflow: visible;
+    padding: 28px 0 190px;
+  }
+
+  .bio-scan {
+    display: grid;
+    width: min(100%, 354px);
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    gap: 14px;
+    margin: 0 auto;
+    transform: translateZ(12px);
+    transform-origin: top center;
+  }
+
+  .bio-connectors {
+    display: none;
+  }
+
+  .bio-portrait-module,
+  .bio-card,
+  .bio-card--identity,
+  .bio-card--focus,
+  .bio-card--location,
+  .bio-card--contact {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+  }
+
+  .bio-portrait-module {
+    height: clamp(286px, 76vw, 330px);
+  }
+
+  .bio-portrait-frame {
+    inset: 18px 13px 55px;
+  }
+
+  .bio-card--identity {
+    height: 142px;
+  }
+
+  .bio-card--focus {
+    height: 124px;
+  }
+
+  .bio-card--location,
+  .bio-card--contact {
+    height: 72px;
+  }
+
+  .bio-card h2 {
+    font-size: 1rem;
+  }
+
+  .bio-card ul {
+    gap: 7px;
+    font-size: 0.56rem;
+  }
+
+  .bio-card-content {
+    padding: 19px 18px;
+  }
+
   .hologram-system {
     align-items: start;
     padding-top: 8vh;
@@ -3991,6 +5200,904 @@ select {
 
   .page-section h1 {
     font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .bio-scan {
+    width: min(100%, 330px);
+  }
+}
+
+@media (max-width: 430px) {
+  .cockpit-shell[data-current-section="home"] .content-viewport {
+    inset: 108px 16px 158px;
+    scroll-padding: 30px 0 184px;
+    -webkit-mask-image:
+      linear-gradient(
+        180deg,
+        transparent 0,
+        rgb(0 0 0 / 0.1) 14px,
+        #000 60px,
+        #000 calc(100% - 86px),
+        rgb(0 0 0 / 0.12) calc(100% - 26px),
+        transparent 100%
+      );
+    mask-image:
+      linear-gradient(
+        180deg,
+        transparent 0,
+        rgb(0 0 0 / 0.1) 14px,
+        #000 60px,
+        #000 calc(100% - 86px),
+        rgb(0 0 0 / 0.12) calc(100% - 26px),
+        transparent 100%
+      );
+  }
+
+  .cockpit-shell[data-current-section="home"] .portfolio-radar {
+    left: 18px;
+    bottom: 94px;
+    width: 66px;
+  }
+
+  .cockpit-shell[data-current-section="home"] .scroll-depth {
+    right: 22px;
+    bottom: 102px;
+    width: 68px;
+  }
+
+  .bio-scan {
+    width: min(100%, 304px);
+    gap: 12px;
+  }
+
+  .bio-portrait-module {
+    height: 252px;
+  }
+
+  .bio-portrait-frame {
+    inset: 15px 10px 46px;
+  }
+
+  .bio-card--identity {
+    height: 128px;
+  }
+
+  .bio-card--focus {
+    height: 116px;
+  }
+
+  .bio-card--location,
+  .bio-card--contact {
+    height: 66px;
+  }
+
+  .bio-card-content {
+    padding: 16px 16px;
+  }
+
+  .bio-card h2 {
+    font-size: 0.98rem;
+  }
+
+  .bio-card ul {
+    gap: 6px;
+    font-size: 0.54rem;
+  }
+
+  .bio-label {
+    font-size: 0.56rem !important;
+  }
+
+  .bio-card--location .bio-card-content,
+  .bio-card--contact .bio-card-content {
+    gap: 7px;
+    padding: 12px 16px;
+  }
+
+  .bio-card--location p {
+    font-size: 0.56rem;
+  }
+
+  .bio-list-muted {
+    padding-left: 18px !important;
+  }
+}
+
+.os-system {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  color: rgb(220 250 252 / 0.9);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.os-panel {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(8px) translateZ(8px);
+}
+
+.os-panel.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) translateZ(8px);
+}
+
+.os-panel.is-exiting {
+  opacity: 1;
+  visibility: visible;
+  animation: osPanelExit 420ms steps(4, end) forwards;
+}
+
+.os-panel--home {
+  display: grid;
+  place-items: center;
+}
+
+.os-panel.is-entering .os-title {
+  animation:
+    osTitleIn 220ms steps(3, end) 80ms forwards,
+    statsValueFlicker 300ms steps(2, end) 260ms forwards;
+}
+
+.os-panel.is-entering .os-connectors path {
+  animation: osConnectorIn 900ms cubic-bezier(0.18, 0.78, 0.2, 1) 140ms forwards;
+}
+
+.os-panel.is-entering .os-card {
+  animation:
+    bioCardOpen 300ms cubic-bezier(0.18, 0.78, 0.24, 1) var(--os-delay, 360ms) forwards,
+    statsValueFlicker 260ms steps(2, end) calc(var(--os-delay, 360ms) + 360ms) forwards;
+}
+
+.os-panel.is-entering .os-opener {
+  animation: statsOpenerExpand 220ms ease-out var(--os-delay, 360ms) forwards;
+}
+
+.os-panel.is-entering .os-corner {
+  animation:
+    statsCornerDraw 190ms ease-out calc(var(--os-delay, 360ms) + 170ms) forwards,
+    statsCornerIdle 4.6s ease-in-out calc(var(--os-delay, 360ms) + 760ms) infinite;
+}
+
+.os-panel.is-entering .os-divider {
+  animation: statsDividerIn 120ms ease-out calc(var(--os-delay, 360ms) + 260ms) forwards;
+}
+
+.os-panel.is-entering .os-divider::after {
+  animation:
+    statsDividerScan 300ms ease-out calc(var(--os-delay, 360ms) + 300ms) forwards,
+    bioDividerIdle 5.9s ease-in-out calc(var(--os-delay, 360ms) + 1500ms) infinite;
+}
+
+.os-panel.is-entering .os-card-content,
+.os-panel.is-entering .project-visual,
+.os-panel.is-entering .about-portrait-frame img {
+  animation: statsElementIn 150ms steps(2, end) calc(var(--os-delay, 360ms) + 340ms) forwards;
+}
+
+.os-panel.is-active:not(.is-entering) .os-title,
+.os-panel.is-active:not(.is-entering) .os-connectors path,
+.os-panel.is-active:not(.is-entering) .os-card,
+.os-panel.is-active:not(.is-entering) .os-card-content,
+.os-panel.is-active:not(.is-entering) .project-visual,
+.os-panel.is-active:not(.is-entering) .about-portrait-frame img {
+  opacity: 1;
+}
+
+.os-panel.is-active:not(.is-entering) .os-connectors path {
+  stroke-dashoffset: 0;
+}
+
+.os-panel.is-active:not(.is-entering) .os-corner {
+  opacity: 0.72;
+  animation: statsCornerIdle 4.6s ease-in-out infinite;
+}
+
+.os-panel.is-active:not(.is-entering) .os-divider {
+  opacity: 1;
+}
+
+.os-title {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  z-index: 2;
+  margin: 0;
+  color: rgb(219 252 255 / 0.8);
+  font-family: var(--font-mono);
+  font-size: clamp(1.35rem, 4vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  line-height: 0.9;
+  opacity: 0;
+  text-align: center;
+  text-shadow: 0 0 10px rgb(0 225 235 / 0.18);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.os-connectors {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.os-connectors path {
+  fill: none;
+  stroke: rgb(0 225 235 / 0.48);
+  stroke-width: 1;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgb(0 225 235 / 0.12));
+}
+
+.os-card {
+  position: relative;
+  overflow: hidden;
+  color: rgb(0 225 235 / 0.76);
+  background:
+    linear-gradient(120deg, rgb(0 225 235 / 0.045), transparent 34%),
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 0.012) 0 1px, transparent 1px 8px),
+    rgb(0 6 9 / 0.16);
+  clip-path: polygon(0 12px, 12px 0, calc(100% - 12px) 0, 100% 12px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 12px 100%, 0 calc(100% - 12px));
+  opacity: 0;
+  text-decoration: none;
+}
+
+.os-card::before,
+.os-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.os-card::before {
+  background:
+    linear-gradient(90deg, currentColor 0 26px, transparent 26px calc(100% - 18px), currentColor calc(100% - 18px) 100%) top left / 100% 1px no-repeat,
+    linear-gradient(90deg, currentColor 0 18px, transparent 18px calc(100% - 28px), currentColor calc(100% - 28px) 100%) bottom left / 100% 1px no-repeat,
+    linear-gradient(180deg, currentColor 0 28px, transparent 28px calc(100% - 18px), currentColor calc(100% - 18px) 100%) top left / 1px 100% no-repeat,
+    linear-gradient(180deg, currentColor 0 18px, transparent 18px calc(100% - 28px), currentColor calc(100% - 28px) 100%) top right / 1px 100% no-repeat;
+  opacity: 0.42;
+}
+
+.os-card::after {
+  background: linear-gradient(100deg, transparent 0 24%, rgb(170 255 255 / 0.1) 28%, transparent 33% 100%);
+  opacity: 0;
+  transform: translateX(-105%);
+  animation: bioCardShimmer 6.8s ease-in-out 2.5s infinite;
+}
+
+.os-card-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  opacity: 0;
+}
+
+.os-card h2,
+.os-card p,
+.os-card ul,
+.os-card strong {
+  margin: 0;
+}
+
+.os-card h2 {
+  color: rgb(226 235 236 / 0.9);
+  font-family: var(--font-ui);
+  font-size: 1.02rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.12;
+}
+
+.os-card p,
+.os-card strong {
+  color: rgb(214 232 234 / 0.68);
+  font-size: 0.62rem;
+  line-height: 1.5;
+}
+
+.os-card strong {
+  color: rgb(0 225 235 / 0.72);
+  font-weight: 600;
+}
+
+.os-kicker {
+  color: rgb(0 235 244 / 0.72) !important;
+  font-size: 0.55rem !important;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+}
+
+.os-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0;
+  list-style: none;
+}
+
+.os-tags li {
+  color: rgb(199 245 248 / 0.68);
+  font-size: 0.5rem;
+}
+
+.os-tags li::before {
+  content: "[";
+  color: rgb(0 225 235 / 0.48);
+}
+
+.os-tags li::after {
+  content: "]";
+  color: rgb(0 225 235 / 0.48);
+}
+
+.os-tags--stack {
+  display: grid;
+}
+
+.os-action,
+.os-back {
+  width: max-content;
+  border: 0;
+  color: rgb(0 245 255 / 0.78);
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.os-action::after {
+  content: " ->";
+}
+
+.os-divider {
+  position: absolute;
+  left: 18px;
+  top: 48px;
+  z-index: 2;
+  width: 34px;
+  height: 1px;
+  overflow: hidden;
+  background: rgb(0 225 235 / 0.54);
+  opacity: 0;
+}
+
+.os-divider::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.72), transparent);
+  transform: translateX(-100%);
+}
+
+.project-map,
+.skill-map,
+.experience-map,
+.about-map,
+.blog-map,
+.contact-map {
+  position: relative;
+  z-index: 1;
+  width: min(760px, 100%);
+  min-height: 460px;
+  margin: 0 auto;
+}
+
+.project-card,
+.skill-card,
+.experience-card,
+.blog-card,
+.blog-reader,
+.contact-primary,
+.contact-link {
+  position: absolute;
+}
+
+.project-card--featured {
+  left: 135px;
+  top: 72px;
+  width: 350px;
+  min-height: 238px;
+}
+
+.project-card:nth-child(2) {
+  left: 500px;
+  top: 94px;
+  width: 210px;
+  min-height: 172px;
+}
+
+.project-card:nth-child(3) {
+  left: 412px;
+  top: 300px;
+  width: 250px;
+  min-height: 146px;
+}
+
+.project-card:nth-child(4) {
+  left: 92px;
+  top: 330px;
+  width: 250px;
+  min-height: 132px;
+}
+
+.project-visual {
+  position: relative;
+  height: 100px;
+  margin: 16px 16px 0;
+  overflow: hidden;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 32% 42%, rgb(0 225 235 / 0.26), transparent 28%),
+    linear-gradient(135deg, rgb(0 225 235 / 0.16), transparent 36%),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.025) 0 1px, transparent 1px 12px),
+    rgb(0 18 22 / 0.48);
+}
+
+.project-visual span {
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgb(0 225 235 / 0.24);
+  clip-path: polygon(0 16px, 16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+}
+
+.skill-card:nth-child(1) { left: 105px; top: 86px; width: 184px; min-height: 134px; }
+.skill-card:nth-child(2) { left: 338px; top: 62px; width: 188px; min-height: 152px; }
+.skill-card:nth-child(3) { left: 562px; top: 112px; width: 172px; min-height: 132px; }
+.skill-card:nth-child(4) { left: 246px; top: 238px; width: 206px; min-height: 146px; }
+.skill-card:nth-child(5) { left: 30px; top: 278px; width: 176px; min-height: 128px; }
+.skill-card:nth-child(6) { left: 492px; top: 284px; width: 176px; min-height: 118px; }
+.skill-card:nth-child(7) { left: 330px; top: 398px; width: 184px; min-height: 112px; }
+
+.experience-card--featured {
+  left: 90px;
+  top: 96px;
+  width: 370px;
+  min-height: 198px;
+}
+
+.experience-card:nth-child(2) {
+  left: 430px;
+  top: 260px;
+  width: 286px;
+  min-height: 164px;
+}
+
+.experience-card:nth-child(3) {
+  left: 120px;
+  top: 330px;
+  width: 270px;
+  min-height: 146px;
+}
+
+.blog-list {
+  position: absolute;
+  inset: 88px auto auto 80px;
+  width: 312px;
+  transition:
+    opacity 260ms steps(3, end),
+    transform 300ms ease;
+}
+
+.blog-card {
+  position: relative;
+  min-height: 198px;
+}
+
+.blog-readers {
+  position: absolute;
+  left: 350px;
+  top: 62px;
+  width: 362px;
+}
+
+.blog-reader {
+  display: none;
+  position: relative;
+  max-height: 392px;
+  overflow: auto;
+}
+
+.blog-reader.is-active {
+  display: block;
+}
+
+.blog-map[data-reader-open="true"] .blog-list {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-16px) scaleX(0.96);
+}
+
+.blog-map:not([data-reader-open="true"]) .blog-reader {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.prose {
+  text-transform: none;
+}
+
+.prose h2,
+.prose h3 {
+  color: rgb(226 250 252 / 0.88);
+}
+
+.prose code {
+  color: rgb(0 245 255 / 0.86);
+  font-family: var(--font-mono);
+}
+
+.prose pre,
+.prose blockquote {
+  margin: 0;
+  padding: 12px;
+  border-left: 1px solid rgb(0 225 235 / 0.34);
+  background: rgb(0 225 235 / 0.045);
+}
+
+.contact-primary {
+  left: 74px;
+  top: 112px;
+  width: 330px;
+  min-height: 204px;
+}
+
+.contact-link:nth-child(2) { left: 460px; top: 70px; width: 230px; min-height: 78px; }
+.contact-link:nth-child(3) { left: 500px; top: 166px; width: 212px; min-height: 78px; }
+.contact-link:nth-child(4) { left: 450px; top: 262px; width: 230px; min-height: 78px; }
+.contact-link:nth-child(5) { left: 74px; top: 346px; width: 214px; min-height: 78px; }
+.contact-link:nth-child(6) { left: 318px; top: 360px; width: 210px; min-height: 78px; }
+.contact-link:nth-child(7) { left: 550px; top: 366px; width: 180px; min-height: 78px; }
+.contact-link:nth-child(8) { left: 226px; top: 28px; width: 210px; min-height: 78px; }
+
+.about-portrait,
+.about-card {
+  position: absolute;
+}
+
+.about-portrait {
+  left: 88px;
+  top: 112px;
+  width: 238px;
+  height: 300px;
+  color: rgb(0 232 240 / 0.78);
+}
+
+.about-portrait-frame {
+  position: absolute;
+  inset: 16px 14px 72px;
+  overflow: hidden;
+  border: 1px solid rgb(0 225 235 / 0.26);
+  background:
+    radial-gradient(circle at 50% 30%, rgb(0 245 255 / 0.2), transparent 44%),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0.025) 0 1px, transparent 1px 9px),
+    rgb(0 22 26 / 0.5);
+  clip-path: polygon(0 16px, 16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%);
+}
+
+.about-portrait-frame img {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  object-fit: cover;
+  filter: sepia(0.18) saturate(1.28) hue-rotate(128deg) contrast(1.13) brightness(0.84);
+  mix-blend-mode: screen;
+  transform: scale(1.04);
+}
+
+.about-portrait-noise,
+.about-portrait-scan {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.about-portrait-noise {
+  background:
+    repeating-linear-gradient(0deg, rgb(0 0 0 / 0.18) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgb(0 245 255 / 0.035) 0 1px, transparent 1px 7px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+.about-portrait-scan {
+  background: linear-gradient(180deg, transparent, rgb(0 245 255 / 0.18), transparent);
+  opacity: 0.52;
+  transform: translateY(-120%);
+  animation: bioPortraitScan 5.8s linear 2.2s infinite;
+}
+
+.about-portrait-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  gap: 4px;
+  padding-top: 0;
+}
+
+.about-card--dossier {
+  left: 404px;
+  top: 76px;
+  width: 284px;
+  min-height: 172px;
+}
+
+.about-card--style {
+  left: 440px;
+  top: 276px;
+  width: 214px;
+  min-height: 142px;
+}
+
+.about-card--care {
+  left: 82px;
+  top: 18px;
+  width: 222px;
+  min-height: 104px;
+}
+
+.about-card--current {
+  left: 258px;
+  top: 356px;
+  width: 286px;
+  min-height: 104px;
+}
+
+.os-panel--home.is-entering .bio-title {
+  animation:
+    bioTitleIn 260ms steps(4, end) 90ms forwards,
+    statsValueFlicker 320ms steps(2, end) 320ms forwards;
+}
+
+.os-panel--home.is-entering .bio-connector {
+  animation:
+    bioConnectorDraw 1250ms cubic-bezier(0.19, 0.78, 0.2, 1) forwards,
+    bioConnectorIdle 5.8s ease-in-out 1700ms infinite;
+  animation-delay: var(--connector-delay, 420ms), 1700ms;
+}
+
+.os-panel--home.is-entering .bio-portrait-module,
+.os-panel--home.is-entering .bio-card {
+  animation:
+    bioCardOpen 300ms cubic-bezier(0.18, 0.78, 0.24, 1) var(--bio-card-delay, 500ms) forwards,
+    statsValueFlicker 260ms steps(2, end) calc(var(--bio-card-delay, 500ms) + 360ms) forwards;
+}
+
+.os-panel--home.is-entering .bio-portrait-module {
+  --bio-card-delay: 500ms;
+}
+
+.os-panel--home.is-entering .bio-card::after {
+  animation: bioCardShimmer 300ms ease-out calc(var(--bio-card-delay) + 300ms) forwards;
+}
+
+.xeno-navbar {
+  max-width: min(94vw, 980px);
+}
+
+.xeno-nav-button,
+.xeno-nav-button[data-depth="0"],
+.xeno-nav-button[data-depth="1"],
+.xeno-nav-button[data-depth="2"] {
+  --button-width: clamp(76px, 6vw, 98px);
+  --button-height: clamp(42px, 3.6vw, 54px);
+}
+
+.xeno-nav-button.is-active {
+  width: calc(var(--button-width) + 8px);
+}
+
+.cockpit-shell[data-phase="jump"] .os-system,
+.cockpit-shell[data-phase="arrived"] .os-system,
+.cockpit-shell[data-phase="boot"] .os-system {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cockpit-shell[data-phase="ready"] .os-system {
+  opacity: 1;
+}
+
+@keyframes osTitleIn {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+}
+
+@keyframes osConnectorIn {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+
+  100% {
+    opacity: 0.56;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes osPanelExit {
+  0% {
+    opacity: 1;
+    clip-path: inset(0);
+  }
+
+  60% {
+    opacity: 0.48;
+    clip-path: inset(42% 0 42% 0);
+  }
+
+  100% {
+    opacity: 0;
+    clip-path: inset(50% 0 50% 0);
+  }
+}
+
+@media (max-width: 760px) {
+  .os-system {
+    min-height: auto;
+  }
+
+  .os-panel {
+    position: relative;
+    display: none;
+    inset: auto;
+    min-height: 100%;
+  }
+
+  .os-panel.is-active,
+  .os-panel.is-exiting {
+    display: block;
+  }
+
+  .os-panel--home,
+  .os-panel--about {
+    min-height: auto;
+  }
+
+  .os-title {
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0 0 18px;
+    font-size: 1.14rem;
+    letter-spacing: 0.14em;
+    transform: none;
+    white-space: normal;
+  }
+
+  .os-connectors {
+    display: none;
+  }
+
+  .project-map,
+  .skill-map,
+  .experience-map,
+  .about-map,
+  .blog-map,
+  .contact-map {
+    display: grid;
+    width: min(100%, 354px);
+    min-height: 0;
+    gap: 14px;
+    margin: 0 auto;
+  }
+
+  .project-card,
+  .project-card--featured,
+  .skill-card,
+  .experience-card,
+  .experience-card--featured,
+  .about-portrait,
+  .about-card,
+  .blog-card,
+  .blog-reader,
+  .contact-primary,
+  .contact-link {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    min-height: auto;
+  }
+
+  .blog-list,
+  .blog-readers {
+    position: relative;
+    inset: auto;
+    left: auto;
+    top: auto;
+    width: 100%;
+  }
+
+  .blog-map[data-reader-open="true"] .blog-list {
+    display: none;
+  }
+
+  .blog-map:not([data-reader-open="true"]) .blog-readers {
+    display: none;
+  }
+
+  .blog-reader {
+    max-height: none;
+  }
+
+  .os-card-content {
+    padding: 17px;
+  }
+
+  .project-visual {
+    height: 94px;
+  }
+
+  .about-portrait {
+    height: 296px;
+  }
+
+  .about-portrait-frame {
+    inset: 16px 16px 76px;
+  }
+
+  .xeno-navbar {
+    left: 24px;
+    right: 24px;
+    gap: 1px;
+  }
+
+  .xeno-nav-button,
+  .xeno-nav-button[data-depth="0"],
+  .xeno-nav-button[data-depth="1"],
+  .xeno-nav-button[data-depth="2"] {
+    --button-width: clamp(36px, calc((100vw - 86px) / 7), 44px);
+    --button-height: clamp(38px, 10vw, 46px);
+    flex: 0 0 var(--button-width);
+    padding: 4px 3px;
+  }
+
+  .xeno-nav-button.is-active {
+    flex-basis: var(--button-width);
+    width: var(--button-width);
+  }
+
+  .xeno-icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  .xeno-label {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.28rem;
+    letter-spacing: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 

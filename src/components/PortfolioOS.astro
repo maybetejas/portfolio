@@ -1,0 +1,369 @@
+---
+import { getCollection, render } from 'astro:content';
+import HomeBioScan from './home/HomeBioScan.astro';
+
+const corners = ['tl', 'tr', 'bl', 'br'];
+
+const projects = [
+  {
+    title: 'Cockpit Portfolio OS',
+    subtitle: 'Immersive portfolio shell',
+    description: 'Persistent HUD, hyperspace boot, vision modes, animated modules, and SPA-style navigation inside a ship computer interface.',
+    tech: ['Astro', 'TypeScript', 'CSS', 'Canvas'],
+    featured: true
+  },
+  {
+    title: 'AI Ops Console',
+    subtitle: 'Automation command surface',
+    description: 'Agent workflows, operator controls, and compact telemetry for repeated task execution.',
+    tech: ['AI', 'APIs', 'Node']
+  },
+  {
+    title: 'Product Launch Deck',
+    subtitle: 'Interactive case system',
+    description: 'Narrative project pages designed for scanning, proof, and fast handoff.',
+    tech: ['UX', 'Content', 'Motion']
+  },
+  {
+    title: 'Build Monitor',
+    subtitle: 'Signal dashboard',
+    description: 'Small status widgets for deploys, clients, repos, and runtime state.',
+    tech: ['Data', 'UI', 'Astro']
+  }
+];
+
+const skillGroups = [
+  { title: 'Languages', items: ['TypeScript', 'JavaScript', 'Python', 'SQL'] },
+  { title: 'Frontend', items: ['Astro', 'React', 'HTML', 'CSS', 'Motion'] },
+  { title: 'Backend', items: ['Node.js', 'APIs', 'Auth', 'Serverless'] },
+  { title: 'AI Systems', items: ['Agents', 'RAG', 'Prompting', 'Automation'] },
+  { title: 'Infrastructure', items: ['Git', 'CI', 'Vercel', 'Cloud'] },
+  { title: 'Databases', items: ['Postgres', 'Supabase', 'Vector DBs'] },
+  { title: 'Tools', items: ['Figma', 'Playwright', 'GitHub', 'Analytics'] }
+];
+
+const roles = [
+  {
+    company: 'Independent Build Lab',
+    role: 'Full-Stack Developer',
+    duration: '2025 - Present',
+    impact: 'Shipping product-grade web systems with AI-assisted workflows and cockpit-level interface polish.',
+    tech: ['Astro', 'TypeScript', 'AI', 'Automation'],
+    featured: true
+  },
+  {
+    company: 'Client Systems',
+    role: 'Product Engineer',
+    duration: '2024 - 2025',
+    impact: 'Converted rough requirements into working interfaces, dashboards, and launch-ready product flows.',
+    tech: ['React', 'APIs', 'UX']
+  },
+  {
+    company: 'Prototype Studio',
+    role: 'Automation Builder',
+    duration: '2023 - 2024',
+    impact: 'Built internal tools and repeatable workflows for faster research, content, and delivery cycles.',
+    tech: ['Node', 'Python', 'No-code']
+  }
+];
+
+const aboutSignals = {
+  dossier: {
+    kicker: 'Operator Dossier',
+    title: 'Builder of compact, usable systems',
+    body: 'I turn rough product ideas into working web interfaces, AI workflows, and automation surfaces that feel precise instead of noisy.'
+  },
+  style: ['Systems first', 'Fast prototypes', 'Quiet polish', 'Readable handoff'],
+  care: ['Useful interfaces', 'Clear motion', 'Reliable delivery'],
+  current: 'Designing portfolio pages as separate ship systems, each with its own scan pattern and purpose.'
+};
+
+const contactLinks = [
+  { label: 'Email', value: 'your.email@example.com', href: 'mailto:your.email@example.com' },
+  { label: 'Phone', value: '+91 00000 00000', href: 'tel:+910000000000' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/tejas', href: 'https://www.linkedin.com/' },
+  { label: 'GitHub', value: 'github.com/tejas', href: 'https://github.com/' },
+  { label: 'X', value: 'x.com/tejas', href: 'https://x.com/' },
+  { label: 'Upwork', value: 'upwork.com/freelancers/tejas', href: 'https://www.upwork.com/' },
+  { label: 'Fiverr', value: 'fiverr.com/tejas', href: 'https://www.fiverr.com/' }
+];
+
+const posts = (await getCollection('blog'))
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+
+const renderedPosts = await Promise.all(
+  posts.map(async (post) => {
+    const { Content } = await render(post);
+    return { ...post, Content };
+  })
+);
+---
+
+<div class="os-system" data-os-system>
+  <section class="os-panel os-panel--home is-active" data-section-panel="home" data-os-panel="home">
+    <HomeBioScan />
+  </section>
+
+  <section class="os-panel os-panel--projects" data-section-panel="projects" data-os-panel="projects">
+    <h1 class="os-title">PROJECTS</h1>
+    <svg class="os-connectors os-connectors--projects" viewBox="0 0 760 460" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M180 84 H282 L316 118 H372" />
+      <path pathLength="1" d="M460 248 H520 L552 292 H610" />
+      <path pathLength="1" d="M342 332 H288 L258 374 H196" />
+    </svg>
+    <div class="project-map">
+      {projects.map((project, index) => (
+        <article class:list={['os-card project-card', project.featured && 'project-card--featured']} style={`--os-delay: ${380 + index * 160}ms`}>
+          <span class="stats-opener os-opener" aria-hidden="true"></span>
+          {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+          <span class="os-divider" aria-hidden="true"></span>
+          <div class="project-visual" aria-hidden="true"><span></span></div>
+          <div class="os-card-content">
+            <p class="os-kicker">{project.subtitle}</p>
+            <h2>{project.title}</h2>
+            <p>{project.description}</p>
+            <ul class="os-tags">
+              {project.tech.map((tag) => <li>{tag}</li>)}
+            </ul>
+            <a class="os-action" href="/projects/" data-os-action>OPEN</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="os-panel os-panel--skills" data-section-panel="skills" data-os-panel="skills">
+    <h1 class="os-title">SKILLS</h1>
+    <svg class="os-connectors os-connectors--skills" viewBox="0 0 760 460" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M378 86 V128 H278" />
+      <path pathLength="1" d="M390 88 V150 H500" />
+      <path pathLength="1" d="M290 270 H220 V330" />
+      <path pathLength="1" d="M472 262 H552 V328" />
+    </svg>
+    <div class="skill-map">
+      {skillGroups.map((group, index) => (
+        <article class="os-card skill-card" style={`--os-delay: ${320 + index * 95}ms`}>
+          <span class="stats-opener os-opener" aria-hidden="true"></span>
+          {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+          <span class="os-divider" aria-hidden="true"></span>
+          <div class="os-card-content">
+            <h2>{group.title}</h2>
+            <ul class="os-tags os-tags--stack">
+              {group.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="os-panel os-panel--experience" data-section-panel="experience" data-os-panel="experience">
+    <h1 class="os-title">EXPERIENCE</h1>
+    <svg class="os-connectors os-connectors--experience" viewBox="0 0 760 460" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M132 160 H250 L310 218 H382" />
+      <path pathLength="1" d="M388 218 H474 L538 284 H638" />
+      <path pathLength="1" d="M382 218 V390" />
+    </svg>
+    <div class="experience-map">
+      {roles.map((role, index) => (
+        <article class:list={['os-card experience-card', role.featured && 'experience-card--featured']} style={`--os-delay: ${360 + index * 180}ms`}>
+          <span class="stats-opener os-opener" aria-hidden="true"></span>
+          {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+          <span class="os-divider" aria-hidden="true"></span>
+          <div class="os-card-content">
+            <p class="os-kicker">{role.duration}</p>
+            <h2>{role.role}</h2>
+            <strong>{role.company}</strong>
+            <p>{role.impact}</p>
+            <ul class="os-tags">
+              {role.tech.map((tag) => <li>{tag}</li>)}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="os-panel os-panel--about" data-section-panel="about" data-os-panel="about">
+    <h1 class="os-title">ABOUT</h1>
+    <svg class="os-connectors os-connectors--about" viewBox="0 0 760 460" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M320 154 H386 L420 116 H506" />
+      <path pathLength="1" d="M320 248 H392 L426 288 H500" />
+      <path pathLength="1" d="M256 344 H330 L366 386 H464" />
+    </svg>
+    <div class="about-map">
+      <article class="os-card about-portrait" style="--os-delay: 300ms" aria-label="Operator portrait">
+        <span class="stats-opener os-opener" aria-hidden="true"></span>
+        {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+        <div class="about-portrait-frame">
+          <img src="/assets/operator-portrait.png" alt="Portrait of Tejas Khandelwal" loading="eager" decoding="async" />
+          <span class="about-portrait-noise" aria-hidden="true"></span>
+          <span class="about-portrait-scan" aria-hidden="true"></span>
+        </div>
+        <div class="os-card-content about-portrait-caption">
+          <p class="os-kicker">Identity confirmed</p>
+          <h2>TEJAS KHANDELWAL</h2>
+        </div>
+      </article>
+
+      <article class="os-card about-card about-card--dossier" style="--os-delay: 520ms">
+        <span class="stats-opener os-opener" aria-hidden="true"></span>
+        {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+        <span class="os-divider" aria-hidden="true"></span>
+        <div class="os-card-content">
+          <p class="os-kicker">{aboutSignals.dossier.kicker}</p>
+          <h2>{aboutSignals.dossier.title}</h2>
+          <p>{aboutSignals.dossier.body}</p>
+        </div>
+      </article>
+
+      <article class="os-card about-card about-card--style" style="--os-delay: 700ms">
+        <span class="stats-opener os-opener" aria-hidden="true"></span>
+        {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+        <span class="os-divider" aria-hidden="true"></span>
+        <div class="os-card-content">
+          <p class="os-kicker">Operating Style</p>
+          <ul class="os-tags os-tags--stack">
+            {aboutSignals.style.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </article>
+
+      <article class="os-card about-card about-card--care" style="--os-delay: 880ms">
+        <span class="stats-opener os-opener" aria-hidden="true"></span>
+        {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+        <span class="os-divider" aria-hidden="true"></span>
+        <div class="os-card-content">
+          <p class="os-kicker">Signal Priority</p>
+          <ul class="os-tags os-tags--stack">
+            {aboutSignals.care.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </article>
+
+      <article class="os-card about-card about-card--current" style="--os-delay: 1060ms">
+        <span class="stats-opener os-opener" aria-hidden="true"></span>
+        {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+        <span class="os-divider" aria-hidden="true"></span>
+        <div class="os-card-content">
+          <p class="os-kicker">Current Signal</p>
+          <p>{aboutSignals.current}</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="os-panel os-panel--blog" data-section-panel="blog" data-os-panel="blog">
+    <h1 class="os-title">BLOG</h1>
+    <svg class="os-connectors os-connectors--blog" viewBox="0 0 760 460" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M176 118 H302 L346 160 H432" />
+      <path pathLength="1" d="M432 236 H348 L304 306 H184" />
+      <path pathLength="1" d="M530 176 H598 V318" />
+    </svg>
+    <div class="blog-map" data-blog-map>
+      <div class="blog-list" data-blog-list>
+        {renderedPosts.length > 0 ? renderedPosts.map((post, index) => (
+          <article class="os-card blog-card" style={`--os-delay: ${360 + index * 130}ms`}>
+            <span class="stats-opener os-opener" aria-hidden="true"></span>
+            {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+            <span class="os-divider" aria-hidden="true"></span>
+            <div class="os-card-content">
+              <p class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+              <h2>{post.data.title}</h2>
+              <p>{post.data.description}</p>
+              <ul class="os-tags">
+                {post.data.tags.map((tag) => <li>{tag}</li>)}
+              </ul>
+              <button class="os-action" type="button" data-blog-open={post.id}>OPEN FILE</button>
+            </div>
+          </article>
+        )) : (
+          <article class="os-card blog-card">
+            <span class="stats-opener os-opener" aria-hidden="true"></span>
+            {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+            <div class="os-card-content">
+              <h2>No logs found</h2>
+              <p>Add Markdown files in src/content/blog and set draft to false.</p>
+            </div>
+          </article>
+        )}
+      </div>
+      <div class="blog-readers" data-blog-readers>
+        {renderedPosts.map((post, index) => {
+          const Content = post.Content;
+          return (
+            <article class:list={['os-card blog-reader', index === 0 && 'is-active']} data-blog-reader={post.id}>
+              <span class="stats-opener os-opener" aria-hidden="true"></span>
+              {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+              <div class="os-card-content prose">
+                <button class="os-back" type="button" data-blog-close>BACK</button>
+                <p class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                <h2>{post.data.title}</h2>
+                <p>{post.data.description}</p>
+                <Content />
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <section class="os-panel os-panel--contact" data-section-panel="contact" data-os-panel="contact">
+    <h1 class="os-title">COMMS</h1>
+    <svg class="os-connectors os-connectors--contact" viewBox="0 0 760 460" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M148 136 H280 L326 198 H420" />
+      <path pathLength="1" d="M420 198 H558 L610 256" />
+      <path pathLength="1" d="M326 292 H230 L182 354" />
+    </svg>
+    <div class="contact-map">
+      <article class="os-card contact-primary" style="--os-delay: 340ms">
+        <span class="stats-opener os-opener" aria-hidden="true"></span>
+        {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+        <span class="os-divider" aria-hidden="true"></span>
+        <div class="os-card-content">
+          <p class="os-kicker">Transmission ready</p>
+          <h2>Start a conversation</h2>
+          <p>Send the mission brief, project idea, or collaboration signal. Email is the primary channel.</p>
+          <a class="os-action" href="mailto:your.email@example.com">SEND EMAIL</a>
+        </div>
+      </article>
+      {contactLinks.map((link, index) => (
+        <a class="os-card contact-link" href={link.href} style={`--os-delay: ${520 + index * 90}ms`}>
+          <span class="stats-opener os-opener" aria-hidden="true"></span>
+          {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+          <div class="os-card-content">
+            <p class="os-kicker">{link.label}</p>
+            <h2>{link.value}</h2>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</div>
+
+<script>
+  const blogMap = document.querySelector<HTMLElement>('[data-blog-map]');
+  const blogOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-blog-open]'));
+  const blogCloseButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-blog-close]'));
+  const blogReaders = Array.from(document.querySelectorAll<HTMLElement>('[data-blog-reader]'));
+
+  blogOpenButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const postId = button.dataset.blogOpen;
+      if (!postId || !blogMap) return;
+
+      blogMap.dataset.readerOpen = 'true';
+      blogReaders.forEach((reader) => {
+        reader.classList.toggle('is-active', reader.dataset.blogReader === postId);
+      });
+    });
+  });
+
+  blogCloseButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      if (blogMap) blogMap.dataset.readerOpen = 'false';
+    });
+  });
+</script>

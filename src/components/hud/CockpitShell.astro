@@ -5,20 +5,28 @@ import VisionModeSwitch from './VisionModeSwitch.astro';
 
 const navItems = [
   {
-    href: '/about/',
-    section: 'about',
-    label: 'ABOUT',
-    radarX: 45,
-    radarY: 38,
-    icon: '<path d="M12 4.5c2.4 2.5 4.2 5.2 4.2 8.1 0 2.7-1.6 4.8-4.2 6.9-2.6-2.1-4.2-4.2-4.2-6.9 0-2.9 1.8-5.6 4.2-8.1Z" /><path d="M12 13.5v6" />'
-  },
-  {
     href: '/projects/',
     section: 'projects',
     label: 'PROJECTS',
+    radarX: 34,
+    radarY: 48,
+    icon: '<path d="M4.5 7.5h15v10h-15z" /><path d="M8 11h8" /><path d="M8 14h5" />'
+  },
+  {
+    href: '/tech-stack/',
+    section: 'skills',
+    label: 'SKILLS',
+    radarX: 42,
+    radarY: 36,
+    icon: '<path d="M12 4.5v15" /><path d="M5.5 9h13" /><path d="M7.5 15h9" /><path d="M8.5 4.5l7 15" /><path d="M15.5 4.5l-7 15" />'
+  },
+  {
+    href: '/experience/',
+    section: 'experience',
+    label: 'EXP',
     radarX: 50,
-    radarY: 50,
-    icon: '<path d="M6 15.5C6 9 12 4.5 12 4.5S18 9 18 15.5" /><path d="M9 16c.75-2.7 3-4.5 3-4.5s2.25 1.8 3 4.5" /><path d="M12 16.5V21" />'
+    radarY: 64,
+    icon: '<path d="M6 19V7.5l6-3 6 3V19" /><path d="M9 10h6" /><path d="M9 13h6" /><path d="M9 16h6" />'
   },
   {
     href: '/',
@@ -29,20 +37,28 @@ const navItems = [
     icon: '<path d="M5.5 14.5 12 7.5l6.5 7" /><path d="M8.25 13.75V20h7.5v-6.25" />'
   },
   {
+    href: '/about/',
+    section: 'about',
+    label: 'ABOUT',
+    radarX: 58,
+    radarY: 38,
+    icon: '<path d="M12 4.5c2.4 2.5 4.2 5.2 4.2 8.1 0 2.7-1.6 4.8-4.2 6.9-2.6-2.1-4.2-4.2-4.2-6.9 0-2.9 1.8-5.6 4.2-8.1Z" /><path d="M12 13.5v6" />'
+  },
+  {
     href: '/blog/',
-    section: 'lab',
-    label: 'LAB',
-    radarX: 62,
-    radarY: 40,
-    icon: '<path d="M12 4.5v15" /><path d="M8 8.5c2.2 1.2 3.2 3.1 4 5.6" /><path d="M16 8.5c-2.2 1.2-3.2 3.1-4 5.6" /><path d="M8.5 16.5h7" />'
+    section: 'blog',
+    label: 'BLOG',
+    radarX: 66,
+    radarY: 50,
+    icon: '<path d="M6.5 5.5h8l3 3v10h-11z" /><path d="M14.5 5.5v3h3" /><path d="M9 12h6" /><path d="M9 15h5" />'
   },
   {
     href: '/contact/',
     section: 'contact',
-    label: 'CONTACT',
-    radarX: 68,
+    label: 'COMMS',
+    radarX: 74,
     radarY: 62,
-    icon: '<path d="M12 4.5v15" /><path d="M8 9.5c1.8 1 3.1 2.2 4 4.6" /><path d="M16 9.5c-1.8 1-3.1 2.2-4 4.6" /><path d="M6.5 17.5c2.8-.4 4.3-1.2 5.5-3.4" /><path d="M17.5 17.5c-2.8-.4-4.3-1.2-5.5-3.4" />'
+    icon: '<path d="M4.5 7.5 12 13l7.5-5.5" /><path d="M5 7h14v10H5z" /><path d="M8 17l3-3" /><path d="M16 17l-3-3" />'
   }
 ];
 
@@ -53,21 +69,24 @@ const normalizePath = (path: string) => {
 
 const currentPath = normalizePath(Astro.url.pathname);
 const isActiveNavItem = (href: string) => href === '/' ? currentPath === href : currentPath.startsWith(href);
-const activeNavItem = navItems.find((item) => isActiveNavItem(item.href)) ?? navItems[2];
+const activeNavItem = navItems.find((item) => isActiveNavItem(item.href)) ?? navItems.find((item) => item.section === 'home') ?? navItems[0];
 const centerNavIndex = Math.floor(navItems.length / 2);
 const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === activeNavItem.section), 0);
 ---
 
 <div class="cockpit-shell" data-cockpit-shell data-current-section={activeNavItem.section} data-vision-mode="visible" data-hud-visibility="visible" data-phase="jump" data-reveal-phase="dark">
   <div class="space-background" aria-hidden="true">
-    <span class="space-layer starfield starfield--distant"></span>
-    <span class="space-layer starfield starfield--mid"></span>
-    <span class="space-layer starfield starfield--near"></span>
-    <span class="space-layer dust-field"></span>
-    <span class="space-layer nebula-field"></span>
-    <span class="space-layer sensor-field sensor-field--uv"></span>
-    <span class="space-layer sensor-field sensor-field--ir"></span>
+    <section class="spectrum-space-layer spectrum-stars spectrum-stars--tiny" data-space-parallax="1">
+      <div class="spectrum-star-field" data-space-stars="tiny"></div>
+    </section>
+    <section class="spectrum-space-layer spectrum-stars spectrum-stars--large" data-space-parallax="2">
+      <div class="spectrum-star-field" data-space-stars="large"></div>
+    </section>
+    <section class="spectrum-space-layer spectrum-stars spectrum-stars--uv" data-space-parallax="3">
+      <div class="spectrum-star-field" data-space-stars="uv"></div>
+    </section>
     <span class="space-layer sensor-sweep"></span>
+    <span class="spectrum-viewport-mask"></span>
   </div>
   <div class="warp-intro" aria-hidden="true">
     <canvas class="hyperspace-canvas" data-hyperspace-canvas></canvas>
@@ -165,7 +184,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   </div>
 
   <main class="content-viewport" data-content-viewport tabindex="-1">
-    <div class="page-slot" hidden>
+    <div class="page-slot">
       <slot />
     </div>
   </main>
@@ -196,6 +215,334 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   let visionModeTimers: number[] = [];
   let spectrumCollapseTimer = 0;
   let travelCollapseTimer = 0;
+  let activeSection = shell?.dataset.currentSection ?? 'home';
+  let sectionSwitchTimer = 0;
+  const panelIntroDuration = 2100;
+  let spectrumSpaceInitialized = false;
+  let uvStarsPopulated = false;
+  let uvStarsStarted = false;
+  let uvStarsCreated = 0;
+  let spaceAnimationFrame = 0;
+  let lastSpacePointerMove = 0;
+
+  const spaceLayers = Array.from(document.querySelectorAll<HTMLElement>('[data-space-parallax]')).map((element) => ({
+    element,
+    depth: Number(element.dataset.spaceParallax),
+    x: 0,
+    y: 0
+  }));
+  const spacePointer = {
+    targetX: 0,
+    targetY: 0,
+    easedX: 0,
+    easedY: 0,
+    active: false
+  };
+  const PARALLAX_RANGE_PX = 1.65;
+  const POINTER_EASE = 0.045;
+  const IDLE_DECAY = 0.94;
+  const STAR_COUNTS = {
+    tiny: 780,
+    large: 58,
+    uv: window.matchMedia('(max-width: 700px)').matches ? 1500 : 2300
+  };
+  const UV_BATCH_SIZE = window.matchMedia('(max-width: 700px)').matches ? 80 : 140;
+  const SPIKE_STAR_COUNT = 4;
+  const LANDMARK_STARS = [
+    { x: 5.7, y: 17.2, size: 2.9, tone: 'var(--star-amber-color)', alpha: 0.90, glow: 14, flare: 42, angle: -1 },
+    { x: 24.8, y: 70.5, size: 2.2, tone: 'var(--star-amber-color)', alpha: 0.82, glow: 11, flare: 32, angle: -12 },
+    { x: 44.2, y: 15.7, size: 2.3, tone: 'var(--star-white-color)', alpha: 0.86, glow: 12, flare: 34, angle: 2 },
+    { x: 59.8, y: 71.1, size: 2.8, tone: 'var(--star-blue-color)', alpha: 0.88, glow: 14, flare: 40, angle: 9 },
+    { x: 74.8, y: 58.8, size: 2.4, tone: 'var(--star-amber-color)', alpha: 0.84, glow: 12, flare: 36, angle: 5 },
+    { x: 91.4, y: 33.8, size: 1.8, tone: 'var(--star-red-color)', alpha: 0.72, glow: 9, flare: 24, angle: 16 }
+  ];
+  const STAR_CLUSTERS = [
+    { x: 9.5, y: 78.4, count: 18, spread: 3.5, tone: 'var(--star-cool-color)' },
+    { x: 39.5, y: 63.8, count: 22, spread: 4.3, tone: 'var(--star-warm-color)' },
+    { x: 63.2, y: 35.0, count: 20, spread: 3.9, tone: 'var(--star-blue-color)' },
+    { x: 83.0, y: 52.8, count: 24, spread: 5.4, tone: 'var(--star-amber-color)' },
+    { x: 71.6, y: 82.0, count: 16, spread: 4.0, tone: 'var(--star-red-color)' }
+  ];
+  const FAR_STARS = [
+    { x: 11.2, y: 24.5, size: 15.5, tone: 'var(--star-white-color)', alpha: 0.28, glow: 20 },
+    { x: 34.8, y: 16.0, size: 10.8, tone: 'var(--star-blue-color)', alpha: 0.22, glow: 16 },
+    { x: 53.6, y: 77.6, size: 18.5, tone: 'var(--star-warm-color)', alpha: 0.20, glow: 22 },
+    { x: 78.4, y: 32.8, size: 13.4, tone: 'var(--star-amber-color)', alpha: 0.24, glow: 18 },
+    { x: 88.8, y: 69.4, size: 11.2, tone: 'var(--star-cool-color)', alpha: 0.18, glow: 15 },
+    { x: 18.5, y: 86.0, size: 19.8, tone: 'var(--star-red-color)', alpha: 0.16, glow: 21 },
+    { x: 66.0, y: 11.8, size: 12.6, tone: 'var(--star-white-color)', alpha: 0.20, glow: 17 }
+  ];
+
+  const createSeededRandom = (seed: number) => () => {
+    seed |= 0;
+    seed = seed + 0x6D2B79F5 | 0;
+    let value = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    value ^= value + Math.imul(value ^ value >>> 7, 61 | value);
+    return ((value ^ value >>> 14) >>> 0) / 4294967296;
+  };
+
+  const seededRandom = createSeededRandom(780199);
+  const randomBetween = (min: number, max: number) => min + seededRandom() * (max - min);
+  const pickStarTone = () => {
+    const tones = [
+      'var(--star-color)',
+      'var(--star-color)',
+      'var(--star-color)',
+      'var(--star-warm-color)',
+      'var(--star-warm-color)',
+      'var(--star-cool-color)',
+      'var(--star-cool-color)',
+      'var(--star-hot-color)',
+      'var(--star-white-color)',
+      'var(--star-amber-color)',
+      'var(--star-blue-color)',
+      'var(--star-red-color)'
+    ];
+    return tones[Math.floor(seededRandom() * tones.length)];
+  };
+
+  const setStarVars = (
+    star: HTMLElement,
+    config: { x: number; y: number; size: number; alpha: number; tone: string; glow?: number; flare?: number; angle?: number }
+  ) => {
+    star.style.setProperty('--x', config.x.toFixed(3));
+    star.style.setProperty('--y', config.y.toFixed(3));
+    star.style.setProperty('--size', config.size.toFixed(3));
+    star.style.setProperty('--alpha', config.alpha.toFixed(3));
+    star.style.setProperty('--tone', config.tone);
+    star.style.setProperty('--glow', (config.glow ?? randomBetween(4, 15)).toFixed(2));
+    star.style.setProperty('--flare', (config.flare ?? randomBetween(14, 42)).toFixed(2));
+    star.style.setProperty('--flare-angle', `${(config.angle ?? randomBetween(-18, 18)).toFixed(2)}deg`);
+  };
+
+  const createSpectrumStar = ({ large = false } = {}) => {
+    const star = document.createElement('span');
+    const bright = large && seededRandom() > 0.985;
+    const rareGiant = seededRandom() > 0.992;
+    const size = large
+      ? (rareGiant ? randomBetween(3.6, 4.9) : randomBetween(1.0, 3.4))
+      : randomBetween(0.28, 1.62);
+    const alpha = large ? randomBetween(0.38, 0.92) : randomBetween(0.14, 0.84);
+
+    star.className = bright ? 'spectrum-star is-bright' : 'spectrum-star';
+    setStarVars(star, {
+      x: randomBetween(0.5, 99.5),
+      y: randomBetween(0.5, 99.5),
+      size,
+      alpha,
+      tone: pickStarTone()
+    });
+    return star;
+  };
+
+  const createUvSpectrumStar = () => {
+    const star = document.createElement('span');
+    const roll = seededRandom();
+    const giant = roll > 0.985;
+    const hot = roll > 0.94;
+    const size = giant ? randomBetween(2.5, 4.6) : hot ? randomBetween(0.9, 2.2) : randomBetween(0.28, 1.08);
+    const alpha = giant ? randomBetween(0.78, 0.98) : hot ? randomBetween(0.52, 0.92) : randomBetween(0.24, 0.72);
+    const tone = seededRandom() > 0.62 ? 'var(--uv-secondary-color)' : 'var(--uv-core-color)';
+
+    star.className = giant ? 'spectrum-star is-uv-giant' : hot ? 'spectrum-star is-uv-hot' : 'spectrum-star';
+    setStarVars(star, {
+      x: randomBetween(0.5, 99.5),
+      y: randomBetween(0.5, 99.5),
+      size,
+      alpha,
+      tone,
+      glow: giant ? randomBetween(12, 24) : hot ? randomBetween(6, 14) : randomBetween(2.5, 8.5),
+      flare: giant ? randomBetween(22, 44) : randomBetween(8, 20),
+      angle: randomBetween(-16, 16)
+    });
+    return star;
+  };
+
+  const createLandmarkStar = (config: (typeof LANDMARK_STARS)[number]) => {
+    const star = document.createElement('span');
+    star.className = 'spectrum-star is-bright is-landmark';
+    setStarVars(star, config);
+    return star;
+  };
+
+  const createFarStar = (config: (typeof FAR_STARS)[number]) => {
+    const star = document.createElement('span');
+    star.className = 'spectrum-far-star';
+    setStarVars(star, config);
+    return star;
+  };
+
+  const createClusterStar = (cluster: (typeof STAR_CLUSTERS)[number]) => {
+    const star = document.createElement('span');
+    const offsetX = randomBetween(-cluster.spread, cluster.spread);
+    const offsetY = randomBetween(-cluster.spread, cluster.spread);
+    star.className = 'spectrum-star';
+    setStarVars(star, {
+      x: Math.max(0.5, Math.min(99.5, cluster.x + offsetX)),
+      y: Math.max(0.5, Math.min(99.5, cluster.y + offsetY)),
+      size: randomBetween(0.28, 1.22),
+      alpha: randomBetween(0.22, 0.72),
+      tone: cluster.tone,
+      glow: randomBetween(3, 7),
+      flare: randomBetween(8, 20),
+      angle: randomBetween(-12, 12)
+    });
+    return star;
+  };
+
+  const createSpikeStar = () => {
+    const star = document.createElement('span');
+    const core = document.createElement('span');
+    star.className = 'spectrum-spike-star';
+    core.className = 'core';
+    star.style.setProperty('--x', randomBetween(8, 94).toFixed(3));
+    star.style.setProperty('--y', randomBetween(9, 88).toFixed(3));
+    star.style.setProperty('--s', randomBetween(6, 10).toFixed(2));
+    star.style.setProperty('--o', randomBetween(0.58, 0.86).toFixed(3));
+    star.style.setProperty('--r', `${randomBetween(-18, 18).toFixed(2)}deg`);
+    star.style.setProperty('--tone', pickStarTone());
+    star.appendChild(core);
+    return star;
+  };
+
+  const populateStarContainer = (type: 'tiny' | 'large', count: number) => {
+    const container = document.querySelector<HTMLElement>(`[data-space-stars="${type}"]`);
+    if (!container) return;
+
+    const fragment = document.createDocumentFragment();
+    for (let index = 0; index < count; index += 1) {
+      fragment.appendChild(createSpectrumStar({ large: type === 'large' }));
+    }
+    container.replaceChildren(fragment);
+  };
+
+  const addSpacePointsOfInterest = () => {
+    const container = document.querySelector<HTMLElement>('[data-space-stars="large"]');
+    if (!container) return;
+
+    const fragment = document.createDocumentFragment();
+    LANDMARK_STARS.forEach((landmark) => fragment.appendChild(createLandmarkStar(landmark)));
+    FAR_STARS.forEach((farStar) => fragment.appendChild(createFarStar(farStar)));
+    STAR_CLUSTERS.forEach((cluster) => {
+      for (let index = 0; index < cluster.count; index += 1) {
+        fragment.appendChild(createClusterStar(cluster));
+      }
+    });
+    for (let index = 0; index < SPIKE_STAR_COUNT; index += 1) {
+      fragment.appendChild(createSpikeStar());
+    }
+    container.appendChild(fragment);
+  };
+
+  const scheduleUvBatch = (callback: (deadline?: IdleDeadline) => void) => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(callback, { timeout: 160 });
+      return;
+    }
+    window.setTimeout(() => callback(), 16);
+  };
+
+  const populateUvSpectrumStars = () => {
+    if (uvStarsPopulated || uvStarsStarted) return;
+
+    uvStarsStarted = true;
+    const container = document.querySelector<HTMLElement>('[data-space-stars="uv"]');
+    if (!container) return;
+
+    const appendBatch = (deadline?: IdleDeadline) => {
+      const fragment = document.createDocumentFragment();
+      const batchEnd = Math.min(uvStarsCreated + UV_BATCH_SIZE, STAR_COUNTS.uv);
+
+      while (uvStarsCreated < batchEnd && (!deadline || deadline.didTimeout || deadline.timeRemaining() > 1)) {
+        fragment.appendChild(createUvSpectrumStar());
+        uvStarsCreated += 1;
+      }
+
+      container.appendChild(fragment);
+
+      if (uvStarsCreated < STAR_COUNTS.uv) {
+        scheduleUvBatch(appendBatch);
+        return;
+      }
+
+      uvStarsPopulated = true;
+    };
+
+    container.replaceChildren();
+    scheduleUvBatch(appendBatch);
+  };
+
+  const animateSpectrumSpace = () => {
+    spaceAnimationFrame = 0;
+    const isInputIdle = performance.now() - lastSpacePointerMove > 120;
+
+    if (isInputIdle) {
+      spacePointer.active = false;
+    }
+
+    if (!spacePointer.active) {
+      spacePointer.targetX *= IDLE_DECAY;
+      spacePointer.targetY *= IDLE_DECAY;
+    }
+
+    spacePointer.easedX += (spacePointer.targetX - spacePointer.easedX) * POINTER_EASE;
+    spacePointer.easedY += (spacePointer.targetY - spacePointer.easedY) * POINTER_EASE;
+
+    spaceLayers.forEach((layer) => {
+      layer.x = spacePointer.easedX * PARALLAX_RANGE_PX * layer.depth;
+      layer.y = spacePointer.easedY * PARALLAX_RANGE_PX * layer.depth;
+      layer.element.style.setProperty('--px', layer.x.toFixed(3));
+      layer.element.style.setProperty('--py', layer.y.toFixed(3));
+    });
+
+    if (spacePointer.active || Math.abs(spacePointer.easedX) > 0.004 || Math.abs(spacePointer.easedY) > 0.004) {
+      scheduleSpectrumAnimation();
+    }
+  };
+
+  const scheduleSpectrumAnimation = () => {
+    if (!spaceAnimationFrame) {
+      spaceAnimationFrame = requestAnimationFrame(animateSpectrumSpace);
+    }
+  };
+
+  const setSpacePointerTarget = (clientX: number, clientY: number) => {
+    const halfWidth = window.innerWidth / 2;
+    const halfHeight = window.innerHeight / 2;
+    spacePointer.targetX = (clientX - halfWidth) / halfWidth;
+    spacePointer.targetY = (clientY - halfHeight) / halfHeight;
+    spacePointer.active = true;
+    lastSpacePointerMove = performance.now();
+    scheduleSpectrumAnimation();
+  };
+
+  const initializeSpectrumSpace = () => {
+    if (spectrumSpaceInitialized) return;
+
+    spectrumSpaceInitialized = true;
+    populateStarContainer('tiny', STAR_COUNTS.tiny);
+    populateStarContainer('large', STAR_COUNTS.large);
+    addSpacePointsOfInterest();
+
+    window.setTimeout(populateUvSpectrumStars, 700);
+    window.addEventListener('pointermove', (event) => setSpacePointerTarget(event.clientX, event.clientY), { passive: true });
+    window.addEventListener('touchmove', (event) => {
+      const touch = event.touches[0];
+      if (touch) setSpacePointerTarget(touch.clientX, touch.clientY);
+    }, { passive: true });
+    window.addEventListener('touchend', () => {
+      spacePointer.active = false;
+      scheduleSpectrumAnimation();
+    }, { passive: true });
+    window.addEventListener('pointerleave', () => {
+      spacePointer.active = false;
+      scheduleSpectrumAnimation();
+    });
+    window.addEventListener('blur', () => {
+      spacePointer.active = false;
+      scheduleSpectrumAnimation();
+    });
+  };
 
   const createXenoAudio = () => {
     let context: AudioContext | null = null;
@@ -591,17 +938,16 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     return route.endsWith('/') ? route : `${route}/`;
   };
 
-  const setSection = (section: string, route?: string, pushState = true) => {
+  const setSection = (section: string, route?: string, pushState = true, immediate = false) => {
     if (!shell || !viewport) return;
 
-    shell.dataset.currentSection = section;
+    const previousSection = activeSection;
+    const previousPanel = sectionPanels.find((panel) => panel.dataset.sectionPanel === previousSection);
+    const nextPanel = sectionPanels.find((panel) => panel.dataset.sectionPanel === section);
+
+    window.clearTimeout(sectionSwitchTimer);
     viewport.classList.remove('is-switching');
     window.setTimeout(() => viewport.classList.add('is-switching'), 0);
-
-    sectionPanels.forEach((panel) => {
-      const isActive = panel.dataset.sectionPanel === section;
-      panel.classList.toggle('is-active', isActive);
-    });
 
     xenoNavButtons.forEach((button) => {
       const isActive = button.dataset.section === section;
@@ -612,6 +958,33 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         button.removeAttribute('aria-current');
       }
     });
+
+    const activateNext = () => {
+      activeSection = section;
+      shell.dataset.currentSection = section;
+      viewport.scrollTop = 0;
+
+      sectionPanels.forEach((panel) => {
+        const isActive = panel.dataset.sectionPanel === section;
+        panel.classList.toggle('is-active', isActive);
+        panel.classList.remove('is-exiting');
+        panel.classList.toggle('is-entering', isActive);
+      });
+
+      window.setTimeout(() => {
+        nextPanel?.classList.remove('is-entering');
+      }, panelIntroDuration);
+
+      updateScrollDepth();
+    };
+
+    if (immediate || previousSection === section || !previousPanel || !nextPanel) {
+      activateNext();
+    } else {
+      previousPanel.classList.add('is-exiting');
+      previousPanel.classList.remove('is-entering');
+      sectionSwitchTimer = window.setTimeout(activateNext, 420);
+    }
 
     if (route && pushState && normalizeRoute(window.location.pathname) !== normalizeRoute(route)) {
       window.history.pushState({ section }, '', route);
@@ -634,6 +1007,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     currentVisionMode = mode;
     shell.dataset.visionMode = mode;
     setActiveVisionOption(mode);
+    if (mode === 'uv') populateUvSpectrumStars();
   };
 
   const setVisionMode = (mode: string, immediate = false) => {
@@ -659,14 +1033,14 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     shell.dataset.sensorPhase = 'down';
     visionModeTimers.push(window.setTimeout(() => {
       shell.dataset.sensorPhase = 'scan';
-    }, 90));
+    }, 260));
     visionModeTimers.push(window.setTimeout(() => {
       applyVisionMode(nextMode);
       shell.dataset.sensorPhase = 'activate';
-    }, 240));
+    }, 760));
     visionModeTimers.push(window.setTimeout(() => {
       shell.dataset.sensorPhase = 'online';
-    }, 460));
+    }, 1520));
   };
 
   const setHudHidden = (hidden: boolean) => {
@@ -722,6 +1096,11 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       });
     } else if (phase === 'ready') {
       xenoAudio.ready();
+      const activePanel = sectionPanels.find((panel) => panel.classList.contains('is-active'));
+      activePanel?.classList.add('is-entering');
+      window.setTimeout(() => {
+        activePanel?.classList.remove('is-entering');
+      }, panelIntroDuration);
     }
   };
 
@@ -736,8 +1115,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     const context = hyperspaceCanvas.getContext('2d');
     if (!context) return;
 
-    const jumpDuration = 3200;
-    const decelStart = 2200;
+    const jumpDuration = 2100;
+    const decelStart = 1280;
     const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -972,9 +1351,9 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       return;
     }
 
-    const jumpDuration = 3200;
-    const arrivedHold = 500;
-    const bootDuration = 900;
+    const jumpDuration = 2100;
+    const arrivedHold = 240;
+    const bootDuration = 560;
 
     setPhase('jump');
     setRevealPhase('dark');
@@ -1083,10 +1462,26 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   viewport?.addEventListener('scroll', updateScrollDepth, { passive: true });
   window.addEventListener('popstate', () => {
     const matchingButton = xenoNavButtons.find((button) => normalizeRoute(button.dataset.route ?? '') === normalizeRoute(window.location.pathname));
-    setSection(matchingButton?.dataset.section ?? 'home', undefined, false);
+    setSection(matchingButton?.dataset.section ?? 'home', undefined, false, true);
   });
 
-  setSection(shell?.dataset.currentSection ?? 'projects', undefined, false);
+  const shouldForceFirstBootHome = (() => {
+    try {
+      const bootKey = 'cockpit:first-boot-complete';
+      const hasBooted = window.sessionStorage.getItem(bootKey) === 'true';
+      window.sessionStorage.setItem(bootKey, 'true');
+      return !hasBooted && normalizeRoute(window.location.pathname) !== '/';
+    } catch {
+      return false;
+    }
+  })();
+
+  if (shouldForceFirstBootHome) {
+    window.history.replaceState({ section: 'home' }, '', '/');
+  }
+
+  initializeSpectrumSpace();
+  setSection(shouldForceFirstBootHome ? 'home' : shell?.dataset.currentSection ?? 'home', undefined, false, true);
   setVisionMode('visible', true);
   setHudHidden(false);
   updateScrollDepth();
