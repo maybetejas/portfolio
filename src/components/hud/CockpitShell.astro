@@ -107,7 +107,12 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     <VisionModeSwitch />
     <ScrollDepthMeter />
 
-    <nav class="xeno-navbar hud-boot-item" aria-label="Primary navigation" data-xeno-navbar data-boot-order="5">
+    <button class="xeno-menu-toggle hud-boot-item" type="button" data-xeno-menu-toggle data-boot-order="5" aria-expanded="false" aria-controls="xeno-primary-nav">
+      <span class="xeno-menu-toggle__icon" aria-hidden="true"></span>
+      <span class="xeno-menu-toggle__label" data-xeno-menu-label>{activeNavItem.label}</span>
+    </button>
+
+    <nav class="xeno-navbar hud-boot-item" id="xeno-primary-nav" aria-label="Primary navigation" data-xeno-navbar data-boot-order="5" data-expanded="false">
       {
         navItems.map((item, index) => (
           <a
@@ -193,6 +198,9 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 <script>
   const shell = document.querySelector<HTMLElement>('[data-cockpit-shell]');
   const viewport = document.querySelector<HTMLElement>('[data-content-viewport]');
+  const xenoNavbar = document.querySelector<HTMLElement>('[data-xeno-navbar]');
+  const xenoMenuToggle = document.querySelector<HTMLButtonElement>('[data-xeno-menu-toggle]');
+  const xenoMenuLabel = document.querySelector<HTMLElement>('[data-xeno-menu-label]');
   const xenoNavButtons = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-xeno-nav-button]'));
   const sectionPanels = Array.from(document.querySelectorAll<HTMLElement>('[data-section-panel]'));
   const visionOptions = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-vision-option]'));
@@ -218,6 +226,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   let activeSection = shell?.dataset.currentSection ?? 'home';
   let sectionSwitchTimer = 0;
   const panelIntroDuration = 2100;
+  const mobileMedia = window.matchMedia('(max-width: 760px)');
+  const lowPowerMedia = window.matchMedia('(hover: none), (pointer: coarse), (max-width: 760px)');
   let spectrumSpaceInitialized = false;
   let uvStarsPopulated = false;
   let uvStarsStarted = false;
@@ -242,12 +252,12 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const POINTER_EASE = 0.045;
   const IDLE_DECAY = 0.94;
   const STAR_COUNTS = {
-    tiny: 780,
-    large: 58,
-    uv: window.matchMedia('(max-width: 700px)').matches ? 1500 : 2300
+    tiny: mobileMedia.matches ? 95 : 180,
+    large: mobileMedia.matches ? 14 : 26,
+    uv: mobileMedia.matches ? 180 : 360
   };
-  const UV_BATCH_SIZE = window.matchMedia('(max-width: 700px)').matches ? 80 : 140;
-  const SPIKE_STAR_COUNT = 4;
+  const UV_BATCH_SIZE = mobileMedia.matches ? 45 : 80;
+  const SPIKE_STAR_COUNT = mobileMedia.matches ? 1 : 2;
   const LANDMARK_STARS = [
     { x: 5.7, y: 17.2, size: 2.9, tone: 'var(--star-amber-color)', alpha: 0.90, glow: 14, flare: 42, angle: -1 },
     { x: 24.8, y: 70.5, size: 2.2, tone: 'var(--star-amber-color)', alpha: 0.82, glow: 11, flare: 32, angle: -12 },
@@ -256,12 +266,13 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     { x: 74.8, y: 58.8, size: 2.4, tone: 'var(--star-amber-color)', alpha: 0.84, glow: 12, flare: 36, angle: 5 },
     { x: 91.4, y: 33.8, size: 1.8, tone: 'var(--star-red-color)', alpha: 0.72, glow: 9, flare: 24, angle: 16 }
   ];
+  const clusterScale = mobileMedia.matches ? 0.22 : 0.38;
   const STAR_CLUSTERS = [
-    { x: 9.5, y: 78.4, count: 18, spread: 3.5, tone: 'var(--star-cool-color)' },
-    { x: 39.5, y: 63.8, count: 22, spread: 4.3, tone: 'var(--star-warm-color)' },
-    { x: 63.2, y: 35.0, count: 20, spread: 3.9, tone: 'var(--star-blue-color)' },
-    { x: 83.0, y: 52.8, count: 24, spread: 5.4, tone: 'var(--star-amber-color)' },
-    { x: 71.6, y: 82.0, count: 16, spread: 4.0, tone: 'var(--star-red-color)' }
+    { x: 9.5, y: 78.4, count: Math.max(2, Math.round(18 * clusterScale)), spread: 3.5, tone: 'var(--star-cool-color)' },
+    { x: 39.5, y: 63.8, count: Math.max(2, Math.round(22 * clusterScale)), spread: 4.3, tone: 'var(--star-warm-color)' },
+    { x: 63.2, y: 35.0, count: Math.max(2, Math.round(20 * clusterScale)), spread: 3.9, tone: 'var(--star-blue-color)' },
+    { x: 83.0, y: 52.8, count: Math.max(2, Math.round(24 * clusterScale)), spread: 5.4, tone: 'var(--star-amber-color)' },
+    { x: 71.6, y: 82.0, count: Math.max(2, Math.round(16 * clusterScale)), spread: 4.0, tone: 'var(--star-red-color)' }
   ];
   const FAR_STARS = [
     { x: 11.2, y: 24.5, size: 15.5, tone: 'var(--star-white-color)', alpha: 0.28, glow: 20 },
@@ -524,24 +535,17 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     populateStarContainer('large', STAR_COUNTS.large);
     addSpacePointsOfInterest();
 
-    window.setTimeout(populateUvSpectrumStars, 700);
-    window.addEventListener('pointermove', (event) => setSpacePointerTarget(event.clientX, event.clientY), { passive: true });
-    window.addEventListener('touchmove', (event) => {
-      const touch = event.touches[0];
-      if (touch) setSpacePointerTarget(touch.clientX, touch.clientY);
-    }, { passive: true });
-    window.addEventListener('touchend', () => {
-      spacePointer.active = false;
-      scheduleSpectrumAnimation();
-    }, { passive: true });
-    window.addEventListener('pointerleave', () => {
-      spacePointer.active = false;
-      scheduleSpectrumAnimation();
-    });
-    window.addEventListener('blur', () => {
-      spacePointer.active = false;
-      scheduleSpectrumAnimation();
-    });
+    if (!lowPowerMedia.matches) {
+      window.addEventListener('pointermove', (event) => setSpacePointerTarget(event.clientX, event.clientY), { passive: true });
+      window.addEventListener('pointerleave', () => {
+        spacePointer.active = false;
+        scheduleSpectrumAnimation();
+      });
+      window.addEventListener('blur', () => {
+        spacePointer.active = false;
+        scheduleSpectrumAnimation();
+      });
+    }
   };
 
   const createXenoAudio = () => {
@@ -952,6 +956,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     xenoNavButtons.forEach((button) => {
       const isActive = button.dataset.section === section;
       button.classList.toggle('is-active', isActive);
+      if (isActive && xenoMenuLabel) xenoMenuLabel.textContent = button.querySelector('.xeno-label')?.textContent ?? 'MENU';
       if (isActive) {
         button.setAttribute('aria-current', 'page');
       } else {
@@ -1052,6 +1057,12 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     if (hudToggleLabel) hudToggleLabel.textContent = hidden ? 'SHOW HUD' : 'HIDE HUD';
   };
 
+  const setMobileMenuExpanded = (expanded: boolean) => {
+    xenoNavbar?.setAttribute('data-expanded', String(expanded));
+    xenoMenuToggle?.setAttribute('aria-expanded', String(expanded));
+    if (shell) shell.dataset.mobileMenu = expanded ? 'open' : 'closed';
+  };
+
   const updateScrollDepth = () => {
     if (!viewport || !scrollDepth || !scrollPercent) return;
     const maxScroll = Math.max(viewport.scrollHeight - viewport.clientHeight, 1);
@@ -1115,16 +1126,16 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     const context = hyperspaceCanvas.getContext('2d');
     if (!context) return;
 
-    const jumpDuration = 2100;
-    const decelStart = 1280;
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+    const jumpDuration = lowPowerMedia.matches ? 1280 : 1700;
+    const decelStart = lowPowerMedia.matches ? 720 : 980;
+    const dpr = Math.min(window.devicePixelRatio || 1, lowPowerMedia.matches ? 1.15 : 1.35);
     const width = window.innerWidth;
     const height = window.innerHeight;
     const centerX = width / 2;
     const centerY = height / 2;
     const focalLength = Math.min(width, height) * 0.72;
-    const starCount = width < 760 ? 260 : 420;
-    const calmStarCount = width < 760 ? 90 : 150;
+    const starCount = width < 760 ? 110 : 210;
+    const calmStarCount = width < 760 ? 24 : 48;
     const colors = [
       [255, 255, 255],
       [197, 239, 247],
@@ -1275,10 +1286,16 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
       const drift = (time: number) => {
         renderCalmSpace(time, true);
-        calmFrame = window.requestAnimationFrame(drift);
+        if (document.visibilityState === 'visible' && !lowPowerMedia.matches) {
+          calmFrame = window.requestAnimationFrame(drift);
+        }
       };
 
-      calmFrame = window.requestAnimationFrame(drift);
+      if (lowPowerMedia.matches) {
+        renderCalmSpace(performance.now(), false);
+      } else {
+        calmFrame = window.requestAnimationFrame(drift);
+      }
     };
 
     const draw = (time: number) => {
@@ -1351,9 +1368,9 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       return;
     }
 
-    const jumpDuration = 2100;
-    const arrivedHold = 240;
-    const bootDuration = 560;
+    const jumpDuration = lowPowerMedia.matches ? 1280 : 1700;
+    const arrivedHold = lowPowerMedia.matches ? 120 : 180;
+    const bootDuration = lowPowerMedia.matches ? 420 : 500;
 
     setPhase('jump');
     setRevealPhase('dark');
@@ -1397,8 +1414,15 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
       event.preventDefault();
       xenoAudio.uiSelect();
+      setMobileMenuExpanded(false);
       setSection(section, route);
     });
+  });
+
+  xenoMenuToggle?.addEventListener('click', () => {
+    const isExpanded = xenoNavbar?.dataset.expanded === 'true';
+    setMobileMenuExpanded(!isExpanded);
+    xenoAudio.uiSelect();
   });
 
   visionOptions.forEach((option) => {
@@ -1464,6 +1488,11 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     const matchingButton = xenoNavButtons.find((button) => normalizeRoute(button.dataset.route ?? '') === normalizeRoute(window.location.pathname));
     setSection(matchingButton?.dataset.section ?? 'home', undefined, false, true);
   });
+
+  window.addEventListener('resize', () => {
+    if (!mobileMedia.matches) setMobileMenuExpanded(false);
+    updateScrollDepth();
+  }, { passive: true });
 
   const shouldForceFirstBootHome = (() => {
     try {
