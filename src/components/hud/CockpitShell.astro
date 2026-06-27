@@ -76,15 +76,23 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
 <div class="cockpit-shell" data-cockpit-shell data-current-section={activeNavItem.section} data-vision-mode="visible" data-hud-visibility="visible" data-phase="jump" data-reveal-phase="dark">
   <div class="space-background" aria-hidden="true">
-    <section class="spectrum-space-layer spectrum-stars spectrum-stars--tiny" data-space-parallax="1">
-      <div class="spectrum-star-field" data-space-stars="tiny"></div>
-    </section>
-    <section class="spectrum-space-layer spectrum-stars spectrum-stars--large" data-space-parallax="2">
-      <div class="spectrum-star-field" data-space-stars="large"></div>
-    </section>
-    <section class="spectrum-space-layer spectrum-stars spectrum-stars--uv" data-space-parallax="3">
-      <div class="spectrum-star-field" data-space-stars="uv"></div>
-    </section>
+    <div class="space-drift-field">
+      <div class="space-attitude-field">
+        <div class="spectrum-image-field" data-spectrum-background data-spectrum-state="hidden">
+          <img class="spectrum-bg-image" data-spectrum-image src="/assets/visible.png" alt="" decoding="async" />
+          <span class="spectrum-filter-shutter" aria-hidden="true"></span>
+        </div>
+        <section class="spectrum-space-layer spectrum-stars spectrum-stars--tiny" data-space-parallax="1">
+          <div class="spectrum-star-field" data-space-stars="tiny"></div>
+        </section>
+        <section class="spectrum-space-layer spectrum-stars spectrum-stars--large" data-space-parallax="2">
+          <div class="spectrum-star-field" data-space-stars="large"></div>
+        </section>
+        <section class="spectrum-space-layer spectrum-stars spectrum-stars--uv" data-space-parallax="3">
+          <div class="spectrum-star-field" data-space-stars="uv"></div>
+        </section>
+      </div>
+    </div>
     <span class="space-layer sensor-sweep"></span>
     <span class="spectrum-viewport-mask"></span>
   </div>
@@ -215,12 +223,16 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const scrollPercent = document.querySelector<HTMLOutputElement>('[data-scroll-percent]');
   const warpIntro = document.querySelector<HTMLElement>('.warp-intro');
   const hyperspaceCanvas = document.querySelector<HTMLCanvasElement>('[data-hyperspace-canvas]');
+  const spectrumBackground = document.querySelector<HTMLElement>('[data-spectrum-background]');
+  const spectrumImage = document.querySelector<HTMLImageElement>('[data-spectrum-image]');
   type CockpitPhase = 'jump' | 'arrived' | 'boot' | 'ready';
   type RevealPhase = 'dark' | 'wake' | 'awake' | 'charge' | 'settled';
   type VisionMode = 'visible' | 'uv' | 'ir';
   let currentPhase: CockpitPhase = 'jump';
   let currentVisionMode: VisionMode = 'visible';
   let visionModeTimers: number[] = [];
+  let spectrumBackgroundPreload: Promise<void> | null = null;
+  const spectrumPreloadImages: HTMLImageElement[] = [];
   let spectrumCollapseTimer = 0;
   let travelCollapseTimer = 0;
   let activeSection = shell?.dataset.currentSection ?? 'home';
@@ -252,11 +264,18 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const PARALLAX_RANGE_PX = 1.65;
   const POINTER_EASE = 0.045;
   const IDLE_DECAY = 0.94;
+  const SPECTRUM_BACKGROUND_URLS: Record<VisionMode, string> = {
+    visible: '/assets/visible.png',
+    uv: '/assets/uv.png',
+    ir: '/assets/ir.png'
+  };
   const STAR_COUNTS = {
     tiny: mobileMedia.matches ? 95 : 180,
     large: mobileMedia.matches ? 14 : 26,
     uv: mobileMedia.matches ? 180 : 360
   };
+  const GLOW_STAR_COUNT = mobileMedia.matches ? 9 : 18;
+  const UV_GLOW_STAR_COUNT = mobileMedia.matches ? 8 : 14;
   const UV_BATCH_SIZE = mobileMedia.matches ? 45 : 80;
   const SPIKE_STAR_COUNT = mobileMedia.matches ? 1 : 2;
   const LANDMARK_STARS = [
@@ -377,6 +396,46 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     return star;
   };
 
+  const createGlowStar = () => {
+    const star = document.createElement('span');
+    const brightTone = seededRandom() > 0.36 ? 'var(--star-white-color)' : seededRandom() > 0.5 ? 'var(--star-blue-color)' : 'var(--star-warm-color)';
+    const size = randomBetween(2.1, 5.8);
+
+    star.className = 'spectrum-star is-bright is-spectrum-glow';
+    star.style.setProperty('--twinkle-delay', `${randomBetween(0, 4.8).toFixed(2)}s`);
+    setStarVars(star, {
+      x: randomBetween(4, 96),
+      y: randomBetween(7, 91),
+      size,
+      alpha: randomBetween(0.68, 0.98),
+      tone: brightTone,
+      glow: size * randomBetween(5.2, 8.4),
+      flare: size * randomBetween(8, 14),
+      angle: randomBetween(-20, 20)
+    });
+    return star;
+  };
+
+  const createUvGlowStar = () => {
+    const star = document.createElement('span');
+    const size = randomBetween(1.9, 5.2);
+    const tone = seededRandom() > 0.48 ? 'var(--uv-core-color)' : 'var(--uv-secondary-color)';
+
+    star.className = 'spectrum-star is-bright is-spectrum-glow is-uv-glow';
+    star.style.setProperty('--twinkle-delay', `${randomBetween(0, 4.8).toFixed(2)}s`);
+    setStarVars(star, {
+      x: randomBetween(4, 96),
+      y: randomBetween(7, 91),
+      size,
+      alpha: randomBetween(0.64, 0.96),
+      tone,
+      glow: size * randomBetween(5, 8),
+      flare: size * randomBetween(7, 12),
+      angle: randomBetween(-18, 18)
+    });
+    return star;
+  };
+
   const createFarStar = (config: (typeof FAR_STARS)[number]) => {
     const star = document.createElement('span');
     star.className = 'spectrum-far-star';
@@ -440,6 +499,9 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         fragment.appendChild(createClusterStar(cluster));
       }
     });
+    for (let index = 0; index < GLOW_STAR_COUNT; index += 1) {
+      fragment.appendChild(createGlowStar());
+    }
     for (let index = 0; index < SPIKE_STAR_COUNT; index += 1) {
       fragment.appendChild(createSpikeStar());
     }
@@ -477,6 +539,11 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         return;
       }
 
+      const glowFragment = document.createDocumentFragment();
+      for (let index = 0; index < UV_GLOW_STAR_COUNT; index += 1) {
+        glowFragment.appendChild(createUvGlowStar());
+      }
+      container.appendChild(glowFragment);
       uvStarsPopulated = true;
     };
 
@@ -547,6 +614,45 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         scheduleSpectrumAnimation();
       });
     }
+  };
+
+  const preloadSpectrumBackgrounds = () => {
+    if (spectrumBackgroundPreload) return spectrumBackgroundPreload;
+
+    spectrumBackgroundPreload = Promise.all(
+      (Object.keys(SPECTRUM_BACKGROUND_URLS) as VisionMode[]).map((mode) => new Promise<void>((resolve) => {
+        const image = new Image();
+        spectrumPreloadImages.push(image);
+        image.decoding = 'async';
+        image.onload = () => resolve();
+        image.onerror = () => resolve();
+        image.src = SPECTRUM_BACKGROUND_URLS[mode];
+
+        if ('decode' in image) {
+          void image.decode().then(resolve).catch(resolve);
+        }
+      }))
+    ).then(() => undefined);
+
+    return spectrumBackgroundPreload;
+  };
+
+  const setSpectrumBackgroundSource = (mode: VisionMode) => {
+    if (!spectrumImage) return;
+
+    const source = SPECTRUM_BACKGROUND_URLS[mode];
+    if (spectrumImage.getAttribute('src') !== source) {
+      spectrumImage.src = source;
+    }
+  };
+
+  const revealSpectrumBackground = (mode: VisionMode = currentVisionMode) => {
+    if (!spectrumBackground) return;
+
+    void preloadSpectrumBackgrounds().then(() => {
+      setSpectrumBackgroundSource(mode);
+      spectrumBackground.dataset.spectrumState = 'visible';
+    });
   };
 
   const createXenoAudio = () => {
@@ -1033,14 +1139,18 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
     visionModeTimers.forEach((timer) => window.clearTimeout(timer));
     visionModeTimers = [];
+    spectrumBackground?.removeAttribute('data-filter-transition');
 
     if (immediate) {
       shell.dataset.sensorPhase = 'online';
       applyVisionMode(nextMode);
+      setSpectrumBackgroundSource(nextMode);
       return;
     }
 
     if (nextMode === currentVisionMode) return;
+
+    void preloadSpectrumBackgrounds();
 
     visionOptions.forEach((option) => {
       const isPending = option.dataset.visionOption === nextMode;
@@ -1048,16 +1158,25 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     });
 
     shell.dataset.sensorPhase = 'down';
+    if (spectrumBackground?.dataset.spectrumState === 'visible') {
+      spectrumBackground.dataset.filterTransition = 'fade-out';
+    }
+
     visionModeTimers.push(window.setTimeout(() => {
       shell.dataset.sensorPhase = 'scan';
-    }, 260));
+    }, 110));
     visionModeTimers.push(window.setTimeout(() => {
+      setSpectrumBackgroundSource(nextMode);
       applyVisionMode(nextMode);
       shell.dataset.sensorPhase = 'activate';
-    }, 760));
+      if (spectrumBackground?.dataset.spectrumState === 'visible') {
+        spectrumBackground.dataset.filterTransition = 'fade-in';
+      }
+    }, 340));
     visionModeTimers.push(window.setTimeout(() => {
       shell.dataset.sensorPhase = 'online';
-    }, 1520));
+      spectrumBackground?.removeAttribute('data-filter-transition');
+    }, 820));
   };
 
   const setHudHidden = (hidden: boolean) => {
@@ -1373,7 +1492,9 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduceMotion) {
+      setRevealPhase('settled');
       setPhase('ready');
+      revealSpectrumBackground('visible');
       return;
     }
 
@@ -1384,6 +1505,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     setPhase('jump');
     setRevealPhase('dark');
     runHyperspaceJump();
+    void preloadSpectrumBackgrounds();
     window.setTimeout(() => {
       setRevealPhase('wake');
     }, 30);
@@ -1393,6 +1515,9 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     window.setTimeout(() => {
       setRevealPhase('charge');
     }, 260);
+    window.setTimeout(() => {
+      revealSpectrumBackground('visible');
+    }, Math.max(320, jumpDuration - 360));
     window.setTimeout(() => {
       setRevealPhase('settled');
       setPhase('arrived');

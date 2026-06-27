@@ -196,8 +196,8 @@ const renderedPosts = await Promise.all(
       <article class="os-card about-portrait" style="--os-delay: 300ms" aria-label="Operator portrait">
         <span class="stats-opener os-opener" aria-hidden="true"></span>
         {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
-        <div class="about-portrait-frame">
-          <img src="/assets/teesha-khandale-portrait.png" alt="Portrait of Teesha Khandale" loading="eager" decoding="async" />
+        <div class="about-portrait-frame about-portrait-frame--gif">
+          <img class="about-portrait-gif" src="/assets/test.gif" alt="Animated operator signal" loading="eager" decoding="async" />
           <span class="about-portrait-noise" aria-hidden="true"></span>
           <span class="about-portrait-scan" aria-hidden="true"></span>
         </div>
