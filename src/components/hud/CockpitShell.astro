@@ -225,6 +225,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   let travelCollapseTimer = 0;
   let activeSection = shell?.dataset.currentSection ?? 'home';
   let sectionSwitchTimer = 0;
+  let panelIntroTimer = 0;
   const panelIntroDuration = 2100;
   const mobileMedia = window.matchMedia('(max-width: 760px)');
   const lowPowerMedia = window.matchMedia('(hover: none), (pointer: coarse), (max-width: 760px)');
@@ -942,6 +943,19 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     return route.endsWith('/') ? route : `${route}/`;
   };
 
+  const replayPanelIntro = (panel?: HTMLElement | null) => {
+    if (!panel) return;
+
+    window.clearTimeout(panelIntroTimer);
+    panel.classList.remove('is-entering');
+    void panel.offsetWidth;
+    panel.classList.add('is-entering');
+
+    panelIntroTimer = window.setTimeout(() => {
+      panel.classList.remove('is-entering');
+    }, panelIntroDuration);
+  };
+
   const setSection = (section: string, route?: string, pushState = true, immediate = false) => {
     if (!shell || !viewport) return;
 
@@ -973,12 +987,10 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         const isActive = panel.dataset.sectionPanel === section;
         panel.classList.toggle('is-active', isActive);
         panel.classList.remove('is-exiting');
-        panel.classList.toggle('is-entering', isActive);
+        if (!isActive) panel.classList.remove('is-entering');
       });
 
-      window.setTimeout(() => {
-        nextPanel?.classList.remove('is-entering');
-      }, panelIntroDuration);
+      replayPanelIntro(nextPanel);
 
       updateScrollDepth();
     };
@@ -1108,10 +1120,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     } else if (phase === 'ready') {
       xenoAudio.ready();
       const activePanel = sectionPanels.find((panel) => panel.classList.contains('is-active'));
-      activePanel?.classList.add('is-entering');
-      window.setTimeout(() => {
-        activePanel?.classList.remove('is-entering');
-      }, panelIntroDuration);
+      replayPanelIntro(activePanel);
     }
   };
 
@@ -1370,7 +1379,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
     const jumpDuration = lowPowerMedia.matches ? 1280 : 1700;
     const arrivedHold = lowPowerMedia.matches ? 120 : 180;
-    const bootDuration = lowPowerMedia.matches ? 420 : 500;
+    const bootDuration = lowPowerMedia.matches ? 1380 : 2050;
 
     setPhase('jump');
     setRevealPhase('dark');
@@ -1494,23 +1503,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     updateScrollDepth();
   }, { passive: true });
 
-  const shouldForceFirstBootHome = (() => {
-    try {
-      const bootKey = 'cockpit:first-boot-complete';
-      const hasBooted = window.sessionStorage.getItem(bootKey) === 'true';
-      window.sessionStorage.setItem(bootKey, 'true');
-      return !hasBooted && normalizeRoute(window.location.pathname) !== '/';
-    } catch {
-      return false;
-    }
-  })();
-
-  if (shouldForceFirstBootHome) {
-    window.history.replaceState({ section: 'home' }, '', '/');
-  }
-
   initializeSpectrumSpace();
-  setSection(shouldForceFirstBootHome ? 'home' : shell?.dataset.currentSection ?? 'home', undefined, false, true);
+  setSection(shell?.dataset.currentSection ?? 'home', undefined, false, true);
   setVisionMode('visible', true);
   setHudHidden(false);
   updateScrollDepth();

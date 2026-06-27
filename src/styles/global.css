@@ -709,6 +709,10 @@ select {
   --boot-order: 4;
 }
 
+.hud-boot-item[data-boot-order="5"] {
+  --boot-order: 5;
+}
+
 .hud-boot-item[data-boot-order="6"] {
   --boot-order: 6;
 }
@@ -5915,6 +5919,110 @@ select {
   animation: bioCardShimmer 300ms ease-out calc(var(--bio-card-delay) + 300ms) forwards;
 }
 
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-title {
+  animation:
+    bioTitleIn 260ms steps(4, end) 90ms both,
+    statsValueFlicker 320ms steps(2, end) 320ms both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-connector {
+  animation:
+    bioConnectorDraw 1250ms cubic-bezier(0.19, 0.78, 0.2, 1) var(--connector-delay, 420ms) both,
+    bioConnectorIdle 5.8s ease-in-out 1700ms infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-module {
+  --bio-card-delay: 500ms;
+
+  animation:
+    systemStatsPanelIn 80ms steps(1, end) var(--bio-card-delay) both,
+    statsValueFlicker 280ms steps(2, end) calc(var(--bio-card-delay) + 520ms) both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-module::before {
+  animation:
+    bioFrameIn 300ms steps(5, end) calc(var(--bio-card-delay) + 20ms) both,
+    bioFrameIdle 4.8s ease-in-out calc(var(--bio-card-delay) + 2100ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-module::after {
+  animation:
+    statsElementIn 120ms steps(2, end) calc(var(--bio-card-delay) + 250ms) both,
+    statsDividerIdleScan 6.4s ease-in-out calc(var(--bio-card-delay) + 2200ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-module .bio-opener {
+  animation: statsOpenerExpand 260ms ease-out var(--bio-card-delay) both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-module .bio-corner {
+  animation:
+    statsCornerDraw 210ms ease-out calc(var(--bio-card-delay) + 230ms) both,
+    statsCornerIdle 4.4s ease-in-out calc(var(--bio-card-delay) + 2100ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-frame {
+  animation: bioPortraitFrameOpen 320ms cubic-bezier(0.18, 0.78, 0.24, 1) calc(var(--bio-card-delay) + 130ms) both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait {
+  animation:
+    bioPortraitIn 430ms steps(6, end) calc(var(--bio-card-delay) + 300ms) both,
+    bioPortraitGlitch 7.2s steps(1, end) calc(var(--bio-card-delay) + 2400ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-frame::after {
+  animation:
+    bioPortraitSweep 470ms ease-out calc(var(--bio-card-delay) + 300ms) both,
+    bioPortraitIdleSweep 6.8s ease-in-out calc(var(--bio-card-delay) + 2500ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-noise {
+  animation:
+    statsElementIn 120ms steps(2, end) calc(var(--bio-card-delay) + 360ms) both,
+    bioNoiseShift 9s steps(2, end) calc(var(--bio-card-delay) + 2500ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-portrait-scan {
+  animation:
+    bioScanAcross 520ms ease-out calc(var(--bio-card-delay) + 400ms) both,
+    bioScanAcross 7.4s ease-in-out calc(var(--bio-card-delay) + 2700ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-card {
+  animation:
+    bioCardOpen 300ms cubic-bezier(0.18, 0.78, 0.24, 1) var(--bio-card-delay) both,
+    statsValueFlicker 260ms steps(2, end) calc(var(--bio-card-delay) + 360ms) both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-card .bio-opener {
+  animation: statsOpenerExpand 220ms ease-out var(--bio-card-delay) both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-card .bio-corner {
+  animation:
+    statsCornerDraw 190ms ease-out calc(var(--bio-card-delay) + 170ms) both,
+    statsCornerIdle 4.6s ease-in-out calc(var(--bio-card-delay) + 760ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-card-content {
+  animation: statsElementIn 130ms steps(2, end) calc(var(--bio-card-delay) + 340ms) both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-card-divider {
+  animation: statsDividerIn 100ms ease-out calc(var(--bio-card-delay) + 260ms) both;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-card-divider::after {
+  animation:
+    statsDividerScan 300ms ease-out calc(var(--bio-card-delay) + 300ms) both,
+    bioDividerIdle 5.9s ease-in-out calc(var(--bio-card-delay) + 1500ms) infinite;
+}
+
+.cockpit-shell[data-phase="ready"] .os-panel--home.is-entering .bio-card::after {
+  animation: bioCardShimmer 300ms ease-out calc(var(--bio-card-delay) + 300ms) both;
+}
+
 .xeno-navbar {
   max-width: min(94vw, 980px);
 }
@@ -6151,14 +6259,18 @@ select {
 
 .cockpit-shell[data-phase="boot"] .portfolio-radar {
   animation:
-    hudBootReveal 300ms steps(4, end) calc(var(--boot-order, 0) * 95ms) forwards,
-    radarBootIn 540ms cubic-bezier(0.18, 0.78, 0.2, 1) calc((var(--boot-order, 0) * 95ms) + 120ms) forwards;
+    hudBootReveal 300ms steps(4, end) calc(var(--boot-order, 0) * 95ms) both,
+    radarBootIn 540ms cubic-bezier(0.18, 0.78, 0.2, 1) calc((var(--boot-order, 0) * 95ms) + 120ms) both;
 }
 
 .cockpit-shell[data-phase="boot"] .scroll-depth {
   animation:
-    hudBootReveal 300ms steps(4, end) calc(var(--boot-order, 0) * 95ms) forwards,
-    scrollMeterBootIn 460ms cubic-bezier(0.18, 0.78, 0.2, 1) calc((var(--boot-order, 0) * 95ms) + 110ms) forwards;
+    hudBootReveal 300ms steps(4, end) calc(var(--boot-order, 0) * 95ms) both,
+    scrollMeterBootIn 460ms cubic-bezier(0.18, 0.78, 0.2, 1) calc((var(--boot-order, 0) * 95ms) + 110ms) both;
+}
+
+.cockpit-shell[data-phase="ready"] .portfolio-radar {
+  opacity: 0.7;
 }
 
 .cockpit-shell[data-phase="boot"] .xeno-menu-toggle {
@@ -6499,6 +6611,326 @@ select {
     top: -13px;
     color: rgb(190 255 255 / 0.76);
     font-size: 0.56rem;
+  }
+}
+
+/* Usable page layout pass for every cockpit section outside Home. */
+.os-panel.is-active:not(.os-panel--home),
+.os-panel.is-exiting:not(.os-panel--home) {
+  position: relative;
+  inset: auto;
+  display: grid;
+  min-height: 100%;
+  align-content: start;
+  gap: 18px;
+  padding: 4px 0 30px;
+  transform: translateZ(8px);
+}
+
+.os-panel:not(.os-panel--home) .os-title {
+  position: relative;
+  left: auto;
+  top: auto;
+  margin: 0 auto 2px;
+  font-size: clamp(1.28rem, 2.4vw, 2.1rem);
+  letter-spacing: 0.14em;
+  line-height: 1;
+  transform: none;
+}
+
+.os-panel:not(.os-panel--home) .os-connectors {
+  display: none;
+}
+
+.project-map,
+.skill-map,
+.experience-map,
+.about-map,
+.blog-map,
+.contact-map {
+  display: grid;
+  width: min(100%, 920px);
+  min-height: 0;
+  gap: 14px;
+  margin: 0 auto;
+}
+
+.project-card,
+.project-card--featured,
+.skill-card,
+.experience-card,
+.experience-card--featured,
+.about-portrait,
+.about-card,
+.blog-card,
+.blog-reader,
+.contact-primary,
+.contact-link {
+  position: relative;
+  left: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: auto !important;
+  min-height: 0;
+}
+
+.project-map {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.project-card--featured {
+  grid-column: 1 / -1;
+}
+
+.project-card--featured .project-visual {
+  height: 128px;
+}
+
+.skill-map {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.skill-card .os-card-content {
+  min-height: 132px;
+}
+
+.experience-map {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+
+.experience-card {
+  border-left: 1px solid rgb(0 225 235 / 0.28);
+}
+
+.experience-card .os-card-content {
+  grid-template-columns: minmax(112px, 0.42fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.experience-card .os-kicker {
+  grid-row: span 4;
+  padding-top: 2px;
+}
+
+.about-map {
+  grid-template-columns: minmax(220px, 0.42fr) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.about-portrait {
+  grid-row: span 4;
+  min-height: 392px;
+}
+
+.about-portrait-frame {
+  inset: 16px 14px 82px;
+}
+
+.about-card--dossier {
+  min-height: 190px;
+}
+
+.about-card--dossier,
+.about-card--style,
+.about-card--care,
+.about-card--current {
+  grid-column: 2;
+}
+
+.about-card--dossier .os-card-content {
+  gap: 12px;
+}
+
+.about-card--dossier p:not(.os-kicker),
+.about-card--current p:not(.os-kicker) {
+  font-size: 0.68rem;
+  line-height: 1.65;
+  text-transform: none;
+}
+
+.about-card--style,
+.about-card--care {
+  min-height: 126px;
+}
+
+.blog-map {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.blog-list,
+.blog-readers {
+  position: relative;
+  inset: auto;
+  left: auto;
+  top: auto;
+  width: 100%;
+}
+
+.blog-list {
+  display: grid;
+  gap: 14px;
+  transition:
+    opacity 180ms steps(2, end),
+    transform 220ms ease;
+}
+
+.blog-map:not([data-reader-open="true"]) .blog-readers {
+  display: none;
+}
+
+.blog-map[data-reader-open="true"] .blog-list {
+  display: none;
+}
+
+.blog-reader {
+  width: 100%;
+  max-height: none;
+}
+
+.blog-reader .os-card-content {
+  gap: 14px;
+}
+
+.prose {
+  max-width: 68ch;
+}
+
+.prose p,
+.prose li {
+  font-size: 0.68rem;
+  line-height: 1.7;
+}
+
+.contact-map {
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+}
+
+.contact-primary {
+  grid-row: span 3;
+  min-height: 244px;
+}
+
+.contact-link .os-card-content {
+  gap: 5px;
+  padding: 15px 16px;
+}
+
+.contact-link h2 {
+  overflow-wrap: anywhere;
+  font-size: clamp(0.72rem, 1.1vw, 0.92rem);
+}
+
+.os-card {
+  contain: layout paint;
+}
+
+.os-card-content {
+  min-width: 0;
+}
+
+.os-card p,
+.os-card strong,
+.os-tags li {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 920px) and (min-width: 761px) {
+  .skill-map {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contact-map,
+  .about-map {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .about-portrait {
+    grid-row: auto;
+    min-height: 340px;
+  }
+
+  .about-card--dossier,
+  .about-card--style,
+  .about-card--care,
+  .about-card--current {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .os-panel.is-active:not(.os-panel--home),
+  .os-panel.is-exiting:not(.os-panel--home) {
+    display: grid;
+    gap: 14px;
+    padding: 2px 0 118px;
+  }
+
+  .os-panel:not(.os-panel--home) .os-title {
+    margin-bottom: 2px;
+    font-size: 1.1rem;
+  }
+
+  .project-map,
+  .skill-map,
+  .experience-map,
+  .about-map,
+  .blog-map,
+  .contact-map {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 354px);
+    gap: 12px;
+  }
+
+  .project-card--featured {
+    grid-column: auto;
+  }
+
+  .project-card--featured .project-visual,
+  .project-visual {
+    height: 86px;
+  }
+
+  .skill-card .os-card-content {
+    min-height: 0;
+  }
+
+  .experience-card .os-card-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .experience-card .os-kicker {
+    grid-row: auto;
+  }
+
+  .about-portrait {
+    grid-row: auto;
+    height: 318px;
+    min-height: 318px;
+  }
+
+  .about-card--dossier,
+  .about-card--style,
+  .about-card--care,
+  .about-card--current {
+    grid-column: auto;
+  }
+
+  .about-portrait-frame {
+    inset: 16px 16px 76px;
+  }
+
+  .about-card--dossier p:not(.os-kicker),
+  .about-card--current p:not(.os-kicker),
+  .prose p,
+  .prose li {
+    font-size: 0.62rem;
+  }
+
+  .contact-primary {
+    grid-row: auto;
+    min-height: 0;
   }
 }
 

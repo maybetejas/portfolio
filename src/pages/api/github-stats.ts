@@ -21,7 +21,7 @@ export const GET = async () => {
   }
 
   try {
-    const response = await fetch('https://api.github.com/users/maybetejas/repos?per_page=100&sort=pushed', {
+    const response = await fetch('https://api.github.com/users/teeshakhandale/repos?per_page=100&sort=pushed', {
       headers
     });
 

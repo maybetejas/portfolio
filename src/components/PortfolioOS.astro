@@ -7,27 +7,27 @@ const corners = ['tl', 'tr', 'bl', 'br'];
 const projects = [
   {
     title: 'Cockpit Portfolio OS',
-    subtitle: 'Immersive portfolio shell',
-    description: 'Persistent HUD, hyperspace boot, vision modes, animated modules, and SPA-style navigation inside a ship computer interface.',
+    subtitle: 'Flagship interface system',
+    description: 'A full-screen portfolio cockpit with persistent HUD controls, routed panels, mobile navigation, vision modes, boot sequencing, and performance-tuned space rendering.',
     tech: ['Astro', 'TypeScript', 'CSS', 'Canvas'],
     featured: true
   },
   {
     title: 'AI Ops Console',
     subtitle: 'Automation command surface',
-    description: 'Agent workflows, operator controls, and compact telemetry for repeated task execution.',
+    description: 'A compact control layer for repeatable AI workflows, operator approvals, status feedback, and practical task execution.',
     tech: ['AI', 'APIs', 'Node']
   },
   {
     title: 'Product Launch Deck',
-    subtitle: 'Interactive case system',
-    description: 'Narrative project pages designed for scanning, proof, and fast handoff.',
+    subtitle: 'Narrative case system',
+    description: 'Structured project storytelling for quickly showing the problem, constraints, execution, and handoff-ready results.',
     tech: ['UX', 'Content', 'Motion']
   },
   {
     title: 'Build Monitor',
     subtitle: 'Signal dashboard',
-    description: 'Small status widgets for deploys, clients, repos, and runtime state.',
+    description: 'Small live-status widgets for deploys, client context, repository signals, and runtime state across the portfolio shell.',
     tech: ['Data', 'UI', 'Astro']
   }
 ];
@@ -69,23 +69,23 @@ const roles = [
 
 const aboutSignals = {
   dossier: {
-    kicker: 'Operator Dossier',
-    title: 'Builder of compact, usable systems',
-    body: 'I turn rough product ideas into working web interfaces, AI workflows, and automation surfaces that feel precise instead of noisy.'
+    kicker: 'Biography',
+    title: 'I build web products, AI systems, and automation that feel usable first.',
+    body: 'I am Teesha Khandale, a full-stack developer based in Pune. My work sits between product engineering and interface design: taking a rough idea, finding the useful shape inside it, and turning it into a working system people can actually operate.'
   },
-  style: ['Systems first', 'Fast prototypes', 'Quiet polish', 'Readable handoff'],
-  care: ['Useful interfaces', 'Clear motion', 'Reliable delivery'],
-  current: 'Designing portfolio pages as separate ship systems, each with its own scan pattern and purpose.'
+  style: ['Start from the workflow', 'Prototype quickly', 'Keep interfaces readable', 'Ship with clean handoff'],
+  care: ['AI systems', 'Web development', 'Automation', 'Product engineering'],
+  current: 'Right now I am focused on building polished web experiences and practical AI-assisted tools that reduce repeated work instead of adding more dashboards.'
 };
 
 const contactLinks = [
   { label: 'Email', value: 'your.email@example.com', href: 'mailto:your.email@example.com' },
   { label: 'Phone', value: '+91 00000 00000', href: 'tel:+910000000000' },
-  { label: 'LinkedIn', value: 'linkedin.com/in/tejas', href: 'https://www.linkedin.com/' },
-  { label: 'GitHub', value: 'github.com/tejas', href: 'https://github.com/' },
-  { label: 'X', value: 'x.com/tejas', href: 'https://x.com/' },
-  { label: 'Upwork', value: 'upwork.com/freelancers/tejas', href: 'https://www.upwork.com/' },
-  { label: 'Fiverr', value: 'fiverr.com/tejas', href: 'https://www.fiverr.com/' }
+  { label: 'LinkedIn', value: 'linkedin.com/in/teeshakhandale', href: 'https://www.linkedin.com/' },
+  { label: 'GitHub', value: 'github.com/teeshakhandale', href: 'https://github.com/' },
+  { label: 'X', value: 'x.com/teeshakhandale', href: 'https://x.com/' },
+  { label: 'Upwork', value: 'upwork.com/freelancers/teeshakhandale', href: 'https://www.upwork.com/' },
+  { label: 'Fiverr', value: 'fiverr.com/teeshakhandale', href: 'https://www.fiverr.com/' }
 ];
 
 const posts = (await getCollection('blog'))
@@ -197,13 +197,13 @@ const renderedPosts = await Promise.all(
         <span class="stats-opener os-opener" aria-hidden="true"></span>
         {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
         <div class="about-portrait-frame">
-          <img src="/assets/operator-portrait.png" alt="Portrait of Tejas Khandelwal" loading="eager" decoding="async" />
+          <img src="/assets/teesha-khandale-portrait.png" alt="Portrait of Teesha Khandale" loading="eager" decoding="async" />
           <span class="about-portrait-noise" aria-hidden="true"></span>
           <span class="about-portrait-scan" aria-hidden="true"></span>
         </div>
         <div class="os-card-content about-portrait-caption">
           <p class="os-kicker">Identity confirmed</p>
-          <h2>TEJAS KHANDELWAL</h2>
+          <h2>TEESHA KHANDALE</h2>
         </div>
       </article>
 
