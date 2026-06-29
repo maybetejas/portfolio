@@ -2,6 +2,7 @@
 title: "How the Cockpit OS Boots"
 description: "A short systems note on turning a portfolio into an operator interface."
 publishDate: 2026-06-17
+cover: "/assets/cockpitthumbnaipc.png"
 tags: ["interface", "systems", "notes"]
 draft: false
 ---

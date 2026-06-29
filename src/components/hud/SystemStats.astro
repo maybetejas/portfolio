@@ -1,4 +1,4 @@
-<aside class="system-stats hud-boot-item" data-system-stats data-expanded="false" data-boot-order="1" aria-label="Build system status">
+<aside class="system-stats hud-boot-item" data-system-stats data-expanded="false" data-boot-order="1" aria-label="Operator status">
   <span class="stats-corner stats-corner--tl" aria-hidden="true"><i></i></span>
   <span class="stats-corner stats-corner--tr" aria-hidden="true"><i></i></span>
   <span class="stats-corner stats-corner--bl" aria-hidden="true"><i></i></span>
@@ -10,22 +10,22 @@
   <div class="stat-row">
     <span class="stat-glyph stat-glyph--status" aria-hidden="true"></span>
     <span class="stat-name">STATUS</span>
-    <strong data-system-value="status">BUILDING</strong>
+    <strong>AVAILABLE</strong>
   </div>
   <div class="stat-row">
     <span class="stat-glyph stat-glyph--deploy" aria-hidden="true"></span>
-    <span class="stat-name">LAST DEPLOY</span>
-    <strong data-system-value="lastDeploy">UNKNOWN</strong>
+    <span class="stat-name">EXPERIENCE</span>
+    <strong>3+ YEARS</strong>
   </div>
   <div class="stat-row">
     <span class="stat-glyph stat-glyph--client" aria-hidden="true"></span>
-    <span class="stat-name">CLIENT</span>
-    <strong data-system-value="client">UNKNOWN</strong>
+    <span class="stat-name">LOCATION</span>
+    <strong>PUNE, INDIA</strong>
   </div>
   <div class="stat-row">
     <span class="stat-glyph stat-glyph--repos" aria-hidden="true"></span>
-    <span class="stat-name">REPOS</span>
-    <strong data-system-value="repos">--</strong>
+    <span class="stat-name">TIMEZONE</span>
+    <strong>GMT +5:30</strong>
   </div>
 </aside>
 
@@ -33,43 +33,6 @@
   const systemStats = document.querySelector<HTMLElement>('[data-system-stats]');
   const statsToggle = systemStats?.querySelector<HTMLButtonElement>('[data-stats-toggle]');
   let statsCollapseTimer = 0;
-
-  const setSystemValue = (key: string, value: string) => {
-    const element = systemStats?.querySelector<HTMLElement>(`[data-system-value="${key}"]`);
-    if (!element || element.textContent === value) return;
-
-    element.textContent = value;
-    element.dataset.updated = 'true';
-    window.setTimeout(() => {
-      element.removeAttribute('data-updated');
-    }, 520);
-  };
-
-  const detectBrowser = () => {
-    const agent = navigator.userAgent;
-    if (/Firefox\//i.test(agent)) return 'FIREFOX';
-    if (/Edg\//i.test(agent)) return 'EDGE';
-    if (/Chrome\//i.test(agent) && !/Edg\//i.test(agent)) return 'CHROME';
-    if (/Safari\//i.test(agent) && !/Chrome\//i.test(agent)) return 'SAFARI';
-    return 'BROWSER';
-  };
-
-  const formatRelativeDeploy = (timestamp: string | null) => {
-    if (!timestamp) return 'UNKNOWN';
-
-    const deployedAt = new Date(timestamp).getTime();
-    if (Number.isNaN(deployedAt)) return 'UNKNOWN';
-
-    const elapsedMinutes = Math.max(1, Math.floor((Date.now() - deployedAt) / 60000));
-    if (elapsedMinutes < 60) return `${elapsedMinutes}m AGO`;
-
-    const elapsedHours = Math.floor(elapsedMinutes / 60);
-    if (elapsedHours < 24) return `${elapsedHours}h AGO`;
-
-    return `${Math.floor(elapsedHours / 24)}d AGO`;
-  };
-
-  setSystemValue('client', detectBrowser());
 
   statsToggle?.addEventListener('click', () => {
     if (!systemStats) return;
@@ -91,15 +54,4 @@
       }, 2000);
     }
   });
-
-  fetch('/api/github-stats')
-    .then((response) => response.ok ? response.json() : null)
-    .then((stats: { status?: string; repos?: number; lastDeploy?: string | null } | null) => {
-      if (!stats) return;
-
-      setSystemValue('status', stats.status ?? 'BUILDING');
-      setSystemValue('repos', typeof stats.repos === 'number' ? String(stats.repos) : '--');
-      setSystemValue('lastDeploy', formatRelativeDeploy(stats.lastDeploy ?? null));
-    })
-    .catch(() => {});
 </script>

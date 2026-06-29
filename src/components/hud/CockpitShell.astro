@@ -82,6 +82,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
           <img class="spectrum-bg-image" data-spectrum-image src="/assets/visible.png" alt="" decoding="async" />
           <span class="spectrum-filter-shutter" aria-hidden="true"></span>
         </div>
+        <canvas class="forward-star-canvas" data-forward-starfield></canvas>
         <section class="spectrum-space-layer spectrum-stars spectrum-stars--tiny" data-space-parallax="1">
           <div class="spectrum-star-field" data-space-stars="tiny"></div>
         </section>
@@ -99,8 +100,11 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   <div class="warp-intro" aria-hidden="true">
     <canvas class="hyperspace-canvas" data-hyperspace-canvas></canvas>
   </div>
+  <div class="ship-wing-layer" aria-hidden="true">
+    <img class="ship-wing ship-wing--left" src="/assets/leftWing.png" alt="" decoding="async" />
+    <img class="ship-wing ship-wing--right" src="/assets/rightWing.png" alt="" decoding="async" />
+  </div>
   <div class="glass-overlay" aria-hidden="true"></div>
-
   <div class="hud-stage" aria-hidden="true">
     <div class="hud-projection" data-hud-projection>
       <picture class="hud-frame" aria-hidden="true">
@@ -164,16 +168,19 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       }
     </nav>
 
-    <aside class="travel-widget hud-boot-item" data-travel-widget data-expanded="false" data-boot-order="3" aria-label="Travel destinations">
+    <aside class="travel-widget hud-boot-item" data-travel-widget data-expanded="false" data-boot-order="3" aria-label="Travel mode">
       <span class="stats-corner stats-corner--tl" aria-hidden="true"><i></i></span>
       <span class="stats-corner stats-corner--tr" aria-hidden="true"><i></i></span>
       <span class="stats-corner stats-corner--bl" aria-hidden="true"><i></i></span>
       <span class="stats-corner stats-corner--br" aria-hidden="true"><i></i></span>
       <span class="stats-opener" aria-hidden="true"></span>
-      <button class="travel-toggle" type="button" data-travel-toggle aria-expanded="false">TRAVEL</button>
+      <button class="travel-toggle" type="button" data-travel-toggle aria-expanded="false">
+        <span class="travel-label-full">TRAVEL MODE: CRUISE</span>
+        <span class="travel-label-short">CRUISE</span>
+      </button>
       <div class="travel-panel" aria-hidden="true">
-        <span>NEW LOCATIONS</span>
-        <strong>COMING SOON</strong>
+        <span>TRAVEL MODE</span>
+        <strong>CRUISE</strong>
       </div>
     </aside>
 
@@ -223,6 +230,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const scrollPercent = document.querySelector<HTMLOutputElement>('[data-scroll-percent]');
   const warpIntro = document.querySelector<HTMLElement>('.warp-intro');
   const hyperspaceCanvas = document.querySelector<HTMLCanvasElement>('[data-hyperspace-canvas]');
+  const forwardStarCanvas = document.querySelector<HTMLCanvasElement>('[data-forward-starfield]');
   const spectrumBackground = document.querySelector<HTMLElement>('[data-spectrum-background]');
   const spectrumImage = document.querySelector<HTMLImageElement>('[data-spectrum-image]');
   type CockpitPhase = 'jump' | 'arrived' | 'boot' | 'ready';
@@ -241,12 +249,30 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const panelIntroDuration = 2100;
   const mobileMedia = window.matchMedia('(max-width: 760px)');
   const lowPowerMedia = window.matchMedia('(hover: none), (pointer: coarse), (max-width: 760px)');
+  const reducedMotionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
   let spectrumSpaceInitialized = false;
   let uvStarsPopulated = false;
   let uvStarsStarted = false;
   let uvStarsCreated = 0;
   let spaceAnimationFrame = 0;
+  let forwardStarFrame = 0;
+  let forwardStarLastTime = 0;
+  let forwardStarWidth = 0;
+  let forwardStarHeight = 0;
   let lastSpacePointerMove = 0;
+  type ForwardStar = {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+    speed: number;
+    alpha: number;
+    twinkle: number;
+    phase: number;
+    tone: number;
+  };
+  let forwardStars: ForwardStar[] = [];
 
   const spaceLayers = Array.from(document.querySelectorAll<HTMLElement>('[data-space-parallax]')).map((element) => ({
     element,
@@ -549,6 +575,153 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
     container.replaceChildren();
     scheduleUvBatch(appendBatch);
+  };
+
+  const getForwardStarColor = (star: ForwardStar, alpha: number) => {
+    const mode = shell?.dataset.visionMode ?? 'visible';
+    const palettes: Record<string, string[]> = {
+      visible: ['216 226 236', '178 202 226', '246 250 255', '132 180 255'],
+      uv: ['117 232 255', '164 101 255', '74 218 255', '235 248 255'],
+      ir: ['255 151 54', '255 72 46', '255 180 86', '255 206 166']
+    };
+    const palette = palettes[mode] ?? palettes.visible;
+    return `rgba(${palette[star.tone % palette.length].replaceAll(' ', ', ')}, ${alpha.toFixed(3)})`;
+  };
+
+  const createForwardStar = (nearCenter = false): ForwardStar => {
+    const depth = Math.random();
+    const centerX = forwardStarWidth * 0.5;
+    const centerY = forwardStarHeight * 0.5;
+    const angle = Math.random() * Math.PI * 2;
+    const centerSpawnRadius = Math.random() * Math.max(Math.min(forwardStarWidth, forwardStarHeight) * 0.08, 12);
+    const x = nearCenter
+      ? centerX + Math.cos(angle) * centerSpawnRadius
+      : Math.random() * Math.max(forwardStarWidth, 1);
+    const y = nearCenter
+      ? centerY + Math.sin(angle) * centerSpawnRadius
+      : Math.random() * Math.max(forwardStarHeight, 1);
+    const dx = x - centerX;
+    const dy = y - centerY;
+    const distance = Math.hypot(dx, dy) || 1;
+
+    return {
+      x,
+      y,
+      vx: dx / distance,
+      vy: dy / distance,
+      size: 0.45 + depth * 1.55,
+      speed: 12 + depth * 42,
+      alpha: 0.22 + depth * 0.56,
+      twinkle: 0.18 + Math.random() * 0.18,
+      phase: Math.random() * Math.PI * 2,
+      tone: Math.floor(Math.random() * 4)
+    };
+  };
+
+  const drawForwardStars = (elapsedSeconds: number) => {
+    if (!forwardStarCanvas || !forwardStarWidth || !forwardStarHeight) return;
+
+    const context = forwardStarCanvas.getContext('2d', { alpha: true });
+    if (!context) return;
+
+    context.clearRect(0, 0, forwardStarWidth, forwardStarHeight);
+    context.globalCompositeOperation = 'lighter';
+
+    forwardStars.forEach((star) => {
+      if (elapsedSeconds > 0) {
+        const centerX = forwardStarWidth * 0.5;
+        const centerY = forwardStarHeight * 0.5;
+        const dx = star.x - centerX;
+        const dy = star.y - centerY;
+        const distance = Math.hypot(dx, dy) || 1;
+        const acceleration = 1 + Math.min(distance / Math.max(forwardStarWidth, forwardStarHeight), 1.2) * 1.9;
+
+        star.vx = dx / distance;
+        star.vy = dy / distance;
+        star.x += star.vx * star.speed * acceleration * elapsedSeconds;
+        star.y += star.vy * star.speed * acceleration * elapsedSeconds;
+
+        if (star.x < -18 || star.x > forwardStarWidth + 18 || star.y < -18 || star.y > forwardStarHeight + 18) {
+          Object.assign(star, createForwardStar(true));
+        }
+      }
+
+      const twinkle = 1 + Math.sin(performance.now() * 0.0018 + star.phase) * star.twinkle;
+      const centerDistance = Math.hypot(star.x - forwardStarWidth * 0.5, star.y - forwardStarHeight * 0.5);
+      const depthScale = 0.72 + Math.min(centerDistance / Math.max(forwardStarWidth, forwardStarHeight), 1) * 1.2;
+      const alpha = Math.min(0.92, star.alpha * twinkle * depthScale);
+      const radius = star.size * depthScale * (reducedMotionMedia.matches ? 0.9 : 1);
+      context.fillStyle = getForwardStarColor(star, alpha);
+      context.beginPath();
+      context.arc(star.x, star.y, radius, 0, Math.PI * 2);
+      context.fill();
+
+      if (star.size > 1.35 || centerDistance > Math.max(forwardStarWidth, forwardStarHeight) * 0.32) {
+        context.fillStyle = getForwardStarColor(star, alpha * 0.18);
+        context.beginPath();
+        context.arc(star.x, star.y, radius * 3.2, 0, Math.PI * 2);
+        context.fill();
+      }
+    });
+
+    context.globalCompositeOperation = 'source-over';
+  };
+
+  const resizeForwardStarfield = () => {
+    if (!forwardStarCanvas) return;
+
+    const rect = forwardStarCanvas.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+    const width = Math.max(1, Math.round(rect.width * ratio));
+    const height = Math.max(1, Math.round(rect.height * ratio));
+    const starCount = mobileMedia.matches ? 120 : 250;
+
+    forwardStarWidth = width;
+    forwardStarHeight = height;
+    forwardStarCanvas.width = width;
+    forwardStarCanvas.height = height;
+    forwardStarCanvas.style.setProperty('--canvas-ratio', String(ratio));
+    forwardStars = Array.from({ length: starCount }, () => createForwardStar(false));
+    drawForwardStars(0);
+  };
+
+  const stopForwardStarfield = () => {
+    if (!forwardStarFrame) return;
+    window.cancelAnimationFrame(forwardStarFrame);
+    forwardStarFrame = 0;
+  };
+
+  const animateForwardStarfield = (time: number) => {
+    forwardStarFrame = 0;
+
+    if (document.hidden || reducedMotionMedia.matches) {
+      forwardStarLastTime = time;
+      return;
+    }
+
+    const elapsedSeconds = Math.min((time - forwardStarLastTime) / 1000 || 0, 0.05);
+    forwardStarLastTime = time;
+    drawForwardStars(elapsedSeconds);
+    forwardStarFrame = window.requestAnimationFrame(animateForwardStarfield);
+  };
+
+  const startForwardStarfield = () => {
+    if (!forwardStarCanvas) return;
+
+    if (!forwardStarWidth || !forwardStarHeight) {
+      resizeForwardStarfield();
+    }
+
+    if (reducedMotionMedia.matches) {
+      stopForwardStarfield();
+      drawForwardStars(0);
+      return;
+    }
+
+    if (!document.hidden && !forwardStarFrame) {
+      forwardStarLastTime = performance.now();
+      forwardStarFrame = window.requestAnimationFrame(animateForwardStarfield);
+    }
   };
 
   const animateSpectrumSpace = () => {
@@ -981,6 +1154,16 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
         playRasp(0.68, 0.13, 46);
         playNoise(0.42, 0.06, 190);
       },
+      wingDeploy: () => {
+        [0, 330, 760].forEach((delay, index) => {
+          window.setTimeout(() => {
+            playTone(38 - index * 4, 0.18, 0.064, 'sawtooth', -24 - index * 5);
+            playTone(72 - index * 6, 0.08, 0.026, 'triangle', -10);
+            playNoise(0.12, 0.058, 92 + index * 22);
+            playRasp(0.18, 0.048, 34 + index * 7);
+          }, delay);
+        });
+      },
       bootTick: (index: number) => {
         playChitter(300 + index * 55, 0.04);
         playRasp(0.08, 0.024, 86 + index * 9);
@@ -991,6 +1174,28 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       uiSelect: () => {
         playChitter(470, 0.05);
         playRasp(0.12, 0.042, 118);
+      },
+      ctaHover: (variant: string) => {
+        if (variant === 'doc') {
+          playTone(560, 0.058, 0.018, 'triangle', -8);
+          playNoise(0.034, 0.01, 1800);
+          return;
+        }
+
+        playTone(820, 0.052, 0.02, 'triangle', 10);
+        playNoise(0.032, 0.012, 2600);
+      },
+      ctaSelect: (variant: string) => {
+        if (variant === 'doc') {
+          playChitter(520, 0.035);
+          playTone(340, 0.11, 0.024, 'sawtooth', -12);
+          playRasp(0.09, 0.028, 96);
+          return;
+        }
+
+        playChitter(760, 0.038);
+        playTone(920, 0.095, 0.026, 'square', 16);
+        playRasp(0.08, 0.026, 132);
       },
       vision: () => {
         playRasp(0.22, 0.058, 138);
@@ -1038,7 +1243,13 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   window.setTimeout(unlockXenoAudio, 250);
   window.addEventListener('pageshow', unlockXenoAudio);
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') unlockXenoAudio();
+    if (document.visibilityState === 'visible') {
+      unlockXenoAudio();
+      startForwardStarfield();
+      return;
+    }
+
+    stopForwardStarfield();
   });
   audioUnlockEvents.forEach((eventName) => {
     window.addEventListener(eventName, unlockXenoAudio, audioUnlockOptions);
@@ -1099,6 +1310,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       replayPanelIntro(nextPanel);
 
       updateScrollDepth();
+      window.dispatchEvent(new CustomEvent('portfolio-section-change', { detail: { section } }));
     };
 
     if (immediate || previousSection === section || !previousPanel || !nextPanel) {
@@ -1131,6 +1343,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     shell.dataset.visionMode = mode;
     setActiveVisionOption(mode);
     if (mode === 'uv') populateUvSpectrumStars();
+    drawForwardStars(0);
   };
 
   const setVisionMode = (mode: string, immediate = false) => {
@@ -1232,6 +1445,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       xenoAudio.warp();
     } else if (phase === 'arrived') {
       xenoAudio.arrive();
+      xenoAudio.wingDeploy();
     } else if (phase === 'boot') {
       [1, 2, 3, 4, 5, 6].forEach((order) => {
         window.setTimeout(() => xenoAudio.bootTick(order), order * 115);
@@ -1499,7 +1713,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     }
 
     const jumpDuration = lowPowerMedia.matches ? 1280 : 1700;
-    const arrivedHold = lowPowerMedia.matches ? 120 : 180;
+    const arrivedHold = lowPowerMedia.matches ? 1250 : 1700;
     const bootDuration = lowPowerMedia.matches ? 1380 : 2050;
 
     setPhase('jump');
@@ -1559,6 +1773,35 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     xenoAudio.uiSelect();
   });
 
+  document.addEventListener('pointerenter', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest<HTMLAnchorElement>('[data-home-cta]');
+    if (!button) return;
+
+    xenoAudio.ctaHover(button.dataset.homeCta ?? 'play');
+  }, true);
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest<HTMLAnchorElement>('[data-home-cta]');
+    if (!button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+    xenoAudio.ctaSelect(button.dataset.homeCta ?? 'play');
+
+    if (button.dataset.homeDownload === 'true') return;
+
+    const section = button.dataset.homeRoute;
+    const url = new URL(button.href, window.location.href);
+    if (!section) return;
+
+    event.preventDefault();
+    setSection(section, url.pathname);
+  });
+
   visionOptions.forEach((option) => {
     option.addEventListener('pointerenter', () => {
       xenoAudio.uiHover();
@@ -1607,6 +1850,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     if (!travelWidget || !travelToggle) return;
 
     window.clearTimeout(travelCollapseTimer);
+    visionSwitch?.removeAttribute('data-expanded');
+    spectrumToggle?.setAttribute('aria-expanded', 'false');
     travelWidget.dataset.expanded = 'true';
     travelToggle.setAttribute('aria-expanded', 'true');
     xenoAudio.uiSelect();
@@ -1625,10 +1870,19 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
   window.addEventListener('resize', () => {
     if (!mobileMedia.matches) setMobileMenuExpanded(false);
+    resizeForwardStarfield();
+    startForwardStarfield();
     updateScrollDepth();
   }, { passive: true });
 
+  reducedMotionMedia.addEventListener('change', () => {
+    resizeForwardStarfield();
+    startForwardStarfield();
+  });
+
   initializeSpectrumSpace();
+  resizeForwardStarfield();
+  startForwardStarfield();
   setSection(shell?.dataset.currentSection ?? 'home', undefined, false, true);
   setVisionMode('visible', true);
   setHudHidden(false);

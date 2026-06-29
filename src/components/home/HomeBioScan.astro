@@ -1,24 +1,23 @@
 ---
-const portraitSrc = '/assets/teesha-khandale-portrait.png';
+const portraitSrc = '/assets/tejas-khandale-portrait.jpg';
 
 const identity = {
-  name: ['TEESHA', 'KHANDALE'],
-  lines: ['FULL-STACK DEVELOPER', 'AI SYSTEM BUILDER', 'PROBLEM SOLVER']
+  name: ['TEJAS', 'KHANDALE'],
+  role: 'FULL-STACK ENGINEER • AI SYSTEMS BUILDER',
+  intro: 'I build production AI systems, automation tools and scalable web platforms that solve real problems.'
 };
 
-const focusLines = ['AI SYSTEMS', 'WEB DEVELOPMENT', 'AUTOMATION', 'PRODUCT ENGINEERING'];
-const location = 'PUNE, INDIA';
-const contactLabel = "LET'S TALK!";
+const actions = [
+  { label: 'VIEW PROJECTS', href: '/projects/', icon: 'play', route: 'projects' },
+  { label: 'DOWNLOAD RESUME', href: '/assets/Tejas%20Khandale%20(1).pdf', icon: 'doc', download: 'Tejas-Khandale-Resume.pdf' }
+];
 ---
 
 <section class="bio-scan" aria-labelledby="bio-scan-title">
-  <h1 id="bio-scan-title" class="bio-title">BIO SCAN</h1>
-
-  <svg class="bio-connectors" viewBox="0 0 720 464" preserveAspectRatio="none" aria-hidden="true">
-    <path class="bio-connector bio-connector--identity" pathLength="1" d="M327 152 H360 L386 176 H410" />
-    <path class="bio-connector bio-connector--focus" pathLength="1" d="M326 262 H354 L386 292 H410" />
-    <path class="bio-connector bio-connector--location" pathLength="1" d="M260 326 V360 L230 392" />
-    <path class="bio-connector bio-connector--contact" pathLength="1" d="M302 392 H356" />
+  <svg class="bio-connectors" viewBox="0 0 1060 420" preserveAspectRatio="none" aria-hidden="true">
+    <path class="bio-connector bio-connector--identity" pathLength="1" d="M382 94 H424 V334" />
+    <path class="bio-connector bio-connector--focus" pathLength="1" d="M424 154 H462" />
+    <path class="bio-connector bio-connector--contact" pathLength="1" d="M424 304 H462" />
   </svg>
 
   <div class="bio-portrait-module" aria-label="Operator portrait scan">
@@ -29,102 +28,44 @@ const contactLabel = "LET'S TALK!";
     <span class="stats-corner stats-corner--br bio-corner" aria-hidden="true"><i></i></span>
 
     <div class="bio-portrait-frame">
-      <img class="bio-portrait" src={portraitSrc} alt="Portrait of Teesha Khandale" loading="eager" decoding="async" />
+      <img class="bio-portrait" src={portraitSrc} alt="Portrait of Tejas Khandale" loading="eager" decoding="async" />
       <span class="bio-portrait-noise" aria-hidden="true"></span>
       <span class="bio-portrait-scan" aria-hidden="true"></span>
     </div>
   </div>
 
-  <article class="bio-card bio-card--identity" style="--bio-card-delay: 900ms">
+  <div class="bio-copy" style="--bio-card-delay: 760ms">
     <span class="stats-opener bio-opener" aria-hidden="true"></span>
-    <span class="stats-corner stats-corner--tl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--tr bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--bl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--br bio-corner" aria-hidden="true"><i></i></span>
-    <span class="bio-card-divider" aria-hidden="true"></span>
-    <div class="bio-card-content">
-      <h2>
+    <span class="bio-copy-line" aria-hidden="true"></span>
+    <h1 id="bio-scan-title" class="bio-title">
         {identity.name.map((line) => <span>{line}</span>)}
-      </h2>
-      <ul>
-        {identity.lines.map((line) => <li>{line}</li>)}
-      </ul>
-    </div>
-  </article>
+    </h1>
+    <p class="bio-role">{identity.role}</p>
+    <p class="bio-intro">{identity.intro}</p>
 
-  <article class="bio-card bio-card--focus" style="--bio-card-delay: 1160ms">
-    <span class="stats-opener bio-opener" aria-hidden="true"></span>
-    <span class="stats-corner stats-corner--tl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--tr bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--bl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--br bio-corner" aria-hidden="true"><i></i></span>
-    <span class="bio-card-divider bio-card-divider--short" aria-hidden="true"></span>
-    <div class="bio-card-content">
-      <h2 class="bio-label"><span class="bio-label-mark" aria-hidden="true"></span>FOCUS</h2>
-      <ul class="bio-list-muted">
-        {focusLines.map((line) => <li>{line}</li>)}
-      </ul>
+    <div class="bio-actions" aria-label="Primary actions">
+      {actions.map((action, index) => (
+        <a
+          class={`bio-card bio-card--cta bio-card--cta-${action.icon}`}
+          style={`--bio-card-delay: ${1160 + index * 180}ms`}
+          href={action.href}
+          data-home-cta={action.icon}
+          data-home-route={action.route}
+          data-home-download={action.download ? 'true' : undefined}
+          download={action.download}
+        >
+          <span class="stats-opener bio-opener" aria-hidden="true"></span>
+          <span class="stats-corner stats-corner--tl bio-corner" aria-hidden="true"><i></i></span>
+          <span class="stats-corner stats-corner--tr bio-corner" aria-hidden="true"><i></i></span>
+          <span class="stats-corner stats-corner--bl bio-corner" aria-hidden="true"><i></i></span>
+          <span class="stats-corner stats-corner--br bio-corner" aria-hidden="true"><i></i></span>
+          <span class="bio-card-divider bio-card-divider--short" aria-hidden="true"></span>
+          <span class="bio-card-content bio-contact-content">
+            <span class={`bio-cta-icon bio-cta-icon--${action.icon}`} aria-hidden="true"></span>
+            <span class="bio-label">{action.label}</span>
+          </span>
+        </a>
+      ))}
     </div>
-  </article>
-
-  <article class="bio-card bio-card--location" style="--bio-card-delay: 1420ms">
-    <span class="stats-opener bio-opener" aria-hidden="true"></span>
-    <span class="stats-corner stats-corner--tl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--tr bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--bl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--br bio-corner" aria-hidden="true"><i></i></span>
-    <div class="bio-card-content">
-      <h2 class="bio-label"><span class="bio-pin" aria-hidden="true"></span>LOCATED IN</h2>
-      <p>{location}</p>
-      <span class="bio-dots" aria-hidden="true">---</span>
-    </div>
-  </article>
-
-  <a class="bio-card bio-card--contact" style="--bio-card-delay: 1680ms" href="/contact/">
-    <span class="stats-opener bio-opener" aria-hidden="true"></span>
-    <span class="stats-corner stats-corner--tl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--tr bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--bl bio-corner" aria-hidden="true"><i></i></span>
-    <span class="stats-corner stats-corner--br bio-corner" aria-hidden="true"><i></i></span>
-    <div class="bio-card-content bio-contact-content">
-      <h2 class="bio-label"><span class="bio-send" aria-hidden="true"></span>{contactLabel}</h2>
-      <span class="bio-arrow" aria-hidden="true">-></span>
-      <span class="bio-dots" aria-hidden="true">---</span>
-    </div>
-  </a>
+  </div>
 </section>
-
-<script>
-  const homeBioViewport = document.querySelector<HTMLElement>('[data-content-viewport]');
-  const homeBioShell = document.querySelector<HTMLElement>('[data-cockpit-shell]');
-  const homeBioMobileQuery = window.matchMedia('(max-width: 760px)');
-  let homeBioNudged = false;
-
-  const nudgeMobileBioScroll = () => {
-    if (homeBioNudged || !homeBioViewport || !homeBioShell || !homeBioMobileQuery.matches) return;
-    if (homeBioShell.dataset.currentSection !== 'home' || homeBioShell.dataset.phase !== 'ready') return;
-
-    homeBioNudged = true;
-    window.setTimeout(() => {
-      if (homeBioViewport.scrollTop > 4) return;
-      homeBioViewport.scrollTo({
-        top: 34,
-        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
-      });
-    }, 760);
-  };
-
-  if (homeBioShell?.dataset.phase === 'ready') {
-    nudgeMobileBioScroll();
-  } else if (homeBioShell) {
-    const observer = new MutationObserver(() => {
-      nudgeMobileBioScroll();
-      if (homeBioNudged) observer.disconnect();
-    });
-
-    observer.observe(homeBioShell, {
-      attributes: true,
-      attributeFilter: ['data-phase', 'data-current-section']
-    });
-  }
-</script>

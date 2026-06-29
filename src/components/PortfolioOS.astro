@@ -6,86 +6,216 @@ const corners = ['tl', 'tr', 'bl', 'br'];
 
 const projects = [
   {
-    title: 'Cockpit Portfolio OS',
-    subtitle: 'Flagship interface system',
-    description: 'A full-screen portfolio cockpit with persistent HUD controls, routed panels, mobile navigation, vision modes, boot sequencing, and performance-tuned space rendering.',
-    tech: ['Astro', 'TypeScript', 'CSS', 'Canvas'],
-    featured: true
+    id: 'washy-washy',
+    title: 'Washy Washy',
+    subtitle: 'Doorstep car wash platform',
+    description: 'A doorstep car wash startup designed, built, and launched from scratch to make professional car washing as convenient as ordering food.',
+    status: 'Live business',
+    cover: '/assets/washywashyThumbnail.webp',
+    hero: '/assets/washywashyThumbnail.webp',
+    tech: ['SvelteKit', 'PocketBase', 'TypeScript', 'PWA', 'Admin Dashboard'],
+    oneLine: 'Doorstep car washing with customer booking, washer operations, and real launch traction.',
+    metrics: [
+      { label: 'Orders Completed', value: 100, suffix: '+' },
+      { label: 'Organic Users', value: 200, suffix: '+' },
+      { label: 'Revenue Generated', value: 30000, prefix: '₹', suffix: '+' }
+    ],
+    timeline: '2024 - Present',
+    story: [
+      'Washy Washy is a doorstep car wash startup that brings trained washers directly to customers at homes and offices.',
+      'I started by researching the traditional car wash market, interviewing potential users, studying local competitors, and identifying gaps around convenience, pricing, trust, and water efficiency.',
+      'The product model lets customers book online while independent washers receive and manage jobs through an internal dashboard.',
+      'I handled the complete journey from product strategy and branding to UI/UX, full-stack development, operations, marketing, customer support, launch, and iteration based on real customer feedback.'
+    ],
+    screenshots: [
+      { src: '/assets/washywashylandingpagemobile.png', label: 'Customer mobile booking entry', type: 'mobile' },
+      { src: '/assets/washywashyslotbookingpage.png', label: 'Slot booking flow', type: 'mobile' }
+    ],
+    responsibilities: ['Product Strategy', 'Market Research', 'User Research', 'Brand Identity', 'UI / UX Design', 'Frontend Development', 'Backend Development', 'Database Design', 'Operations', 'Marketing', 'Customer Support', 'Analytics', 'Product Iteration'],
+    challenges: ['Designing a booking flow that felt simple while supporting real operational constraints.', 'Creating internal tools for washers and admin workflows without overbuilding the first version.', 'Balancing engineering, customer acquisition, service quality, and business operations at launch.'],
+    learnings: ['A product only becomes useful when software, operations, and customer feedback work together.', 'Founder-led engineering needs fast validation, clear workflows, and constant iteration over perfect initial scope.'],
+    links: [
+      { label: 'Visit Website', href: 'https://washywashy.in/' },
+      { label: 'Instagram', href: 'https://www.instagram.com/washywashyy/' }
+    ]
   },
   {
-    title: 'AI Ops Console',
-    subtitle: 'Automation command surface',
-    description: 'A compact control layer for repeatable AI workflows, operator approvals, status feedback, and practical task execution.',
-    tech: ['AI', 'APIs', 'Node']
-  },
-  {
-    title: 'Product Launch Deck',
-    subtitle: 'Narrative case system',
-    description: 'Structured project storytelling for quickly showing the problem, constraints, execution, and handoff-ready results.',
-    tech: ['UX', 'Content', 'Motion']
-  },
-  {
-    title: 'Build Monitor',
-    subtitle: 'Signal dashboard',
-    description: 'Small live-status widgets for deploys, client context, repository signals, and runtime state across the portfolio shell.',
-    tech: ['Data', 'UI', 'Astro']
+    id: 'cockpit-portfolio',
+    title: 'XENO SPACESHIP',
+    subtitle: 'Immersive portfolio system',
+    description: 'A sci-fi portfolio experience inspired by alien spacecraft, old movie interfaces, and the strange sleekness of xenomorph design.',
+    status: 'Live portfolio',
+    cover: '/assets/cockpitthumbnaipc.png',
+    hero: '/assets/cockpitthumbnaipc.png',
+    tech: ['Astro', 'TypeScript', 'CSS', 'Canvas', 'Responsive UI'],
+    oneLine: 'A portfolio built as an interactive xeno spacecraft instead of a traditional scrolling site.',
+    metrics: [
+      { label: 'Persistent HUD', value: 1, suffix: ' System' },
+      { label: 'Sensor Modes', value: 3 },
+      { label: 'Core Routes', value: 6 }
+    ],
+    timeline: '2026',
+    story: [
+      'I am a big sci-fi nerd, so when I started brainstorming a new idea for my portfolio website, I looked there first for inspiration.',
+      'Nothing inspired me more than xenomorphs. I know the Alien films shaped that love, but something about that creature has captivated me since I was a kid: the scale, the weird design, and the way it still feels sleek and almost aerodynamic.',
+      'I wanted to build something consistent inside that universe, the kind of old sci-fi ship interface I have always loved.',
+      'XENO SPACESHIP is my love letter to those movies: an immersive cockpit where the frame and HUD stay alive while the content shifts inside the canopy.'
+    ],
+    screenshots: [
+      { src: '/assets/cockpitthumbnaipc.png', label: 'Desktop cockpit layout', type: 'desktop' },
+      { src: '/assets/cockpitmobile.png', label: 'Mobile cockpit layout', type: 'mobile' }
+    ],
+    responsibilities: ['Frontend Engineering', 'Product Direction', 'UX Design', 'Interaction Design', 'Animation Systems', 'Responsive Design', 'Canvas Starfield', 'Performance Tuning', 'Accessibility', 'Visual System Design'],
+    challenges: ['Keeping the cockpit visually rich without relying on heavy shaders, Three.js, or particle libraries.', 'Making persistent HUD components work across desktop and mobile without feeling like normal website widgets.', 'Maintaining clarity and readability while preserving the cinematic spacecraft interface.'],
+    learnings: ['A strong interface concept needs consistent component rules or it quickly becomes visual noise.', 'Lightweight CSS, canvas, and careful state management can create a rich product feel without heavy rendering cost.'],
+    links: [
+      { label: 'View Live Site', href: '/' }
+    ]
   }
 ];
 
 const skillGroups = [
-  { title: 'Languages', items: ['TypeScript', 'JavaScript', 'Python', 'SQL'] },
-  { title: 'Frontend', items: ['Astro', 'React', 'HTML', 'CSS', 'Motion'] },
-  { title: 'Backend', items: ['Node.js', 'APIs', 'Auth', 'Serverless'] },
-  { title: 'AI Systems', items: ['Agents', 'RAG', 'Prompting', 'Automation'] },
-  { title: 'Infrastructure', items: ['Git', 'CI', 'Vercel', 'Cloud'] },
-  { title: 'Databases', items: ['Postgres', 'Supabase', 'Vector DBs'] },
-  { title: 'Tools', items: ['Figma', 'Playwright', 'GitHub', 'Analytics'] }
+  {
+    title: 'Product Engineering',
+    short: 'Product',
+    orbit: 'Core build loop',
+    x: 50,
+    y: 14,
+    items: ['Product Strategy', 'MVP Development', 'Customer Discovery', 'Product Analytics', 'Feature Prioritization', 'Growth Optimization', 'A/B Testing', 'Business Process Design']
+  },
+  {
+    title: 'Full Stack Engineering',
+    short: 'Full Stack',
+    orbit: 'Application layer',
+    x: 78,
+    y: 28,
+    items: ['JavaScript', 'TypeScript', 'React', 'Next.js', 'SvelteKit', 'Astro', 'HTML', 'CSS', 'Tailwind', 'Node.js', 'Express', 'REST APIs', 'Authentication', 'PostgreSQL', 'PocketBase', 'Prisma']
+  },
+  {
+    title: 'AI Engineering',
+    short: 'AI',
+    orbit: 'Intelligence layer',
+    x: 82,
+    y: 62,
+    items: ['OpenAI API', 'LLM Integration', 'Prompt Engineering', 'Context Engineering', 'AI Workflow Automation', 'AI Agents', 'Multi-Agent Systems', 'RAG', 'Tool Calling', 'Structured Outputs', 'AI-assisted Development']
+  },
+  {
+    title: 'Systems & Cloud',
+    short: 'Systems',
+    orbit: 'Runtime layer',
+    x: 58,
+    y: 84,
+    items: ['Git', 'GitHub', 'Docker', 'Linux', 'Railway', 'Vercel', 'Cloud Deployment', 'Environment Configuration', 'CI/CD']
+  },
+  {
+    title: 'UI / UX',
+    short: 'UI / UX',
+    orbit: 'Interface layer',
+    x: 28,
+    y: 78,
+    items: ['User Experience', 'User Interface', 'Design Systems', 'Responsive Design', 'Mobile First', 'Information Architecture', 'Interaction Design', 'Dashboard Design', 'Wireframing']
+  },
+  {
+    title: 'Digital Marketing',
+    short: 'Marketing',
+    orbit: 'Growth layer',
+    x: 15,
+    y: 50,
+    items: ['SEO', 'Meta Ads', 'CRO', 'Landing Pages', 'Marketing Funnels', 'Brand Positioning', 'Copywriting', 'Analytics']
+  },
+  {
+    title: 'Startup & Business',
+    short: 'Startup',
+    orbit: 'Business layer',
+    x: 26,
+    y: 22,
+    items: ['Startup Operations', 'Business Strategy', 'Pricing', 'Product Launch', 'Customer Support Systems', 'Process Automation', 'Operations', 'Market Validation']
+  },
+  {
+    title: 'Content Creation',
+    short: 'Content',
+    orbit: 'Story layer',
+    x: 10,
+    y: 72,
+    items: ['Technical Writing', 'Product Documentation', 'Video Editing', 'Motion Graphics', 'Social Media', 'Presentation Design', 'Thumbnail Design', 'Visual Storytelling']
+  },
+  {
+    title: 'Design Tools',
+    short: 'Design',
+    orbit: 'Creation tools',
+    x: 40,
+    y: 91,
+    items: ['Figma', 'Photoshop', 'Canva', 'CapCut']
+  },
+  {
+    title: 'Developer Tools',
+    short: 'Dev Tools',
+    orbit: 'Operator tools',
+    x: 72,
+    y: 88,
+    items: ['Cursor', 'VS Code', 'ChatGPT', 'Claude', 'Postman', 'Notion', 'Google Workspace']
+  },
+  {
+    title: 'Soft Skills',
+    short: 'Human Ops',
+    orbit: 'Execution layer',
+    x: 90,
+    y: 44,
+    items: ['Systems Thinking', 'Problem Solving', 'Technical Communication', 'Leadership', 'Product Ownership', 'Cross-functional Collaboration', 'Entrepreneurial Mindset', 'Rapid Learning', 'Client Communication', 'Project Management']
+  }
 ];
 
 const roles = [
   {
-    company: 'Independent Build Lab',
-    role: 'Full-Stack Developer',
-    duration: '2025 - Present',
-    impact: 'Shipping product-grade web systems with AI-assisted workflows and cockpit-level interface polish.',
-    tech: ['Astro', 'TypeScript', 'AI', 'Automation'],
+    company: 'WashyWashy',
+    role: 'Founder & Product Engineer',
+    duration: '2024 - Present',
+    impact: 'Built and launched a production doorstep service platform from scratch, combining engineering, product strategy, operations, marketing, and AI automation into a functioning business serving real customers.',
+    tech: ['Product', 'Engineering', 'Operations', 'AI Automation'],
     featured: true
   },
   {
-    company: 'Client Systems',
-    role: 'Product Engineer',
-    duration: '2024 - 2025',
-    impact: 'Converted rough requirements into working interfaces, dashboards, and launch-ready product flows.',
-    tech: ['React', 'APIs', 'UX']
+    company: 'Inflection Zone Dev Labs',
+    role: 'Software Engineering Intern',
+    duration: '2021 - 2022',
+    impact: 'Worked on production software, repository maintenance, feature implementation, bug fixes, Git workflows, and collaborative development.',
+    tech: ['Software', 'Git', 'Bug Fixes', 'Production']
   },
   {
-    company: 'Prototype Studio',
-    role: 'Automation Builder',
-    duration: '2023 - 2024',
-    impact: 'Built internal tools and repeatable workflows for faster research, content, and delivery cycles.',
-    tech: ['Node', 'Python', 'No-code']
+    company: 'International Clients',
+    role: 'Freelance Software Developer',
+    duration: '2020 - 2024',
+    impact: 'Worked with international clients delivering web development, technical consulting, SEO, digital strategy, and performance optimization.',
+    tech: ['Web Dev', 'Consulting', 'SEO', 'Performance']
+  },
+  {
+    company: 'griv.io',
+    role: 'Product & Growth Contributor',
+    duration: 'Ended June 2026',
+    impact: 'Worked within an early-stage startup environment across product and growth initiatives until the engagement ended in June 2026.',
+    tech: ['Product', 'Growth', 'Startup']
   }
 ];
 
 const aboutSignals = {
   dossier: {
     kicker: 'Biography',
-    title: 'I build web products, AI systems, and automation that feel usable first.',
-    body: 'I am Teesha Khandale, a full-stack developer based in Pune. My work sits between product engineering and interface design: taking a rough idea, finding the useful shape inside it, and turning it into a working system people can actually operate.'
+    title: 'I build web products, AI systems, and automation designed around how people actually work.',
+    body: 'I am Tejas Khandale, a full-stack developer based in Pune. I work at the intersection of software engineering, product thinking, and interface design, transforming ideas into reliable, usable systems. My focus is not just building features, but creating products that solve real problems with clarity and efficiency.'
   },
-  style: ['Start from the workflow', 'Prototype quickly', 'Keep interfaces readable', 'Ship with clean handoff'],
-  care: ['AI systems', 'Web development', 'Automation', 'Product engineering'],
-  current: 'Right now I am focused on building polished web experiences and practical AI-assisted tools that reduce repeated work instead of adding more dashboards.'
+  style: ['Start from the user workflow', 'Prototype rapidly and iterate continuously', 'Prioritize clarity over complexity', 'Build systems that scale and remain maintainable', 'Ship polished products with clean handoffs'],
+  care: ['AI Systems', 'Full-Stack Web Development', 'Automation & Workflows', 'Product Engineering'],
+  current: 'Currently focused on building high-quality web applications and practical AI-powered tools that eliminate repetitive work, streamline operations, and create leverage for businesses.'
 };
 
 const contactLinks = [
-  { label: 'Email', value: 'your.email@example.com', href: 'mailto:your.email@example.com' },
-  { label: 'Phone', value: '+91 00000 00000', href: 'tel:+910000000000' },
-  { label: 'LinkedIn', value: 'linkedin.com/in/teeshakhandale', href: 'https://www.linkedin.com/' },
-  { label: 'GitHub', value: 'github.com/teeshakhandale', href: 'https://github.com/' },
-  { label: 'X', value: 'x.com/teeshakhandale', href: 'https://x.com/' },
-  { label: 'Upwork', value: 'upwork.com/freelancers/teeshakhandale', href: 'https://www.upwork.com/' },
-  { label: 'Fiverr', value: 'fiverr.com/teeshakhandale', href: 'https://www.fiverr.com/' }
+  { label: 'Email', value: 'tejasatwork100@gmail.com', href: 'mailto:tejasatwork100@gmail.com' },
+  { label: 'Phone', value: '+91 93255 81756', href: 'tel:+919325581756' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/tejas-khandale-3b9a791b1', href: 'https://www.linkedin.com/in/tejas-khandale-3b9a791b1' },
+  { label: 'GitHub', value: 'github.com/maybetejas', href: 'https://github.com/maybetejas' },
+  { label: 'X', value: 'x.com/sysAnomaly', href: 'https://x.com/sysAnomaly' },
+  { label: 'Upwork', value: 'upwork.com/freelancers/~01ad1b975646f72be3', href: 'https://www.upwork.com/freelancers/~01ad1b975646f72be3' },
+  { label: 'Fiverr', value: 'fiverr.com/yourusername', href: 'https://www.fiverr.com/yourusername' }
 ];
 
 const posts = (await getCollection('blog'))
@@ -112,24 +242,114 @@ const renderedPosts = await Promise.all(
       <path pathLength="1" d="M460 248 H520 L552 292 H610" />
       <path pathLength="1" d="M342 332 H288 L258 374 H196" />
     </svg>
-    <div class="project-map">
-      {projects.map((project, index) => (
-        <article class:list={['os-card project-card', project.featured && 'project-card--featured']} style={`--os-delay: ${380 + index * 160}ms`}>
-          <span class="stats-opener os-opener" aria-hidden="true"></span>
-          {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
-          <span class="os-divider" aria-hidden="true"></span>
-          <div class="project-visual" aria-hidden="true"><span></span></div>
-          <div class="os-card-content">
-            <p class="os-kicker">{project.subtitle}</p>
-            <h2>{project.title}</h2>
-            <p>{project.description}</p>
-            <ul class="os-tags">
-              {project.tech.map((tag) => <li>{tag}</li>)}
-            </ul>
-            <a class="os-action" href="/projects/" data-os-action>OPEN</a>
-          </div>
-        </article>
-      ))}
+    <div class="project-map project-mission-system" data-project-map data-project-state="list">
+      <div class="project-list" data-project-list>
+        {projects.map((project, index) => (
+          <article class="os-card project-card project-card--mission" style={`--project-cover: url('${project.cover}'); --os-delay: ${380 + index * 160}ms`}>
+            <span class="stats-opener os-opener" aria-hidden="true"></span>
+            {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+            <button class="project-card-trigger" type="button" data-project-open={project.id} aria-label={`Open ${project.title} project details`}>
+              <span class="project-card-wallpaper" aria-hidden="true"></span>
+              <span class="project-card-content">
+                <span class="os-kicker">{project.subtitle}</span>
+                <strong>{project.title}</strong>
+                <span>{project.description}</span>
+                <span class="project-status">{project.status}</span>
+                <span class="os-tags">
+                  {project.tech.map((tag) => <span>{tag}</span>)}
+                </span>
+                <span class="os-action project-card-action">OPEN PROJECT</span>
+              </span>
+            </button>
+          </article>
+        ))}
+      </div>
+
+      <div class="project-dossiers" data-project-dossiers>
+        {projects.map((project) => (
+          <article class="project-dossier" data-project-dossier={project.id} aria-hidden="true">
+            <button class="project-back" type="button" data-project-back>
+              <span aria-hidden="true">&lt;</span>
+              BACK
+            </button>
+
+            <section class="project-dossier-hero" style={`--project-hero: url('${project.hero}');`}>
+              <span class="stats-opener os-opener" aria-hidden="true"></span>
+              {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+              <div class="project-hero-copy">
+                <p class="os-kicker">{project.status}</p>
+                <h2>{project.title}</h2>
+                <p>{project.oneLine}</p>
+                <div class="project-cta-row">
+                  {project.links.map((link) => (
+                    <a class="os-action project-link" href={link.href} target={link.href.startsWith('http') ? '_blank' : undefined} rel={link.href.startsWith('http') ? 'noreferrer' : undefined}>{link.label}</a>
+                  ))}
+                </div>
+              </div>
+              <div class="project-metrics" aria-label={`${project.title} metrics`}>
+                {project.metrics.map((metric) => (
+                  <div class="project-metric">
+                    <strong data-count-target={metric.value} data-count-prefix={metric.prefix ?? ''} data-count-suffix={metric.suffix ?? ''}>0{metric.suffix ?? ''}</strong>
+                    <span>{metric.label}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section class="project-dossier-section project-story">
+              <p class="os-kicker">Project Story</p>
+              <div>
+                {project.story.map((paragraph) => <p>{paragraph}</p>)}
+              </div>
+            </section>
+
+            <section class="project-dossier-grid">
+              <div class="project-dossier-section">
+                <p class="os-kicker">Timeline</p>
+                <strong class="project-timeline">{project.timeline}</strong>
+              </div>
+              <div class="project-dossier-section">
+                <p class="os-kicker">Technologies</p>
+                <div class="os-tags project-chip-list">
+                  {project.tech.map((tag) => <span>{tag}</span>)}
+                </div>
+              </div>
+            </section>
+
+            <section class="project-screenshot-gallery" aria-label={`${project.title} screenshots`}>
+              {project.screenshots.map((shot) => (
+                <figure class:list={['project-shot', `project-shot--${shot.type}`]}>
+                  <img src={shot.src} alt={shot.label} loading="lazy" />
+                  <figcaption>{shot.label}</figcaption>
+                </figure>
+              ))}
+            </section>
+
+            <section class="project-dossier-section">
+              <p class="os-kicker">Responsibilities</p>
+              <div class="project-responsibility-grid">
+                {project.responsibilities.map((item) => <span>{item}</span>)}
+              </div>
+            </section>
+
+            <section class="project-dossier-grid">
+              <div class="project-dossier-section">
+                <p class="os-kicker">Challenges</p>
+                <ul>
+                  {project.challenges.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+              <div class="project-dossier-section">
+                <p class="os-kicker">What I Learned</p>
+                <ul>
+                  {project.learnings.map((item) => <li>{item}</li>)}
+                </ul>
+              </div>
+            </section>
+
+          </article>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -141,17 +361,29 @@ const renderedPosts = await Promise.all(
       <path pathLength="1" d="M290 270 H220 V330" />
       <path pathLength="1" d="M472 262 H552 V328" />
     </svg>
-    <div class="skill-map">
+    <div class="skill-map skill-system-directory" data-skill-map>
+      <svg class="skill-directory-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path pathLength="1" d="M8 18 H92" />
+        <path pathLength="1" d="M8 50 H92" />
+        <path pathLength="1" d="M8 82 H92" />
+        <path pathLength="1" d="M23 8 V92" />
+        <path pathLength="1" d="M50 8 V92" />
+        <path pathLength="1" d="M77 8 V92" />
+      </svg>
       {skillGroups.map((group, index) => (
-        <article class="os-card skill-card" style={`--os-delay: ${320 + index * 95}ms`}>
+        <article class="skill-system-module" data-skill-module={group.title} style={`--os-delay: ${260 + index * 70}ms`}>
           <span class="stats-opener os-opener" aria-hidden="true"></span>
           {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
-          <span class="os-divider" aria-hidden="true"></span>
-          <div class="os-card-content">
-            <h2>{group.title}</h2>
-            <ul class="os-tags os-tags--stack">
-              {group.items.map((item) => <li>{item}</li>)}
-            </ul>
+          <button class="skill-system-trigger" type="button" data-skill-trigger aria-expanded="false">
+            <span class="skill-system-scan" aria-hidden="true"></span>
+            <span class="skill-system-status">
+              <span>{group.items.length} Capabilities</span>
+            </span>
+            <span class="skill-system-title">{group.title}</span>
+            <span class="skill-system-desc">{group.orbit}</span>
+          </button>
+          <div class="skill-system-capabilities" aria-hidden="true">
+            {group.items.map((item) => <span>{item}</span>)}
           </div>
         </article>
       ))}
@@ -197,13 +429,13 @@ const renderedPosts = await Promise.all(
         <span class="stats-opener os-opener" aria-hidden="true"></span>
         {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
         <div class="about-portrait-frame about-portrait-frame--gif">
-          <img class="about-portrait-gif" src="/assets/test.gif" alt="Animated operator signal" loading="eager" decoding="async" />
+          <img class="about-portrait-gif" src="/assets/tejas-khandale-portrait.jpg" alt="Animated operator signal" loading="eager" decoding="async" />
           <span class="about-portrait-noise" aria-hidden="true"></span>
           <span class="about-portrait-scan" aria-hidden="true"></span>
         </div>
         <div class="os-card-content about-portrait-caption">
           <p class="os-kicker">Identity confirmed</p>
-          <h2>TEESHA KHANDALE</h2>
+          <h2>TEJAS KHANDALE</h2>
         </div>
       </article>
 
@@ -268,15 +500,20 @@ const renderedPosts = await Promise.all(
             <span class="stats-opener os-opener" aria-hidden="true"></span>
             {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
             <span class="os-divider" aria-hidden="true"></span>
-            <div class="os-card-content">
-              <p class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
-              <h2>{post.data.title}</h2>
-              <p>{post.data.description}</p>
-              <ul class="os-tags">
-                {post.data.tags.map((tag) => <li>{tag}</li>)}
-              </ul>
-              <button class="os-action" type="button" data-blog-open={post.id}>OPEN FILE</button>
-            </div>
+            <button class="blog-card-trigger" type="button" data-blog-open={post.id}>
+              <span class="blog-card-thumb" aria-hidden="true">
+                <img src={post.data.cover ?? '/assets/cockpitthumbnaipc.png'} alt="" loading="lazy" decoding="async" />
+              </span>
+              <span class="blog-card-body">
+                <span class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                <strong>{post.data.title}</strong>
+                <span>{post.data.description}</span>
+                <span class="os-tags">
+                  {post.data.tags.map((tag) => <span>{tag}</span>)}
+                </span>
+                <span class="os-action">OPEN LOG</span>
+              </span>
+            </button>
           </article>
         )) : (
           <article class="os-card blog-card">
@@ -296,11 +533,19 @@ const renderedPosts = await Promise.all(
             <article class:list={['os-card blog-reader', index === 0 && 'is-active']} data-blog-reader={post.id}>
               <span class="stats-opener os-opener" aria-hidden="true"></span>
               {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
-              <div class="os-card-content prose">
+              <div class="blog-reader-hero">
                 <button class="os-back" type="button" data-blog-close>BACK</button>
-                <p class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                <h2>{post.data.title}</h2>
-                <p>{post.data.description}</p>
+                <img src={post.data.cover ?? '/assets/cockpitthumbnaipc.png'} alt="" loading="lazy" decoding="async" />
+                <div>
+                  <p class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                  <h2>{post.data.title}</h2>
+                  <p>{post.data.description}</p>
+                  <ul class="os-tags">
+                    {post.data.tags.map((tag) => <li>{tag}</li>)}
+                  </ul>
+                </div>
+              </div>
+              <div class="os-card-content prose blog-reader-body">
                 <Content />
               </div>
             </article>
@@ -323,14 +568,33 @@ const renderedPosts = await Promise.all(
         {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
         <span class="os-divider" aria-hidden="true"></span>
         <div class="os-card-content">
-          <p class="os-kicker">Transmission ready</p>
-          <h2>Start a conversation</h2>
-          <p>Send the mission brief, project idea, or collaboration signal. Email is the primary channel.</p>
-          <a class="os-action" href="mailto:your.email@example.com">SEND EMAIL</a>
+          <p class="os-kicker">Primary Channel</p>
+          <h2>Open a transmission</h2>
+          <p>Send project work, collaboration notes, or technical briefs. Email is the cleanest channel for detailed context.</p>
+          <div class="contact-primary-lines">
+            <a href="mailto:tejasatwork100@gmail.com">tejasatwork100@gmail.com</a>
+            <a href="tel:+919325581756">+91 93255 81756</a>
+          </div>
+          <a class="os-action" href="mailto:tejasatwork100@gmail.com">SEND EMAIL</a>
         </div>
       </article>
-      {contactLinks.map((link, index) => (
-        <a class="os-card contact-link" href={link.href} style={`--os-delay: ${520 + index * 90}ms`}>
+      <article class="os-card contact-directory" style="--os-delay: 520ms">
+        <span class="stats-opener os-opener" aria-hidden="true"></span>
+        {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+        <div class="os-card-content">
+          <p class="os-kicker">Signal Directory</p>
+          <div class="contact-channel-grid">
+            {contactLinks.filter((link) => link.label !== 'Email' && link.label !== 'Phone').map((link) => (
+              <a class="contact-channel" href={link.href} target="_blank" rel="noreferrer">
+                <span>{link.label}</span>
+                <strong>{link.value}</strong>
+              </a>
+            ))}
+          </div>
+        </div>
+      </article>
+      {contactLinks.slice(0, 2).map((link, index) => (
+        <a class="os-card contact-link contact-link--quick" href={link.href} style={`--os-delay: ${720 + index * 90}ms`}>
           <span class="stats-opener os-opener" aria-hidden="true"></span>
           {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
           <div class="os-card-content">
@@ -344,6 +608,114 @@ const renderedPosts = await Promise.all(
 </div>
 
 <script>
+  const projectMap = document.querySelector<HTMLElement>('[data-project-map]');
+  const projectOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-project-open]'));
+  const projectBackButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-project-back]'));
+  const projectDossiers = Array.from(document.querySelectorAll<HTMLElement>('[data-project-dossier]'));
+  const skillMap = document.querySelector<HTMLElement>('[data-skill-map]');
+  const skillModules = Array.from(document.querySelectorAll<HTMLElement>('[data-skill-module]'));
+  const skillTriggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-skill-trigger]'));
+  const skillMobileMedia = window.matchMedia('(max-width: 760px)');
+  let skillCollapseTimer = 0;
+
+  const formatMetric = (value: number, prefix: string, suffix: string) => {
+    const formatted = value >= 1000 ? value.toLocaleString('en-IN') : String(value);
+    return `${prefix}${formatted}${suffix}`;
+  };
+
+  const animateMetric = (metric: HTMLElement) => {
+    const target = Number(metric.dataset.countTarget ?? '0');
+    const prefix = metric.dataset.countPrefix ?? '';
+    const suffix = metric.dataset.countSuffix ?? '';
+    const duration = 860;
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(target * eased);
+
+      metric.textContent = formatMetric(current, prefix, suffix);
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        metric.textContent = formatMetric(target, prefix, suffix);
+      }
+    };
+
+    metric.textContent = formatMetric(0, prefix, suffix);
+    requestAnimationFrame(tick);
+  };
+
+  const setProjectDossier = (projectId?: string) => {
+    if (!projectMap) return;
+
+    projectMap.dataset.projectState = projectId ? 'detail' : 'list';
+
+    projectDossiers.forEach((dossier) => {
+      const isActive = Boolean(projectId && dossier.dataset.projectDossier === projectId);
+      dossier.classList.toggle('is-active', isActive);
+      dossier.setAttribute('aria-hidden', String(!isActive));
+
+      if (isActive) {
+        dossier.querySelectorAll<HTMLElement>('[data-count-target]').forEach(animateMetric);
+      }
+    });
+
+    if (projectId) {
+      projectMap.closest<HTMLElement>('.content-viewport')?.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  projectOpenButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const projectId = button.dataset.projectOpen;
+      if (!projectId) return;
+      setProjectDossier(projectId);
+    });
+  });
+
+  projectBackButtons.forEach((button) => {
+    button.addEventListener('click', () => setProjectDossier());
+  });
+
+  window.addEventListener('portfolio-section-change', (event) => {
+    const section = (event as CustomEvent<{ section?: string }>).detail?.section;
+    if (section !== 'projects') setProjectDossier();
+    if (section !== 'blog' && blogMap) blogMap.dataset.readerOpen = 'false';
+  });
+
+  window.addEventListener('pageshow', () => setProjectDossier());
+
+  const setActiveSkillModule = (module?: HTMLElement) => {
+    window.clearTimeout(skillCollapseTimer);
+
+    skillModules.forEach((item) => {
+      const isActive = Boolean(module && item === module);
+      item.classList.toggle('is-active', isActive);
+      item.classList.toggle('is-dimmed', Boolean(module && item !== module));
+      item.querySelector<HTMLButtonElement>('[data-skill-trigger]')?.setAttribute('aria-expanded', String(isActive));
+      item.querySelector<HTMLElement>('.skill-system-capabilities')?.setAttribute('aria-hidden', String(!isActive));
+    });
+
+    if (skillMap) {
+      skillMap.dataset.skillActive = module?.dataset.skillModule ?? '';
+    }
+
+    if (module && skillMobileMedia.matches) {
+      skillCollapseTimer = window.setTimeout(() => setActiveSkillModule(), 2000);
+    }
+  };
+
+  skillTriggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const module = trigger.closest<HTMLElement>('[data-skill-module]');
+      if (!module) return;
+      setActiveSkillModule(module.classList.contains('is-active') ? undefined : module);
+    });
+  });
+
   const blogMap = document.querySelector<HTMLElement>('[data-blog-map]');
   const blogOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-blog-open]'));
   const blogCloseButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-blog-close]'));
