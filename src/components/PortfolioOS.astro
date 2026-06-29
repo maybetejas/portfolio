@@ -11,8 +11,8 @@ const projects = [
     subtitle: 'Doorstep car wash platform',
     description: 'A doorstep car wash startup designed, built, and launched from scratch to make professional car washing as convenient as ordering food.',
     status: 'Live business',
-    cover: '/assets/washywashyThumbnail.webp',
-    hero: '/assets/washywashyThumbnail.webp',
+    cover: '/assets/washywashyThumbnail.avif',
+    hero: '/assets/washywashyThumbnail.avif',
     tech: ['SvelteKit', 'PocketBase', 'TypeScript', 'PWA', 'Admin Dashboard'],
     oneLine: 'Doorstep car washing with customer booking, washer operations, and real launch traction.',
     metrics: [
@@ -28,8 +28,8 @@ const projects = [
       'I handled the complete journey from product strategy and branding to UI/UX, full-stack development, operations, marketing, customer support, launch, and iteration based on real customer feedback.'
     ],
     screenshots: [
-      { src: '/assets/washywashylandingpagemobile.png', label: 'Customer mobile booking entry', type: 'mobile' },
-      { src: '/assets/washywashyslotbookingpage.png', label: 'Slot booking flow', type: 'mobile' }
+      { src: '/assets/washywashylandingpagemobile.avif', label: 'Customer mobile booking entry', type: 'mobile' },
+      { src: '/assets/washywashyslotbookingpage.avif', label: 'Slot booking flow', type: 'mobile' }
     ],
     responsibilities: ['Product Strategy', 'Market Research', 'User Research', 'Brand Identity', 'UI / UX Design', 'Frontend Development', 'Backend Development', 'Database Design', 'Operations', 'Marketing', 'Customer Support', 'Analytics', 'Product Iteration'],
     challenges: ['Designing a booking flow that felt simple while supporting real operational constraints.', 'Creating internal tools for washers and admin workflows without overbuilding the first version.', 'Balancing engineering, customer acquisition, service quality, and business operations at launch.'],
@@ -45,8 +45,8 @@ const projects = [
     subtitle: 'Immersive portfolio system',
     description: 'A sci-fi portfolio experience inspired by alien spacecraft, old movie interfaces, and the strange sleekness of xenomorph design.',
     status: 'Live portfolio',
-    cover: '/assets/cockpitthumbnaipc.png',
-    hero: '/assets/cockpitthumbnaipc.png',
+    cover: '/assets/cockpitthumbnaipc.avif',
+    hero: '/assets/cockpitthumbnaipc.avif',
     tech: ['Astro', 'TypeScript', 'CSS', 'Canvas', 'Responsive UI'],
     oneLine: 'A portfolio built as an interactive xeno spacecraft instead of a traditional scrolling site.',
     metrics: [
@@ -62,8 +62,8 @@ const projects = [
       'XENO SPACESHIP is my love letter to those movies: an immersive cockpit where the frame and HUD stay alive while the content shifts inside the canopy.'
     ],
     screenshots: [
-      { src: '/assets/cockpitthumbnaipc.png', label: 'Desktop cockpit layout', type: 'desktop' },
-      { src: '/assets/cockpitmobile.png', label: 'Mobile cockpit layout', type: 'mobile' }
+      { src: '/assets/cockpitthumbnaipc.avif', label: 'Desktop cockpit layout', type: 'desktop' },
+      { src: '/assets/cockpitmobile.avif', label: 'Mobile cockpit layout', type: 'mobile' }
     ],
     responsibilities: ['Frontend Engineering', 'Product Direction', 'UX Design', 'Interaction Design', 'Animation Systems', 'Responsive Design', 'Canvas Starfield', 'Performance Tuning', 'Accessibility', 'Visual System Design'],
     challenges: ['Keeping the cockpit visually rich without relying on heavy shaders, Three.js, or particle libraries.', 'Making persistent HUD components work across desktop and mobile without feeling like normal website widgets.', 'Maintaining clarity and readability while preserving the cinematic spacecraft interface.'],
@@ -429,7 +429,7 @@ const renderedPosts = await Promise.all(
         <span class="stats-opener os-opener" aria-hidden="true"></span>
         {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
         <div class="about-portrait-frame about-portrait-frame--gif">
-          <img class="about-portrait-gif" src="/assets/tejas-khandale-portrait.jpg" alt="Animated operator signal" loading="eager" decoding="async" />
+          <img class="about-portrait-gif" src="/assets/tejas-khandale-portrait.avif" alt="Animated operator signal" loading="lazy" decoding="async" />
           <span class="about-portrait-noise" aria-hidden="true"></span>
           <span class="about-portrait-scan" aria-hidden="true"></span>
         </div>
@@ -502,7 +502,7 @@ const renderedPosts = await Promise.all(
             <span class="os-divider" aria-hidden="true"></span>
             <button class="blog-card-trigger" type="button" data-blog-open={post.id}>
               <span class="blog-card-thumb" aria-hidden="true">
-                <img src={post.data.cover ?? '/assets/cockpitthumbnaipc.png'} alt="" loading="lazy" decoding="async" />
+                <img src={post.data.cover ?? '/assets/cockpitthumbnaipc.avif'} alt="" loading="lazy" decoding="async" />
               </span>
               <span class="blog-card-body">
                 <span class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
@@ -535,7 +535,7 @@ const renderedPosts = await Promise.all(
               {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
               <div class="blog-reader-hero">
                 <button class="os-back" type="button" data-blog-close>BACK</button>
-                <img src={post.data.cover ?? '/assets/cockpitthumbnaipc.png'} alt="" loading="lazy" decoding="async" />
+                <img src={post.data.cover ?? '/assets/cockpitthumbnaipc.avif'} alt="" loading="lazy" decoding="async" />
                 <div>
                   <p class="os-kicker">{post.data.publishDate.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   <h2>{post.data.title}</h2>

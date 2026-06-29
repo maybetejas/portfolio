@@ -1,5 +1,5 @@
 ---
-const portraitSrc = '/assets/tejas-khandale-portrait.jpg';
+const portraitSrc = '/assets/tejas-khandale-portrait.avif';
 
 const identity = {
   name: ['TEJAS', 'KHANDALE'],
@@ -28,7 +28,7 @@ const actions = [
     <span class="stats-corner stats-corner--br bio-corner" aria-hidden="true"><i></i></span>
 
     <div class="bio-portrait-frame">
-      <img class="bio-portrait" src={portraitSrc} alt="Portrait of Tejas Khandale" loading="eager" decoding="async" />
+      <img class="bio-portrait" src={portraitSrc} alt="Portrait of Tejas Khandale" loading="eager" decoding="async" fetchpriority="high" />
       <span class="bio-portrait-noise" aria-hidden="true"></span>
       <span class="bio-portrait-scan" aria-hidden="true"></span>
     </div>

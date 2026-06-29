@@ -15,6 +15,9 @@ const {
 
 const siteName = 'TEJAS KHANDALE';
 const pageTitle = title === 'Home' ? siteName : `${title} | ${siteName}`;
+const currentPath = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const isHome = currentPath === '/';
+const fontStylesheet = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap';
 ---
 
 <!doctype html>
@@ -27,12 +30,19 @@ const pageTitle = title === 'Home' ? siteName : `${title} | ${siteName}`;
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <link rel="preload" as="image" href="/assets/visible.avif" type="image/avif" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/frameMobile.avif" type="image/avif" media="(max-width: 760px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/framePC.avif" type="image/avif" media="(min-width: 761px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/leftWing.avif" type="image/avif" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/rightWing.avif" type="image/avif" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/leftWingSilhouette.avif" type="image/avif" fetchpriority="high" />
+    <link rel="preload" as="image" href="/assets/rightWingSilhouette.avif" type="image/avif" fetchpriority="high" />
+    {isHome && <link rel="preload" as="image" href="/assets/tejas-khandale-portrait.avif" type="image/avif" fetchpriority="high" />}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preload" as="style" href={fontStylesheet} />
+    <link href={fontStylesheet} rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href={fontStylesheet} rel="stylesheet" /></noscript>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>{pageTitle}</title>
   </head>

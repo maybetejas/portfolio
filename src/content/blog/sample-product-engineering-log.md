@@ -2,7 +2,7 @@
 title: "Sample Build Log: Product Engineering Loop"
 description: "A sample cockpit log showing how a product idea moves from problem discovery to a shipped working system."
 publishDate: 2026-06-29
-cover: "/assets/washywashyThumbnail.webp"
+cover: "/assets/washywashyThumbnail.avif"
 tags: ["product", "engineering", "launch"]
 draft: false
 ---

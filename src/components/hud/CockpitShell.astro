@@ -79,7 +79,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     <div class="space-drift-field">
       <div class="space-attitude-field">
         <div class="spectrum-image-field" data-spectrum-background data-spectrum-state="hidden">
-          <img class="spectrum-bg-image" data-spectrum-image src="/assets/visible.png" alt="" decoding="async" />
+          <img class="spectrum-bg-image" data-spectrum-image src="/assets/visible.avif" alt="" loading="eager" decoding="async" fetchpriority="high" />
           <span class="spectrum-filter-shutter" aria-hidden="true"></span>
         </div>
         <canvas class="forward-star-canvas" data-forward-starfield></canvas>
@@ -100,16 +100,20 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   <div class="warp-intro" aria-hidden="true">
     <canvas class="hyperspace-canvas" data-hyperspace-canvas></canvas>
   </div>
-  <div class="ship-wing-layer" aria-hidden="true">
-    <img class="ship-wing ship-wing--left" src="/assets/leftWing.png" alt="" decoding="async" />
-    <img class="ship-wing ship-wing--right" src="/assets/rightWing.png" alt="" decoding="async" />
-  </div>
   <div class="glass-overlay" aria-hidden="true"></div>
   <div class="hud-stage" aria-hidden="true">
+    <div class="ship-wing-layer" aria-hidden="true">
+      <img class="ship-wing ship-wing-backdrop ship-wing--left" src="/assets/leftWingSilhouette.avif" alt="" loading="eager" decoding="async" fetchpriority="high" />
+      <img class="ship-wing ship-wing--left" src="/assets/leftWing.avif" alt="" loading="eager" decoding="async" fetchpriority="high" />
+      <img class="ship-wing ship-wing-backdrop ship-wing--right" src="/assets/rightWingSilhouette.avif" alt="" loading="eager" decoding="async" fetchpriority="high" />
+      <img class="ship-wing ship-wing--right" src="/assets/rightWing.avif" alt="" loading="eager" decoding="async" fetchpriority="high" />
+    </div>
     <div class="hud-projection" data-hud-projection>
       <picture class="hud-frame" aria-hidden="true">
+        <source media="(max-width: 760px)" type="image/avif" srcset="/assets/frameMobile.avif" />
         <source media="(max-width: 760px)" srcset="/assets/frameMobile.png" />
-        <img src="/assets/framePC.png" alt="" loading="eager" decoding="async" />
+        <source type="image/avif" srcset="/assets/framePC.avif" />
+        <img src="/assets/framePC.png" alt="" loading="eager" decoding="async" fetchpriority="high" />
       </picture>
     </div>
   </div>
@@ -203,6 +207,24 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     </div>
   </div>
 
+  <aside class="cockpit-guidance" data-cockpit-guidance aria-hidden="true" role="dialog" aria-label="Spectrum controls prompt">
+    <div class="cockpit-guidance__veil" aria-hidden="true"></div>
+    <svg class="cockpit-guidance__beam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M46 50 C64 44 70 24 88 14" />
+      <path d="M46 50 C66 55 74 36 91 31" />
+    </svg>
+    <div class="cockpit-guidance__panel">
+      <span class="stats-corner stats-corner--tl" aria-hidden="true"><i></i></span>
+      <span class="stats-corner stats-corner--tr" aria-hidden="true"><i></i></span>
+      <span class="stats-corner stats-corner--bl" aria-hidden="true"><i></i></span>
+      <span class="stats-corner stats-corner--br" aria-hidden="true"><i></i></span>
+      <button class="cockpit-guidance__close" type="button" data-cockpit-guidance-close aria-label="Dismiss spectrum prompt">X</button>
+      <p>SPECTRUM CONTROLS ONLINE</p>
+      <strong>TRY VISIBLE / UV / IR</strong>
+      <span>Hide HUD clears the canopy for full exterior scan.</span>
+    </div>
+  </aside>
+
   <main class="content-viewport" data-content-viewport tabindex="-1">
     <div class="page-slot">
       <slot />
@@ -228,6 +250,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const travelToggle = document.querySelector<HTMLButtonElement>('[data-travel-toggle]');
   const scrollDepth = document.querySelector<HTMLElement>('[data-scroll-depth]');
   const scrollPercent = document.querySelector<HTMLOutputElement>('[data-scroll-percent]');
+  const cockpitGuidance = document.querySelector<HTMLElement>('[data-cockpit-guidance]');
+  const cockpitGuidanceClose = document.querySelector<HTMLButtonElement>('[data-cockpit-guidance-close]');
   const warpIntro = document.querySelector<HTMLElement>('.warp-intro');
   const hyperspaceCanvas = document.querySelector<HTMLCanvasElement>('[data-hyperspace-canvas]');
   const forwardStarCanvas = document.querySelector<HTMLCanvasElement>('[data-forward-starfield]');
@@ -239,17 +263,20 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   let currentPhase: CockpitPhase = 'jump';
   let currentVisionMode: VisionMode = 'visible';
   let visionModeTimers: number[] = [];
-  let spectrumBackgroundPreload: Promise<void> | null = null;
+  const spectrumBackgroundPreloads = new Map<VisionMode, Promise<void>>();
   const spectrumPreloadImages: HTMLImageElement[] = [];
   let spectrumCollapseTimer = 0;
   let travelCollapseTimer = 0;
+  let cockpitGuidanceShowTimer = 0;
+  let cockpitGuidanceHideTimer = 0;
+  let cockpitGuidanceShown = false;
   let activeSection = shell?.dataset.currentSection ?? 'home';
   let sectionSwitchTimer = 0;
   let panelIntroTimer = 0;
   const panelIntroDuration = 2100;
   const mobileMedia = window.matchMedia('(max-width: 760px)');
-  const lowPowerMedia = window.matchMedia('(hover: none), (pointer: coarse), (max-width: 760px)');
   const reducedMotionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const lowPowerMedia = reducedMotionMedia;
   let spectrumSpaceInitialized = false;
   let uvStarsPopulated = false;
   let uvStarsStarted = false;
@@ -291,9 +318,9 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const POINTER_EASE = 0.045;
   const IDLE_DECAY = 0.94;
   const SPECTRUM_BACKGROUND_URLS: Record<VisionMode, string> = {
-    visible: '/assets/visible.png',
-    uv: '/assets/uv.png',
-    ir: '/assets/ir.png'
+    visible: '/assets/visible.avif',
+    uv: '/assets/uv.avif',
+    ir: '/assets/ir.avif'
   };
   const STAR_COUNTS = {
     tiny: mobileMedia.matches ? 95 : 180,
@@ -789,25 +816,39 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     }
   };
 
-  const preloadSpectrumBackgrounds = () => {
-    if (spectrumBackgroundPreload) return spectrumBackgroundPreload;
+  const preloadSpectrumBackground = (mode: VisionMode) => {
+    const cached = spectrumBackgroundPreloads.get(mode);
+    if (cached) return cached;
 
-    spectrumBackgroundPreload = Promise.all(
-      (Object.keys(SPECTRUM_BACKGROUND_URLS) as VisionMode[]).map((mode) => new Promise<void>((resolve) => {
-        const image = new Image();
-        spectrumPreloadImages.push(image);
-        image.decoding = 'async';
-        image.onload = () => resolve();
-        image.onerror = () => resolve();
-        image.src = SPECTRUM_BACKGROUND_URLS[mode];
+    const preload = new Promise<void>((resolve) => {
+      const image = new Image();
+      spectrumPreloadImages.push(image);
+      image.decoding = 'async';
+      image.onload = () => resolve();
+      image.onerror = () => resolve();
+      image.src = SPECTRUM_BACKGROUND_URLS[mode];
 
-        if ('decode' in image) {
-          void image.decode().then(resolve).catch(resolve);
-        }
-      }))
-    ).then(() => undefined);
+      if ('decode' in image) {
+        void image.decode().then(resolve).catch(resolve);
+      }
+    });
 
-    return spectrumBackgroundPreload;
+    spectrumBackgroundPreloads.set(mode, preload);
+    return preload;
+  };
+
+  const warmDeferredSpectrumBackgrounds = () => {
+    const warm = () => {
+      void preloadSpectrumBackground('uv');
+      void preloadSpectrumBackground('ir');
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(warm, { timeout: 2500 });
+      return;
+    }
+
+    window.setTimeout(warm, 1400);
   };
 
   const setSpectrumBackgroundSource = (mode: VisionMode) => {
@@ -822,7 +863,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
   const revealSpectrumBackground = (mode: VisionMode = currentVisionMode) => {
     if (!spectrumBackground) return;
 
-    void preloadSpectrumBackgrounds().then(() => {
+    void preloadSpectrumBackground(mode).then(() => {
       setSpectrumBackgroundSource(mode);
       spectrumBackground.dataset.spectrumState = 'visible';
     });
@@ -1363,7 +1404,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
     if (nextMode === currentVisionMode) return;
 
-    void preloadSpectrumBackgrounds();
+    const nextBackgroundReady = preloadSpectrumBackground(nextMode);
 
     visionOptions.forEach((option) => {
       const isPending = option.dataset.visionOption === nextMode;
@@ -1379,12 +1420,19 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       shell.dataset.sensorPhase = 'scan';
     }, 110));
     visionModeTimers.push(window.setTimeout(() => {
-      setSpectrumBackgroundSource(nextMode);
-      applyVisionMode(nextMode);
-      shell.dataset.sensorPhase = 'activate';
-      if (spectrumBackground?.dataset.spectrumState === 'visible') {
-        spectrumBackground.dataset.filterTransition = 'fade-in';
-      }
+      void nextBackgroundReady.then(() => {
+        setSpectrumBackgroundSource(nextMode);
+        applyVisionMode(nextMode);
+        shell.dataset.sensorPhase = 'activate';
+        if (spectrumBackground?.dataset.spectrumState === 'visible') {
+          spectrumBackground.dataset.filterTransition = 'fade-in';
+        }
+        window.setTimeout(() => {
+          if (!shell) return;
+          shell.dataset.sensorPhase = 'online';
+          spectrumBackground?.removeAttribute('data-filter-transition');
+        }, 480);
+      });
     }, 340));
     visionModeTimers.push(window.setTimeout(() => {
       shell.dataset.sensorPhase = 'online';
@@ -1399,6 +1447,29 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     hudToggle.setAttribute('aria-pressed', String(hidden));
     hudToggle.setAttribute('aria-label', hidden ? 'Show HUD' : 'Hide HUD');
     if (hudToggleLabel) hudToggleLabel.textContent = hidden ? 'SHOW HUD' : 'HIDE HUD';
+  };
+
+  const hideCockpitGuidance = () => {
+    window.clearTimeout(cockpitGuidanceShowTimer);
+    window.clearTimeout(cockpitGuidanceHideTimer);
+    if (!cockpitGuidance) return;
+
+    cockpitGuidance.dataset.guidanceState = 'hidden';
+    cockpitGuidance.setAttribute('aria-hidden', 'true');
+  };
+
+  const scheduleCockpitGuidance = () => {
+    if (!cockpitGuidance || cockpitGuidanceShown) return;
+    cockpitGuidanceShown = true;
+
+    window.clearTimeout(cockpitGuidanceShowTimer);
+    cockpitGuidanceShowTimer = window.setTimeout(() => {
+      cockpitGuidance.dataset.guidanceState = 'visible';
+      cockpitGuidance.setAttribute('aria-hidden', 'false');
+
+      window.clearTimeout(cockpitGuidanceHideTimer);
+      cockpitGuidanceHideTimer = window.setTimeout(hideCockpitGuidance, 3000);
+    }, 2000);
   };
 
   const setMobileMenuExpanded = (expanded: boolean) => {
@@ -1454,6 +1525,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
       xenoAudio.ready();
       const activePanel = sectionPanels.find((panel) => panel.classList.contains('is-active'));
       replayPanelIntro(activePanel);
+      warmDeferredSpectrumBackgrounds();
+      scheduleCockpitGuidance();
     }
   };
 
@@ -1476,8 +1549,8 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     const centerX = width / 2;
     const centerY = height / 2;
     const focalLength = Math.min(width, height) * 0.72;
-    const starCount = width < 760 ? 110 : 210;
-    const calmStarCount = width < 760 ? 24 : 48;
+    const starCount = lowPowerMedia.matches ? 110 : 210;
+    const calmStarCount = lowPowerMedia.matches ? 24 : 48;
     const colors = [
       [255, 255, 255],
       [197, 239, 247],
@@ -1719,7 +1792,7 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
     setPhase('jump');
     setRevealPhase('dark');
     runHyperspaceJump();
-    void preloadSpectrumBackgrounds();
+    void preloadSpectrumBackground('visible');
     window.setTimeout(() => {
       setRevealPhase('wake');
     }, 30);
@@ -1844,6 +1917,11 @@ const activeNavIndex = Math.max(navItems.findIndex((item) => item.section === ac
 
   travelToggle?.addEventListener('pointerenter', () => {
     xenoAudio.uiHover();
+  });
+
+  cockpitGuidanceClose?.addEventListener('click', () => {
+    xenoAudio.uiSelect();
+    hideCockpitGuidance();
   });
 
   travelToggle?.addEventListener('click', () => {
