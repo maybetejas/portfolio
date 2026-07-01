@@ -74,6 +74,27 @@ const projects = [
   }
 ];
 
+const labItems = [
+  {
+    id: 'ai-voice-transformation-coach',
+    title: 'AI Voice Transformation Coach',
+    stage: 'Planning',
+    progress: 2,
+    image: '/assets/ai-voice-transformation-coach-lab.jpg',
+    summary: 'An AI-powered coach for personalized voice transformation training.',
+    problem: 'Current voice transformation tools exist, but most solve only one slice of the journey: voice analyzers, lesson libraries, guided courses, or isolated practice tools. Very few combine assessment, coaching, adaptive exercises, AI feedback, and long-term progress tracking into one unified experience.',
+    vision: 'Build an AI-powered voice coach that can listen, diagnose, generate personalized exercises, measure progress, and adapt training over time. The first beachhead is gender-affirming voice training, with a longer-term path toward broader voice coaching.',
+    market: {
+      tam: 15.2,
+      usersLow: 80,
+      usersHigh: 160,
+      competitors: 15
+    },
+    competitors: ['ELSA', 'BoldVoice', 'Vocal Image', 'Yoodli', 'Orai', 'Voice Tools', 'Christella VoiceUp', 'VoiceShift', 'EvaF', 'Seattle Voice Lab', 'TransVoiceLessons', 'VoicePitchAnalyzer', 'Voice Analyst', 'VoiceUp', 'Renegade Voice'],
+    roadmap: ['Research', 'Planning', 'Validation', 'MVP', 'Beta', 'Launch']
+  }
+];
+
 const skillGroups = [
   {
     title: 'Product Engineering',
@@ -214,6 +235,8 @@ const contactLinks = [
   { label: 'LinkedIn', value: 'linkedin.com/in/tejas-khandale-3b9a791b1', href: 'https://www.linkedin.com/in/tejas-khandale-3b9a791b1' },
   { label: 'GitHub', value: 'github.com/maybetejas', href: 'https://github.com/maybetejas' },
   { label: 'X', value: 'x.com/sysAnomaly', href: 'https://x.com/sysAnomaly' },
+  { label: 'Bluesky', value: 'bsky.app/profile/systemanomaly.bsky.social', href: 'https://bsky.app/profile/systemanomaly.bsky.social' },
+  { label: 'Wellfound', value: 'wellfound.com/u/tejas-nitin-khandale', href: 'https://wellfound.com/u/tejas-nitin-khandale' },
   { label: 'Upwork', value: 'upwork.com/freelancers/~01ad1b975646f72be3', href: 'https://www.upwork.com/freelancers/~01ad1b975646f72be3' },
   { label: 'Fiverr', value: 'fiverr.com/yourusername', href: 'https://www.fiverr.com/yourusername' }
 ];
@@ -347,6 +370,117 @@ const renderedPosts = await Promise.all(
               </div>
             </section>
 
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="os-panel os-panel--lab" data-section-panel="lab" data-os-panel="lab">
+    <h1 class="os-title">LAB</h1>
+    <svg class="os-connectors os-connectors--lab" viewBox="0 0 760 460" preserveAspectRatio="none" aria-hidden="true">
+      <path pathLength="1" d="M150 112 H274 L318 156 H404" />
+      <path pathLength="1" d="M420 244 H542 L604 298" />
+      <path pathLength="1" d="M316 336 H246 L196 388" />
+    </svg>
+    <div class="lab-map" data-lab-map data-lab-state="list">
+      <div class="lab-list" data-lab-list>
+        {labItems.map((item, index) => (
+          <article class="os-card lab-card" data-lab-card style={`--os-delay: ${380 + index * 130}ms; --lab-progress: ${item.progress}%`}>
+            <span class="stats-opener os-opener" aria-hidden="true"></span>
+            {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+            <button class="lab-card-trigger" type="button" data-lab-open={item.id} aria-label={`Open ${item.title} lab details`}>
+              <span class="lab-visual" aria-hidden="true">
+                <img src={item.image} alt="" loading="lazy" decoding="async" />
+                <span class="lab-visual-scan"></span>
+              </span>
+              <span class="lab-card-body">
+                <strong>{item.title}</strong>
+                <span class="lab-summary">{item.summary}</span>
+                <span class="lab-stage-line">Stage: <b>{item.stage}</b></span>
+                <span class="lab-progress-label">Progress: <b>{item.progress}%</b></span>
+                <span class="lab-progress" aria-label={`${item.progress}% planning progress`}>
+                  <span></span>
+                </span>
+                <span class="os-action lab-card-action">OPEN LAB FILE</span>
+              </span>
+            </button>
+          </article>
+        ))}
+      </div>
+
+      <div class="lab-dossiers" data-lab-dossiers>
+        {labItems.map((item) => (
+          <article class="lab-dossier" data-lab-detail={item.id} aria-hidden="true" style={`--lab-progress: ${item.progress}%`}>
+            <button class="project-back lab-back" type="button" data-lab-back>
+              <span aria-hidden="true">&lt;</span>
+              BACK
+            </button>
+
+            <section class="lab-dossier-hero">
+              <span class="stats-opener os-opener" aria-hidden="true"></span>
+              {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
+              <div class="lab-metric-grid" aria-label={`${item.title} opportunity metrics`}>
+                <div class="lab-metric">
+                  <span>Market Opportunity</span>
+                  <strong data-lab-number data-lab-prefix="$" data-lab-target={item.market.tam} data-lab-decimals="1" data-lab-suffix="B">$0.0B</strong>
+                  <small>Global Total Addressable Market</small>
+                </div>
+                <div class="lab-metric lab-metric--wide">
+                  <span>Potential Users</span>
+                  <strong data-lab-range data-lab-range-low={item.market.usersLow} data-lab-range-high={item.market.usersHigh} data-lab-suffix="M">0-0M</strong>
+                  <small>Approximately 80-160 million people globally.</small>
+                </div>
+                <div class="lab-metric">
+                  <span>Competitors Researched</span>
+                  <strong data-lab-number data-lab-target={item.market.competitors} data-lab-suffix="+">0+</strong>
+                  <small>Market scan complete enough to shape the product direction.</small>
+                </div>
+              </div>
+            </section>
+
+            <section class="lab-stage-grid">
+              <div class="project-dossier-section lab-dossier-section">
+                <p class="os-kicker">Stage</p>
+                <span class="lab-stage-badge">{item.stage}</span>
+              </div>
+              <div class="project-dossier-section lab-dossier-section">
+                <p class="os-kicker">Progress</p>
+                <strong class="lab-progress-number" data-lab-number data-lab-target={item.progress} data-lab-suffix="%">0%</strong>
+                <span class="lab-progress lab-progress--large" aria-label={`${item.progress}% planning progress`}>
+                  <span></span>
+                </span>
+              </div>
+            </section>
+
+            <section class="project-dossier-section lab-dossier-section">
+              <p class="os-kicker">The Problem</p>
+              <p>{item.problem}</p>
+            </section>
+
+            <section class="project-dossier-section lab-dossier-section">
+              <p class="os-kicker">Vision</p>
+              <p>{item.vision}</p>
+            </section>
+
+            <section class="project-dossier-section lab-dossier-section">
+              <p class="os-kicker">Competitor Landscape</p>
+              <p>A compact market scan confirms this is an active space with fragmented solutions.</p>
+              <div class="lab-competitors" aria-label="Competitors researched">
+                {item.competitors.map((competitor) => <span>{competitor}</span>)}
+              </div>
+            </section>
+
+            <section class="project-dossier-section lab-dossier-section">
+              <p class="os-kicker">Roadmap</p>
+              <ol class="lab-roadmap" aria-label={`${item.title} roadmap`}>
+                {item.roadmap.map((step) => (
+                  <li class:list={[step === item.stage && 'is-active']}>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </section>
           </article>
         ))}
       </div>
@@ -593,16 +727,6 @@ const renderedPosts = await Promise.all(
           </div>
         </div>
       </article>
-      {contactLinks.slice(0, 2).map((link, index) => (
-        <a class="os-card contact-link contact-link--quick" href={link.href} style={`--os-delay: ${720 + index * 90}ms`}>
-          <span class="stats-opener os-opener" aria-hidden="true"></span>
-          {corners.map((corner) => <span class={`stats-corner stats-corner--${corner} os-corner`} aria-hidden="true"><i></i></span>)}
-          <div class="os-card-content">
-            <p class="os-kicker">{link.label}</p>
-            <h2>{link.value}</h2>
-          </div>
-        </a>
-      ))}
     </div>
   </section>
 </div>
@@ -612,6 +736,10 @@ const renderedPosts = await Promise.all(
   const projectOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-project-open]'));
   const projectBackButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-project-back]'));
   const projectDossiers = Array.from(document.querySelectorAll<HTMLElement>('[data-project-dossier]'));
+  const labMap = document.querySelector<HTMLElement>('[data-lab-map]');
+  const labOpenButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lab-open]'));
+  const labBackButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lab-back]'));
+  const labDetails = Array.from(document.querySelectorAll<HTMLElement>('[data-lab-detail]'));
   const skillMap = document.querySelector<HTMLElement>('[data-skill-map]');
   const skillModules = Array.from(document.querySelectorAll<HTMLElement>('[data-skill-module]'));
   const skillTriggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-skill-trigger]'));
@@ -680,13 +808,76 @@ const renderedPosts = await Promise.all(
     button.addEventListener('click', () => setProjectDossier());
   });
 
+  const setLabDetail = (labId?: string) => {
+    if (!labMap) return;
+
+    labMap.dataset.labState = labId ? 'detail' : 'list';
+
+    labDetails.forEach((detail) => {
+      const isActive = Boolean(labId && detail.dataset.labDetail === labId);
+      detail.classList.toggle('is-active', isActive);
+      detail.setAttribute('aria-hidden', String(!isActive));
+    });
+
+    if (labId) {
+      const activeDetail = labDetails.find((detail) => detail.dataset.labDetail === labId);
+      activeDetail?.querySelectorAll<HTMLElement>('[data-lab-number], [data-lab-range]').forEach(animateLabMetric);
+      labMap.closest<HTMLElement>('.content-viewport')?.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const animateLabMetric = (metric: HTMLElement) => {
+    const duration = 860;
+    const start = performance.now();
+    const prefix = metric.dataset.labPrefix ?? '';
+    const suffix = metric.dataset.labSuffix ?? '';
+    const decimals = Number(metric.dataset.labDecimals ?? '0');
+    const target = Number(metric.dataset.labTarget ?? '0');
+    const low = Number(metric.dataset.labRangeLow ?? '0');
+    const high = Number(metric.dataset.labRangeHigh ?? '0');
+    const isRange = metric.hasAttribute('data-lab-range');
+
+    const formatNumber = (value: number) => value.toFixed(decimals);
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+
+      if (isRange) {
+        metric.textContent = `${Math.round(low * eased)}-${Math.round(high * eased)}${suffix}`;
+      } else {
+        metric.textContent = `${prefix}${formatNumber(target * eased)}${suffix}`;
+      }
+
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  };
+
+  labOpenButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const labId = button.dataset.labOpen;
+      if (!labId) return;
+      setLabDetail(labId);
+    });
+  });
+
+  labBackButtons.forEach((button) => {
+    button.addEventListener('click', () => setLabDetail());
+  });
+
   window.addEventListener('portfolio-section-change', (event) => {
     const section = (event as CustomEvent<{ section?: string }>).detail?.section;
     if (section !== 'projects') setProjectDossier();
+    if (section !== 'lab') setLabDetail();
     if (section !== 'blog' && blogMap) blogMap.dataset.readerOpen = 'false';
   });
 
-  window.addEventListener('pageshow', () => setProjectDossier());
+  window.addEventListener('pageshow', () => {
+    setProjectDossier();
+    setLabDetail();
+  });
 
   const setActiveSkillModule = (module?: HTMLElement) => {
     window.clearTimeout(skillCollapseTimer);
